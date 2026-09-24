@@ -1,0 +1,67 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+#include <format>
+
+#include "../../graph.hpp"
+#include "../../kind.hpp"
+#include "../../plug.hpp"
+#include "../../render.hpp"
+#include "../../timeline.hpp"
+#include "signals.internal.hpp"
+
+namespace {
+using namespace SOUND;
+
+auto describes(AUDIO::PLUGIN::Control &out) -> Flag {
+  return GRAPH::described(
+    VIEWS::SIGNALS::mapped(), VIEWS::SIGNALS::number(), out);
+}
+
+}  // namespace
+
+auto SOUND::VIEWS::SIGNALS::laned() -> Whole {
+  const Whole track = attended();
+  if (track == NONE) return NONE;
+  const Vector<ARRANGEMENT::TRACK::Lane> &lanes =
+    TIMELINE::held().tracks[track].lanes;
+  for (Whole lane = 0; lane < lanes.size(); ++lane)
+    if (lanes[lane].kind == KIND::CONTROL) return lane;
+  return NONE;
+}
+
+auto SOUND::VIEWS::SIGNALS::mapped() -> String {
+  const Whole lane = laned();
+  return lane == NONE ? String() : RENDER::mapped(attended(), lane);
+}
+
+auto SOUND::VIEWS::SIGNALS::named() -> String {
+  const String plug = mapped();
+  if (plug.empty()) return {};
+  const Whole paged = number();
+  return paged < VIEWS::parameters(plug) ? VIEWS::named(plug, paged) : String();
+}
+
+auto SOUND::VIEWS::SIGNALS::unit() -> String {
+  AUDIO::PLUGIN::Control published;
+  return ::describes(published) ? published.unit : String();
+}
+
+auto SOUND::VIEWS::SIGNALS::delivered(Float value) -> Float {
+  AUDIO::PLUGIN::Control published;
+  return ::describes(published) ? PLUG::scaled(published, value) : value;
+}
+
+auto SOUND::VIEWS::SIGNALS::spoken(Float value) -> String {
+  return std::format("{:g}", delivered(value));
+}
+
+auto SOUND::VIEWS::SIGNALS::worded() -> Vector<Word> {
+  const String plug = mapped();
+  const Whole listed = plug.empty() ? 0 : VIEWS::parameters(plug);
+  Vector<Word> run;
+  for (Whole number = 0; number <= FULL; ++number)
+    if (number < listed)
+      run.push_back({.number = number, .name = VIEWS::named(plug, number)});
+  for (Whole number = 0; number <= FULL; ++number)
+    if (number >= listed) run.push_back({.number = number});
+  return run;
+}

@@ -1,0 +1,16 @@
+name: Islands - Sound v3
+entry: libsound.so
+assets: assets
+splash: true
+size: 1280x800
+version: 3
+gui:
+  tip: true
+  ladder: true
+  window: true
+  carry: true
+  stroke: true
+  rows: true
+  playhead: true
+  seat: true
+summary: Islands - Sound v3

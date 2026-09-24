@@ -1,0 +1,127 @@
+
+style ink color=#3b2a1eff
+style muted color=#8a6d55ff
+style sheet color=#fbf6eaff edge=#d9c9a8ff border=1
+style box color=#f8f1e3ff edge=#d9c9a8ff border=1
+style place color=#eee5d2ff edge=#3b2a1eff border=0 hover=#f6eedcff press=#e8b56aff
+style entry color=#00000000 edge=#3b2a1eff border=0 hover=#f0e3c9ff press=#e8b56aff
+style call color=#d9822bff edge=#ffffffff border=0 hover=#e8963fff press=#b8681cff
+style selected color=#e9b46aff hover=#e9b46aff press=#dca24fff
+style paper color=#fffcf6ff edge=#3b2a1eff border=1 hover=#e9b46aff
+style chrome color=#00000000 edge=#3b2a1eff border=0 hover=#00000000 press=#00000000 glow=#d9822bff
+
+style row style=entry size=16 pad=6
+style icon style=chrome hover=#3b2a1e17 press=#3b2a1e2b
+style standing style=place color=#fbf6eaff edge=#d9c9a8ff border=1 hover=#fbf6eaff press=#fbf6eaff
+style tab style=place color=#f0e8d8ff edge=#d9c9a8ff border=1 hover=#f0e8d8ff press=#f0e8d8ff
+style tabword style=entry edge=#8a6d55ff hover=#3b2a1e17 press=#3b2a1e2b
+style standingword style=entry edge=#3b2a1eff hover=#00000000 press=#00000000
+style tabfoot color=#fbf6eaff border=0
+style rule color=#d9c9a8ff border=0
+style accent style=icon edge=#c46a1aff
+style exportchosen color=#c46a1aff
+style ring color=#d9822b2e edge=#00000000 border=0
+style board style=box border=2
+style slab style=place border=2 edge=#8a6d55ff hover=#eadfc8ff press=#eadfc8ff
+style loose style=place border=2 edge=#8a6d55ff color=#f6c98aff hover=#f6c98aff press=#f6c98aff wash=#fff2dc8c
+style quiet style=place color=#b9b0a4ff border=2 edge=#8a6d55ff hover=#b9b0a4ff press=#b9b0a4ff
+style slabink style=ink
+style palette style=place color=#f9f2e3ff edge=#c9a97aff border=1
+style band color=#8a6d5540 border=0
+style ruler color=#eee5d2ff edge=#8a6d55ff border=0
+style rulerink style=muted
+style rulerhead color=#c46a1aff border=0
+style cycle color=#c07f2e4d border=0
+style cycleflag color=#a8560cff border=0 hover=#c26b1cff press=#d97f2cff
+style tagflag color=#1f7a5aff border=0 hover=#2d9670ff press=#3aae84ff
+style endflag color=#6b4bb0ff border=0 hover=#8163c4ff press=#957bd6ff
+style tagword style=entry edge=#f7f9fbff hover=#00000000 press=#00000000
+style keywhite style=clear
+style keyblack color=#0000002a border=0
+style keywhiteout color=#8a6d553d border=0
+style keyblackout color=#8a6d5561 border=0
+style keytonic color=#d9822b4d border=0
+style gridbeat color=#0000001f border=0
+style gridbar color=#00000059 border=0
+style notch color=#8a6d55e6 border=0
+style grip color=#ffffff66 hover=#ffffff8c press=#ffffffb3 border=0
+style sketch color=#ffffff59 border=0
+style trace color=#8a6d55cc border=0
+style slide style=clear border=2
+style outtake color=#c4b8a8bb hover=#cec2b2cc press=#d8ccbcdd wash=#ffffff54 border=0
+style cover color=#c3483c26 border=0
+style armed color=#c3483cff hover=#cf574bff press=#b73f34ff border=0
+style range color=#3ea55338 border=0
+style rangename color=#1d4d2aff
+style rangecontrol color=#2c87d938 border=0
+style rangeprogram color=#7b4f2e38 border=0
+style header style=box border=0
+style gridfine color=#8a6d551f border=0
+style gridcoarse color=#8a6d5547 border=0
+style carryaudio color=#c0392bff edge=#c0392bff
+style carrynotes color=#2f9e44ff edge=#2f9e44ff
+style carrylogic color=#c9a35fff edge=#c9a35fff
+style carrycontrol color=#1c7ed6ff edge=#1c7ed6ff
+style carryprogram color=#b07a4eff edge=#b07a4eff
+style carrydata color=#1098adff edge=#1098adff
+
+style dormant edge=#8a6d55ff
+
+
+style cableaudio color=#d79e9dff border=0
+style cablenotes color=#95cca9ff border=0
+style cablelogic color=#e2cfa4ff border=0
+style cablecontrol color=#8dbdeaff border=0
+style cableprogram color=#c9ab93ff border=0
+style cabledata color=#85cad5ff border=0
+style washaudio color=#f1d4d1ff border=0
+style washnotes color=#d1ead6ff border=0
+style washlogic color=#f3e8cfff border=0
+style washcontrol color=#cde3f6ff border=0
+style washprogram color=#eaddd0ff border=0
+style washdata color=#cae8edff border=0
+style plateaudio color=#c3483cff hover=#cc6459ff press=#d47b73ff wash=#ffffff54 border=0
+style platenotes color=#3ea553ff hover=#5bb36dff press=#74be83ff wash=#ffffff54 border=0
+style platelogic color=#c9a35fff hover=#d2b075ff press=#d9bc8aff wash=#ffffff54 border=0
+style platecontrol color=#2c87d9ff hover=#4c99dfff press=#67a9e4ff wash=#ffffff54 border=0
+style plateprogram color=#7b4f2eff hover=#8f6445ff press=#a0785cff wash=#ffffff54 border=0
+style platedata color=#219fb3ff hover=#42aebeff press=#5fbac8ff wash=#ffffff54 border=0
+style trace00 color=#ce3030ff
+style trace01 color=#cc5e5eff
+style trace02 color=#ca8484ff
+style trace03 color=#c8a1a1ff
+style trace10 color=#cece30ff
+style trace11 color=#cccc5eff
+style trace12 color=#caca84ff
+style trace13 color=#c8c8a1ff
+style trace20 color=#30ce30ff
+style trace21 color=#5ecc5eff
+style trace22 color=#84ca84ff
+style trace23 color=#a1c8a1ff
+style trace30 color=#30ceceff
+style trace31 color=#5eccccff
+style trace32 color=#84cacaff
+style trace33 color=#a1c8c8ff
+style trace40 color=#3030ceff
+style trace41 color=#5e5eccff
+style trace42 color=#8484caff
+style trace43 color=#a1a1c8ff
+style trace50 color=#ce30ceff
+style trace51 color=#cc5eccff
+style trace52 color=#ca84caff
+style trace53 color=#c8a1c8ff
+
+style boxlabel color=#f7f9fbff
+
+style pair color=#00000000 edge=#8a6d55ff border=1 hover=#00000000 press=#00000000
+style pairlit color=#3b2a1e17 edge=#3b2a1eff border=1 hover=#3b2a1e17 press=#3b2a1e17
+style seamline color=#d9822b99 border=0
+style seamcross color=#00000000 edge=#d9822bff border=0 hover=#d9822b22 press=#d9822b44
+style nodeinstrument style=slab color=#f4d6a7ff hover=#f4d6a7ff press=#f4d6a7ff
+style nodeeffect style=slab color=#e6d3bdff hover=#e6d3bdff press=#e6d3bdff
+style nodeshaper style=slab color=#efe0c0ff hover=#efe0c0ff press=#efe0c0ff
+style nodecontroller style=slab color=#dfe3d0ff hover=#dfe3d0ff press=#dfe3d0ff
+style nodeplug style=slab color=#e9dfd2ff hover=#e9dfd2ff press=#e9dfd2ff
+style noderoot style=slab color=#d9c6a8ff hover=#d9c6a8ff press=#d9c6a8ff
+style noderecord style=slab color=#f0c9b8ff hover=#f0c9b8ff press=#f0c9b8ff
+style nodeclock style=slab color=#e3d2c8ff hover=#e3d2c8ff press=#e3d2c8ff
