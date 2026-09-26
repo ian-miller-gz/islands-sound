@@ -1,4 +1,4 @@
-name: Islands - Sound v3
+name: sound
 entry: libsound.so
 assets: assets
 splash: true
@@ -13,4 +13,4 @@ gui:
   rows: true
   playhead: true
   seat: true
-summary: Islands - Sound v3
+summary: Digital Audio Workstation

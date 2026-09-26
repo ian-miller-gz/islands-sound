@@ -33,6 +33,7 @@ void file();
 void exporting();
 
 void settings();
+auto asking() -> Flag;
 
 void settled();
 

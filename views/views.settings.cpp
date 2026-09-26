@@ -48,9 +48,18 @@ void SOUND::VIEWS::shaded(GUI::Theme shade) {
 }
 
 void SOUND::VIEWS::dressed() {
-  if (::flipping) GUI::theme(::pending);
+  if (::flipping) {
+    const GUI::Handle page = document();
+    const Flag standing = GUI::GET::visibility(page, ::ASK);
+    GUI::theme(::pending);
+    if (standing) ::raised(page, true);
+  }
   ::flipping = false;
   remembered();
+}
+
+auto SOUND::VIEWS::asking() -> Flag {
+  return GUI::GET::visibility(document(), ::ASK);
 }
 
 void SOUND::VIEWS::settings() {

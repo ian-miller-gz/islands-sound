@@ -9,6 +9,7 @@
 #include "views.hpp"
 #include "commands.hpp"
 
+namespace SOUND {
 namespace {
 
 auto initialize(STRING::Hot assets) -> Status {
@@ -32,14 +33,17 @@ void close() {
   SOUND::SESSION::close();
 }
 
-}  // namespace
-
-static const CARTRIDGE::Interface interface = {
+const CARTRIDGE::Interface interface = {
   .version = CARTRIDGE::VERSION,
   .manifest = "cartridges/sound/manifest.yaml",
-  .initialize = ::initialize,
-  .frame = ::frame,
-  .close = ::close,
-  .commands = SOUND::COMMANDS::table};
+  .initialize = initialize,
+  .frame = frame,
+  .close = close,
+  .commands = COMMANDS::table};
 
-extern "C" auto cartridge() -> const CARTRIDGE::Interface& { return interface; }
+}  // namespace
+}  // namespace SOUND
+
+extern "C" auto cartridge() -> const CARTRIDGE::Interface& {
+  return SOUND::interface;
+}

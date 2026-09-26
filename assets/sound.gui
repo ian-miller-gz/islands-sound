@@ -228,8 +228,6 @@ panel root style=clear anchor=stretch
     label settings.themed style=muted size=12 x=10 y=36 w=200 h=16 text="theme"
     button settings.own style=place size=14 x=10 y=54 w=300 h=26
     button settings.shade style=place size=14 x=10 y=88 w=300 h=26
-    label settings.own.hint visible=false text="Whose the theme is"
-    label settings.shade.hint visible=false text="The dress worn"
     button settings.close style=place size=14 anchor=southeast x=-10 y=-8 w=80 h=24 text="Close"
   panel menu style=sheet visible=false z=11 anchor=northwest x=0 y=0 w=176 h=36
     list menu.rows style=clear anchor=stretch x=6 y=6 w=6 h=6 pitch=24 pad=3 mark=selected plain=row quick=true

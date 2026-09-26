@@ -12,6 +12,8 @@ constexpr STRING::Hot OWN = "own";
 constexpr STRING::Hot LAUNCHED = "launcher";
 constexpr STRING::Hot NIGHT = "dark";
 constexpr STRING::Hot DAY = "light";
+constexpr STRING::Hot UP = "up";
+constexpr STRING::Hot DOWN = "down";
 constexpr STRING::Hot LAUNCHER = "configs/launcher.yaml";
 constexpr STRING::Hot PATH = "configs/sound.yaml";
 constexpr STRING::Hot HEADING =
@@ -71,6 +73,6 @@ void SOUND::VIEWS::remembered() {
 
 void SOUND::VIEWS::settings(SHELL::Session &session) {
   session.print(std::format(
-    "settings theme {} shade {}", ::own ? ::OWN : ::LAUNCHED,
-    ::named(GUI::GET::theme())));
+    "settings theme {} shade {} plate {}", ::own ? ::OWN : ::LAUNCHED,
+    ::named(GUI::GET::theme()), VIEWS::asking() ? ::UP : ::DOWN));
 }
