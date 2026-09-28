@@ -132,6 +132,5 @@ struct Door {
 };
 
 auto doors() -> Vector<Door>;
-auto sentence(const Door &door) -> String;
 
 }  // namespace SOUND::VIEWS::WIRED::PALETTE

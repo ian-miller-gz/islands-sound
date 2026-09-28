@@ -11,8 +11,8 @@ panel root style=clear anchor=stretch
     button views.graph style=icon size=18 x=60 y=3 w=28 h=28 text="⇒"
     button views.params style=icon size=18 x=90 y=3 w=28 h=28 text="≣"
     label views.arranger.hint visible=false text="Arranger"
-    label views.graph.hint visible=false text="Graph view"
-    label views.params.hint visible=false text="Parameter view"
+    label views.graph.hint visible=false text="Graph"
+    label views.params.hint visible=false text="Parameter"
     label views.arranger.door.hint visible=false text="Pages"
   panel deck style=sheet z=9 anchor=left|right x=240 y=82 w=8 h=34
     button deck.behind style=icon size=18 x=6 y=3 w=28 h=28 text="⇤"
@@ -28,9 +28,9 @@ panel root style=clear anchor=stretch
     label deck.play.hint visible=false text="Play"
     label deck.stop.hint visible=false text="Stop"
     label deck.ahead.hint visible=false text="Ahead"
-    label deck.record.hint visible=false text="Record arm"
+    label deck.record.hint visible=false text="Record"
     label deck.loop.hint visible=false text="Loop"
-    label deck.chase.hint visible=false text="Chase"
+    label deck.chase.hint visible=false text="Follow"
     label deck.tempo.hint visible=false text="Tempo"
   panel views.arranger.pages style=sheet visible=false z=11 anchor=northwest x=0 y=0 w=176 h=120 beside=views.arranger.set side=below air=4
     list views.arranger.pages.rows style=clear anchor=stretch x=6 y=6 w=6 h=6 pitch=24 pad=3 mark=selected plain=row quick=true
@@ -98,8 +98,6 @@ panel root style=clear anchor=stretch
       panel trace.face.lanes.plate style=tab anchor=northeast x=0 y=6 w=72 h=29
         button trace.face.lanes style=tabword size=13 x=0 y=0 w=72 h=29 text="Lanes"
       panel trace.face.foot style=tabfoot x=1 y=34 w=70 h=1
-      label trace.face.nodes.hint visible=false text="Nodes"
-      label trace.face.lanes.hint visible=false text="Lanes"
   panel main style=clear anchor=stretch x=240 y=124 w=8 h=8
     panel arranger style=clear anchor=stretch x=0 y=0 w=0 h=0
       grip arranger.handle style=place z=9 axis=free carry=pointer anchor=northeast x=-8 y=82 w=240 h=12
@@ -109,9 +107,9 @@ panel root style=clear anchor=stretch
           button arranger.control style=icon size=15 z=1 x=72 y=3 w=36 h=24 text="CC"
           button arranger.program style=icon size=15 z=1 x=112 y=3 w=44 h=24 text="PGM"
           label arranger.session.hint visible=false text="Arrangement"
-          label arranger.notes.hint visible=false text="Notes page"
-          label arranger.control.hint visible=false text="Control page"
-          label arranger.program.hint visible=false text="Program page"
+          label arranger.notes.hint visible=false text="Notes"
+          label arranger.control.hint visible=false text="Control"
+          label arranger.program.hint visible=false text="Program"
           panel arranger.rule style=rule x=6 y=29 w=228 h=1
           panel arrangement.tools style=clear anchor=northwest x=0 y=0 w=240 h=118
             button arrangement.snap style=icon size=15 x=8 y=31 w=26 h=22 text="#"
@@ -156,7 +154,6 @@ panel root style=clear anchor=stretch
               label signals.linear.hint visible=false text="Line"
               label signals.exponential.hint visible=false text="Exponential"
               label signals.logarithmic.hint visible=false text="Logarithmic"
-              label signals.step.hint visible=false text="Step"
               label signals.bench.snap.hint visible=false text="Snap"
               button lane.map style=icon size=16 x=114 y=87 w=28 h=24
                 image lane.map.mark style=ink frame=icons:0,0 x=5 y=3 w=18 h=18
@@ -195,7 +192,7 @@ panel root style=clear anchor=stretch
       grip graph.handle style=place z=9 axis=free carry=pointer anchor=northeast x=-8 y=8 w=40 h=12
         panel graph.palette style=palette z=0 anchor=northeast x=0 y=12 w=40 h=30
           button graph.plus style=icon size=16 x=8 y=3 w=24 h=24 text="+"
-          label graph.plus.hint visible=false text="Seat a plug"
+          label graph.plus.hint visible=false text="Seat"
           panel graph.catalog style=sheet visible=false z=9 anchor=northeast x=0 y=0 w=176 h=120 beside=graph.palette side=below air=6
             list graph.catalog.rows style=clear anchor=stretch x=6 y=6 w=6 h=6 pitch=24 pad=3 mark=selected plain=row quick=true
       panel browserow style=clear visible=false
