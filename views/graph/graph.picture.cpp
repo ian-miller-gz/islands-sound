@@ -18,7 +18,7 @@ auto SOUND::VIEWS::WIRED::picture() -> Vector<Seen> {
   for (Whole node = 0; node < seen.size(); ++node) {
     const String claim = GRAPH::claimed(nodes[node].name);
     const Berth berth = GRAPH::berth(nodes[node].name, root);
-    const Flag berthed = nodes[node].seat != Node::PLUG &&
+    const Flag berthed = nodes[node].seat != Node::PLUGIN &&
                          nodes[node].name != root &&
                          berth.across != Float(NONE);
     seen[node].stands =

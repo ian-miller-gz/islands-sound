@@ -66,9 +66,9 @@ void SOUND::SESSION::mastered(Arrangement &tracks, Graph &wiring) {
   root.device.clear();
   root.lane = 0;
   const Node clock = {
-    .seat = Node::PLUG,
+    .seat = Node::PLUGIN,
     .name = ::stamped(wiring, ::CLOCKED),
-    .plug = ::CLOCKED,
+    .plugin = ::CLOCKED,
     .claim = root.name,
     .device = device,
     .lane = lane,

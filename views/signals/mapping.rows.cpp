@@ -22,19 +22,19 @@ auto publishing(const String &name) -> VIEWS::SIGNALS::Offer {
 }
 
 auto landing(const String &root, Whole lane) -> Vector<String> {
-  Vector<String> plugs;
-  if (root.empty()) return plugs;
+  Vector<String> plugins;
+  if (root.empty()) return plugins;
   for (const Wire &wire : GRAPH::held().wires) {
     if (wire.from != root || wire.out != lane) continue;
     const Whole stood = GRAPH::at(wire.to);
     if (stood == NONE) continue;
-    const String &plug = GRAPH::held().nodes[stood].plug;
-    if (plug.empty()) continue;
-    if (std::find(plugs.begin(), plugs.end(), plug) == plugs.end())
-      plugs.push_back(plug);
+    const String &plugin = GRAPH::held().nodes[stood].plugin;
+    if (plugin.empty()) continue;
+    if (std::find(plugins.begin(), plugins.end(), plugin) == plugins.end())
+      plugins.push_back(plugin);
   }
-  std::sort(plugs.begin(), plugs.end());
-  return plugs;
+  std::sort(plugins.begin(), plugins.end());
+  return plugins;
 }
 
 auto spoken(const VIEWS::SIGNALS::Offer &offer) -> String {
@@ -50,16 +50,16 @@ auto SOUND::VIEWS::SIGNALS::reached() -> Vector<Offer> {
   const Whole track = attended();
   const Whole lane = laned();
   if (track != NONE && lane != NONE)
-    for (const String &plug :
+    for (const String &plugin :
          ::landing(TIMELINE::held().tracks[track].root, lane))
-      rows.push_back(::publishing(plug));
+      rows.push_back(::publishing(plugin));
   rows.push_back({.name = String(::FURTHER)});
   return rows;
 }
 
 auto SOUND::VIEWS::SIGNALS::offered() -> Vector<Offer> {
   Vector<Offer> rows;
-  for (const String &plug : GRAPH::offers()) rows.push_back(::publishing(plug));
+  for (const String &plugin : GRAPH::offers()) rows.push_back(::publishing(plugin));
   std::sort(rows.begin(), rows.end(), [](const Offer &one, const Offer &two) {
     return one.name < two.name;
   });

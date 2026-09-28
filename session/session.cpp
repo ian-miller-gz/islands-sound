@@ -15,10 +15,10 @@ auto SOUND::SESSION::held() -> const Session & { return standing; }
 
 void SOUND::SESSION::adopt(const Session &document) { standing = document; }
 
-void SOUND::SESSION::seated(const String &plug) {
-  if (plug.empty()) return;
+void SOUND::SESSION::seated(const String &plugin) {
+  if (plugin.empty()) return;
   Vector<String> &kept = standing.recents;
-  kept.erase(std::remove(kept.begin(), kept.end(), plug), kept.end());
-  kept.insert(kept.begin(), plug);
+  kept.erase(std::remove(kept.begin(), kept.end(), plugin), kept.end());
+  kept.insert(kept.begin(), plugin);
   if (kept.size() > ::KEPT) kept.resize(::KEPT);
 }

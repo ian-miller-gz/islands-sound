@@ -65,7 +65,7 @@ const AUDIO::PLUGIN::Plug surface = {
   .ins = {{AUDIO::PLUGIN::Port::CONTROL}},
   .outs = {{AUDIO::PLUGIN::Port::NOTES}}};
 
-[[maybe_unused]] const Flag offered = PLUG::offer(
+[[maybe_unused]] const Flag offered = PLUGIN::offer(
   {.name = "keys", .surface = &surface, .answer = answer, .listen = listen});
 
 }  // namespace

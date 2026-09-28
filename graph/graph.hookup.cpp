@@ -128,7 +128,7 @@ auto SOUND::GRAPH::fed(const String &root, Whole out) -> String {
   }
   if (only == nullptr) return {};
   const Whole stood = at(only->to);
-  return stood == NONE ? String() : standing().nodes[stood].plug;
+  return stood == NONE ? String() : standing().nodes[stood].plugin;
 }
 
 auto SOUND::GRAPH::noted(const String &node, Whole out) -> Flag {

@@ -121,7 +121,7 @@ style nodeinstrument style=slab color=#7a4f22ff hover=#7a4f22ff press=#7a4f22ff
 style nodeeffect style=slab color=#5c4634ff hover=#5c4634ff press=#5c4634ff
 style nodeshaper style=slab color=#6b5a2eff hover=#6b5a2eff press=#6b5a2eff
 style nodecontroller style=slab color=#4f5a3eff hover=#4f5a3eff press=#4f5a3eff
-style nodeplug style=slab color=#4e4038ff hover=#4e4038ff press=#4e4038ff
+style nodeplugin style=slab color=#4e4038ff hover=#4e4038ff press=#4e4038ff
 style noderoot style=slab color=#6a5236ff hover=#6a5236ff press=#6a5236ff
 style noderecord style=slab color=#7a3e30ff hover=#7a3e30ff press=#7a3e30ff
 style nodeclock style=slab color=#5e4a42ff hover=#5e4a42ff press=#5e4a42ff

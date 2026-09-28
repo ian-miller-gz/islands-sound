@@ -14,33 +14,33 @@ auto kinded(const Vector<AUDIO::PLUGIN::Port> &declared) -> Vector<Whole> {
 
 auto SOUND::GRAPH::offers() -> Vector<String> {
   Vector<String> names;
-  for (const PLUG::Offer &row : PLUG::catalog())
+  for (const PLUGIN::Offer &row : PLUGIN::catalog())
     if (row.bind == nullptr) names.push_back(row.name);
   return names;
 }
 
 auto SOUND::GRAPH::surfaces() -> Vector<String> {
   Vector<String> names;
-  for (const PLUG::Offer &row : PLUG::catalog())
+  for (const PLUGIN::Offer &row : PLUGIN::catalog())
     if (row.bind != nullptr) names.push_back(row.name);
   return names;
 }
 
-auto SOUND::GRAPH::bound(const String &plug) -> Flag {
-  return PLUG::bound(plug);
+auto SOUND::GRAPH::bound(const String &plugin) -> Flag {
+  return PLUGIN::bound(plugin);
 }
 
 auto SOUND::GRAPH::takes(const String &name) -> Vector<Whole> {
-  const PLUG::Offer *row = PLUG::found(name);
+  const PLUGIN::Offer *row = PLUGIN::found(name);
   return row == nullptr ? Vector<Whole>{} : ::kinded(row->surface->ins);
 }
 
 auto SOUND::GRAPH::gives(const String &name) -> Vector<Whole> {
-  const PLUG::Offer *row = PLUG::found(name);
+  const PLUGIN::Offer *row = PLUGIN::found(name);
   return row == nullptr ? Vector<Whole>{} : ::kinded(row->surface->outs);
 }
 
 auto SOUND::GRAPH::from(const String &name) -> STRING::Hot {
-  const PLUG::Offer *row = PLUG::found(name);
+  const PLUGIN::Offer *row = PLUGIN::found(name);
   return row == nullptr ? "" : row->from;
 }

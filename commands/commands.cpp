@@ -59,7 +59,7 @@ auto SOUND::COMMANDS::table() -> const Vector<SHELL::Command>& {
        ""
        "[at <pulses>] | scale off [at <pulses>]",
        COMMANDS::scale},
-      {"plugs", "", COMMANDS::offers},
+      {"plugins", "", COMMANDS::offers},
       {"seat", "",
        COMMANDS::seat},
       {"surface",
@@ -130,7 +130,7 @@ auto SOUND::COMMANDS::table() -> const Vector<SHELL::Command>& {
       {"lift", "", COMMANDS::lift},
       {"map",
        ""
-       "map <track> <lane> [plug|none]",
+       "map <track> <lane> [plugin|none]",
        COMMANDS::map},
       {"restore", "",
        COMMANDS::restore},

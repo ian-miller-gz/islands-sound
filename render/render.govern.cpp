@@ -3,7 +3,7 @@
 
 #include "../inventory.hpp"
 #include "../kind.hpp"
-#include "../plug.hpp"
+#include "../plugin.hpp"
 #include "render.internal.hpp"
 
 namespace {
@@ -53,10 +53,10 @@ auto SOUND::RENDER::mapped(Whole track, Whole lane) -> String {
 
 auto SOUND::RENDER::worded(Whole track, Whole lane, Whole number, Float value)
   -> Float {
-  const String plug = mapped(track, lane);
+  const String plugin = mapped(track, lane);
   AUDIO::PLUGIN::Control described;
-  if (plug.empty() || !GRAPH::described(plug, number, described)) return value;
-  return PLUG::scaled(described, value);
+  if (plugin.empty() || !GRAPH::described(plugin, number, described)) return value;
+  return PLUGIN::scaled(described, value);
 }
 
 auto SOUND::RENDER::governed(const Address &address, Whole at)

@@ -2,23 +2,23 @@
 #include <algorithm>
 #include <cstring>
 
-#include "plug.hpp"
+#include "plugin.hpp"
 
 namespace {
 
-auto kept() -> Vector<SOUND::PLUG::Offer> & {
-  static Vector<SOUND::PLUG::Offer> catalog;
+auto kept() -> Vector<SOUND::PLUGIN::Offer> & {
+  static Vector<SOUND::PLUGIN::Offer> catalog;
   return catalog;
 }
 
-auto before(const SOUND::PLUG::Offer &one, const SOUND::PLUG::Offer &two)
+auto before(const SOUND::PLUGIN::Offer &one, const SOUND::PLUGIN::Offer &two)
   -> Flag {
   return std::strcmp(one.name, two.name) < 0;
 }
 
 }  // namespace
 
-auto SOUND::PLUG::offer(const Offer &row) -> Flag {
+auto SOUND::PLUGIN::offer(const Offer &row) -> Flag {
   if (row.name == nullptr || row.name[0] == '\0') return false;
   if (row.surface == nullptr) return false;
   Vector<Offer> &catalog = ::kept();
@@ -28,15 +28,15 @@ auto SOUND::PLUG::offer(const Offer &row) -> Flag {
   return true;
 }
 
-auto SOUND::PLUG::catalog() -> const Vector<Offer> & { return ::kept(); }
+auto SOUND::PLUGIN::catalog() -> const Vector<Offer> & { return ::kept(); }
 
-auto SOUND::PLUG::found(const String &name) -> const Offer * {
+auto SOUND::PLUGIN::found(const String &name) -> const Offer * {
   for (const Offer &row : ::kept())
     if (name == row.name) return &row;
   return nullptr;
 }
 
-auto SOUND::PLUG::bound(const String &name) -> Flag {
+auto SOUND::PLUGIN::bound(const String &name) -> Flag {
   const Offer *row = found(name);
   return row != nullptr && row->bind != nullptr;
 }

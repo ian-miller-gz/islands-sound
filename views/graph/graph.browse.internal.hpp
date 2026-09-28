@@ -15,15 +15,15 @@ constexpr STRING::Hot WITHIN = "/";
 constexpr STRING::Hot INPUTS = "inputs";
 constexpr STRING::Hot LANES = "lanes";
 
-enum Shelf : Whole { INSTRUMENTS, EFFECTS, SHAPERS, CONTROLLERS, PLUGS };
+enum Shelf : Whole { INSTRUMENTS, EFFECTS, SHAPERS, CONTROLLERS, PLUGINS };
 constexpr STRING::Hot SHELVES[] = {
-  "instruments", "effects", "note effects", "controllers", "plugs"};
-static_assert(std::size(SHELVES) == PLUGS + 1);
+  "instruments", "effects", "note effects", "controllers", "plugins"};
+static_assert(std::size(SHELVES) == PLUGINS + 1);
 
 struct Offer {
   String name, from;
   Vector<Whole> takes, gives;
-  Whole shelf = PLUGS;
+  Whole shelf = PLUGINS;
   String target;
   String among;
   String reading;

@@ -6,7 +6,7 @@ auto SOUND::GRAPH::vetted(const String &node, Whole parameter) -> STRING::Hot {
   if (stood == NONE) return "no such node";
   const Stand &stand = stands()[stood];
   if (stand.offer == nullptr || stand.instance == nullptr)
-    return "the node seats no plug";
+    return "the node seats no plugin";
   const AUDIO::PLUGIN::Plug &surface = *stand.offer->surface;
   if (
     surface.parameters == nullptr ||
@@ -33,7 +33,7 @@ auto SOUND::GRAPH::dialled(const String &node)
 }
 
 auto SOUND::GRAPH::remembered(const String &node, Whole parameter) -> Float {
-  const PLUG::Offer *offer = offered(node);
+  const PLUGIN::Offer *offer = offered(node);
   if (offer == nullptr || offer->surface->held == nullptr) return 0.0f;
   return offer->surface->held(instance(node), parameter);
 }

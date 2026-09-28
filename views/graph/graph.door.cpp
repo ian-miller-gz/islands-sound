@@ -26,13 +26,13 @@ void spread(GUI::Handle page, Flag on) {
 }
 
 auto quick() -> Vector<String> {
-  const Vector<String> plugs = GRAPH::offers();
+  const Vector<String> plugins = GRAPH::offers();
   Vector<String> rows;
   for (const String &name : SESSION::held().recents)
-    if (std::find(plugs.begin(), plugs.end(), name) != plugs.end())
+    if (std::find(plugins.begin(), plugins.end(), name) != plugins.end())
       rows.push_back(name);
   if (rows.size() > ::QUICK) rows.resize(::QUICK);
-  for (const String &name : plugs) {
+  for (const String &name : plugins) {
     if (rows.size() >= ::QUICK) break;
     if (std::find(rows.begin(), rows.end(), name) == rows.end())
       rows.push_back(name);

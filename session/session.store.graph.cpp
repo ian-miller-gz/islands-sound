@@ -37,7 +37,7 @@ void bypassed(std::istringstream &line, Vector<Port> &outs) {
 
 void marked(const String &tag, std::istringstream &line, Node &node) {
   if (tag == "p")
-    node.plug = SESSION::rest(line);
+    node.plugin = SESSION::rest(line);
   else if (tag == "h")
     line >> node.across >> node.down;
   else if (tag == "k")
@@ -73,7 +73,7 @@ auto SOUND::SESSION::written(const Graph &wiring) -> String {
   String text;
   for (const Node &node : wiring.nodes) {
     text += std::format("s {} {}\n", node.seat, node.name);
-    if (!node.plug.empty()) text += std::format("p {}\n", node.plug);
+    if (!node.plugin.empty()) text += std::format("p {}\n", node.plugin);
     if (node.across != NONE)
       text += std::format("h {} {}\n", node.across, node.down);
     for (const Berth &berth : node.berths)

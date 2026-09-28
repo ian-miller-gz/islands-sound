@@ -43,8 +43,8 @@ constexpr STRING::Hot HINT = "Bypass";
 
 constexpr STRING::Hot TYPED = "node";
 constexpr STRING::Hot WORDS[] = {
-  "instrument", "effect", "shaper", "controller", "plug"};
-static_assert(std::size(WORDS) == VIEWS::WIRED::BROWSE::PLUGS + 1);
+  "instrument", "effect", "shaper", "controller", "plugin"};
+static_assert(std::size(WORDS) == VIEWS::WIRED::BROWSE::PLUGINS + 1);
 constexpr STRING::Hot ROOTED = "root";
 constexpr STRING::Hot TAKING = "record";
 constexpr STRING::Hot TICKING = "clock";
@@ -55,12 +55,12 @@ auto dressed(const Node &node) -> String {
     : node.seat == Node::RECORD ? ::TAKING
     : node.clock                ? ::TICKING
                                 : ::WORDS[VIEWS::WIRED::BROWSE::shelved(
-                     GRAPH::takes(node.plug), GRAPH::gives(node.plug))];
+                     GRAPH::takes(node.plugin), GRAPH::gives(node.plugin))];
   return String(::TYPED) + word;
 }
 
 auto surfaced(const Node &node) -> Flag {
-  return node.seat == Node::PLUG && GRAPH::bound(node.plug);
+  return node.seat == Node::PLUGIN && GRAPH::bound(node.plugin);
 }
 
 auto dotted(const Node &node) -> Flag {

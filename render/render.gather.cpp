@@ -28,7 +28,7 @@ auto sooner(const AUDIO::PLUGIN::Event &one, const AUDIO::PLUGIN::Event &two)
 
 auto onto(RENDER::Wave &wave, Whole seat, Whole in)
   -> Vector<Vector<AUDIO::PLUGIN::Sample>> & {
-  if (seat == Node::PLUG || in >= wave.ins.size()) return wave.lanes;
+  if (seat == Node::PLUGIN || in >= wave.ins.size()) return wave.lanes;
   return wave.ins[in];
 }
 
@@ -133,7 +133,7 @@ void SOUND::RENDER::gather(Whole node, const Pass &pass) {
   const Node &held = GRAPH::held().nodes[node];
   Wave &wave = carried()[node];
   ::silence(wave.lanes, pass.frames);
-  ::apart(wave.ins, held.seat == Node::PLUG ? 0 : held.ins.size(), pass.frames);
+  ::apart(wave.ins, held.seat == Node::PLUGIN ? 0 : held.ins.size(), pass.frames);
   wave.events.clear();
   if (held.seat == Node::ROOT) rooted(node, pass);
   if (GRAPH::quieted(held.name)) return;

@@ -4,8 +4,8 @@
 namespace {
 using namespace SOUND;
 
-auto sinking() -> const PLUG::Offer * {
-  for (const PLUG::Offer &row : PLUG::catalog())
+auto sinking() -> const PLUGIN::Offer * {
+  for (const PLUGIN::Offer &row : PLUGIN::catalog())
     if (
       row.bind != nullptr && !row.surface->ins.empty() &&
       row.surface->ins[0].kind == KIND::AUDIO)
@@ -16,18 +16,18 @@ auto sinking() -> const PLUG::Offer * {
 }  // namespace
 
 auto SOUND::GRAPH::surfaced(const Node &node) -> Flag {
-  return node.seat == Node::PLUG && (!node.device.empty() || node.clock);
+  return node.seat == Node::PLUGIN && (!node.device.empty() || node.clock);
 }
 
-auto SOUND::GRAPH::surface(const String &plug, const String &device) -> String {
-  return surface(plug, device, plug);
+auto SOUND::GRAPH::surface(const String &plugin, const String &device) -> String {
+  return surface(plugin, device, plugin);
 }
 
 auto SOUND::GRAPH::surface(
-  const String &plug, const String &device, const String &name) -> String {
-  const PLUG::Offer *row = PLUG::found(plug);
+  const String &plugin, const String &device, const String &name) -> String {
+  const PLUGIN::Offer *row = PLUGIN::found(plugin);
   if (row == nullptr || row->bind == nullptr || device.empty()) return {};
-  const String node = seat(plug, name);
+  const String node = seat(plugin, name);
   if (node.empty()) return {};
   if (!row->bind(instance(node), device, 0)) {
     unseat(node);
@@ -44,7 +44,7 @@ auto SOUND::GRAPH::clock() -> String {
 }
 
 auto SOUND::GRAPH::clock(const String &device, const String &name) -> String {
-  const PLUG::Offer *row = ::sinking();
+  const PLUGIN::Offer *row = ::sinking();
   if (row == nullptr) return {};
   const String node = seat(row->name, name);
   if (node.empty()) return {};
@@ -61,7 +61,7 @@ void SOUND::GRAPH::rebind() {
   for (Whole row = 0; row < nodes.size() && row < halves.size(); ++row) {
     if (nodes[row].clock || nodes[row].device.empty()) continue;
     if (halves[row].instance == nullptr) continue;
-    const PLUG::Offer *offer = halves[row].offer;
+    const PLUGIN::Offer *offer = halves[row].offer;
     if (offer != nullptr && offer->bind != nullptr)
       offer->bind(halves[row].instance, nodes[row].device, nodes[row].lane);
   }

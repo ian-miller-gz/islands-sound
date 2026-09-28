@@ -38,19 +38,19 @@ void SOUND::GRAPH::stir() {
   owe();
 }
 
-auto SOUND::GRAPH::seat(const String &plug) -> String {
-  return seat(plug, plug);
+auto SOUND::GRAPH::seat(const String &plugin) -> String {
+  return seat(plugin, plugin);
 }
 
-auto SOUND::GRAPH::seat(const String &plug, const String &name) -> String {
-  const PLUG::Offer *row = PLUG::found(plug);
+auto SOUND::GRAPH::seat(const String &plugin, const String &name) -> String {
+  const PLUGIN::Offer *row = PLUGIN::found(plugin);
   if (row == nullptr) return {};
   void *instance = row->surface->create(RATE, CHANNELS);
   if (instance == nullptr) return {};
   return added(
-    {.seat = Node::PLUG,
+    {.seat = Node::PLUGIN,
      .name = stamped(name),
-     .plug = plug,
+     .plugin = plugin,
      .ins = ::ported(row->surface->ins),
      .outs = ::ported(row->surface->outs)},
     {.offer = row, .instance = instance});
@@ -84,7 +84,7 @@ auto SOUND::GRAPH::rooted(const String &node) -> Flag {
   return stood != NONE && ::wiring.nodes[stood].seat == Node::ROOT;
 }
 
-auto SOUND::GRAPH::offered(const String &node) -> const PLUG::Offer * {
+auto SOUND::GRAPH::offered(const String &node) -> const PLUGIN::Offer * {
   const Whole stood = at(node);
   return stood != NONE ? ::halves[stood].offer : nullptr;
 }

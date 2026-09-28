@@ -74,7 +74,7 @@ auto unlane(Whole track, Whole lane) -> Flag;
 
 auto root(Whole track, const String &node) -> Flag;
 
-auto map(Whole track, Whole lane, const String &plug) -> Flag;
+auto map(Whole track, Whole lane, const String &plugin) -> Flag;
 
 auto place(
   const Inventory &pool, Whole track, Whole lane,

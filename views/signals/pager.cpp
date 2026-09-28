@@ -84,11 +84,11 @@ void SOUND::VIEWS::SIGNALS::number(Whole paged) {
 }
 
 void SOUND::VIEWS::SIGNALS::pager(SHELL::Session &session) {
-  const String meant = ::labelled(), plug = mapped();
+  const String meant = ::labelled(), plugin = mapped();
   const Flag numbered = ::paging == KIND::CONTROL;
   session.print(std::format(
     "pager kind {} number {} cell {} label {} map {}", KIND::spoken(paged()),
     number() == NONE ? String(::NOTHING) : std::to_string(number()),
     numbered ? "shown" : "hidden", meant.empty() ? String(::NOTHING) : meant,
-    plug.empty() ? String(::NOTHING) : plug));
+    plugin.empty() ? String(::NOTHING) : plugin));
 }

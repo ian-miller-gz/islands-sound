@@ -16,7 +16,7 @@ struct Tape {
 };
 
 struct Stand {
-  const PLUG::Offer *offer = nullptr;
+  const PLUGIN::Offer *offer = nullptr;
   void *instance = nullptr;
   Tape tapes[2];
   Intake held;

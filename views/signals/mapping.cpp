@@ -59,15 +59,15 @@ void browse(GUI::Handle page) {
   ::plate(page);
 }
 
-void wrote(const String &plug) {
+void wrote(const String &plugin) {
   const Whole track = VIEWS::SIGNALS::attended();
   const Whole lane = VIEWS::SIGNALS::laned();
   if (track == NONE || lane == NONE) return;
   const String stood = TIMELINE::held().tracks[track].lanes[lane].map;
-  if (!TIMELINE::map(track, lane, plug)) return;
+  if (!TIMELINE::map(track, lane, plugin)) return;
   HISTORY::record(
     {.act = ::ACT,
-     .maps = {{.track = track, .lane = lane, .map = plug, .stood = stood}}});
+     .maps = {{.track = track, .lane = lane, .map = plugin, .stood = stood}}});
 }
 
 void took(GUI::Handle page) {

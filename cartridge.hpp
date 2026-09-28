@@ -13,7 +13,7 @@
 #include "boards.hpp"
 #include "kind.hpp"
 #include "master.hpp"
-#include "plug.hpp"
+#include "plugin.hpp"
 #include "score.hpp"
 #include "shape.hpp"
 #include "stock.hpp"

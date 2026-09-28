@@ -29,7 +29,7 @@ auto spoken(Side side) -> STRING::Hot {
 
 auto spoken(Whole seat) -> STRING::Hot {
   if (seat == Node::ROOT) return "root";
-  return seat == Node::RECORD ? "record" : "plug";
+  return seat == Node::RECORD ? "record" : "plugin";
 }
 
 auto barred(const Node &node, Side side, Whole port) -> Flag {
@@ -70,7 +70,7 @@ auto seated(const String &name) -> String {
   const Node &node = GRAPH::held().nodes[stood];
   const STRING::Hot seat = ::spoken(node.seat);
   const String seats =
-    node.plug.empty() || node.plug == node.name ? String() : " " + node.plug;
+    node.plugin.empty() || node.plugin == node.name ? String() : " " + node.plugin;
   const String device = node.device.empty() ? String() : " on " + node.device;
   return std::format(
     "node {} {}{}{}{}{}{}{}{}", node.name, seat, seats,
@@ -100,12 +100,12 @@ auto covered(const String &node) -> Graph {
 
 void SOUND::COMMANDS::offers(SHELL::Session &session) {
   const Vector<String> names = GRAPH::offers();
-  session.print(std::format("plugs {}", names.size()));
+  session.print(std::format("plugins {}", names.size()));
   for (const String &name : names) session.print(name);
 }
 
 void SOUND::COMMANDS::seat(SHELL::Session &session) {
-  if (session.arguments.size() < 2) return session.print("seat <plug> [track]");
+  if (session.arguments.size() < 2) return session.print("seat <plugin> [track]");
   String root;
   if (session.arguments.size() > 2) {
     const Whole track = ::counted(session.arguments[2]);
@@ -120,7 +120,7 @@ void SOUND::COMMANDS::seat(SHELL::Session &session) {
       "seat refused: a surface seats by its device — "
       "surface <track> <kind> <device ...>");
   const String node = GRAPH::seat(session.arguments[1]);
-  if (node.empty()) return session.print("no such plug");
+  if (node.empty()) return session.print("no such plugin");
   SESSION::seated(session.arguments[1]);
   GRAPH::claim(node, root);
   HISTORY::record({.act = "seat", .graph = ::covered(node)});

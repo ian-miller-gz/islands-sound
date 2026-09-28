@@ -39,8 +39,8 @@ auto stood(const Node &planned) -> String {
     return GRAPH::record(planned.claim, planned.name);
   if (planned.clock) return GRAPH::clock(planned.device, planned.name);
   if (!planned.device.empty())
-    return GRAPH::surface(planned.plug, planned.device, planned.name);
-  return GRAPH::seat(planned.plug, planned.name);
+    return GRAPH::surface(planned.plugin, planned.device, planned.name);
+  return GRAPH::seat(planned.plugin, planned.name);
 }
 
 void laned(const Node &planned) {

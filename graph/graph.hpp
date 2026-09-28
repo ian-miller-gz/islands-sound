@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #pragma once
 #include "../kind.hpp"
-#include "../plug.hpp"
+#include "../plugin.hpp"
 #include "../score.hpp"
 
 namespace SOUND {
@@ -20,10 +20,10 @@ struct Berth {
 };
 
 struct Node {
-  enum Seat : Whole { PLUG, ROOT, RECORD };
-  Whole seat = PLUG;
+  enum Seat : Whole { PLUGIN, ROOT, RECORD };
+  Whole seat = PLUGIN;
   String name;
-  String plug;
+  String plugin;
   Vector<Port> ins, outs;
   Float across = NONE, down = NONE;
   String claim;
@@ -70,16 +70,16 @@ auto gives(const String &name) -> Vector<Whole>;
 
 auto from(const String &name) -> STRING::Hot;
 
-auto parameters(const String &plug) -> Whole;
-auto named(const String &plug, Whole parameter) -> String;
+auto parameters(const String &plugin) -> Whole;
+auto named(const String &plugin, Whole parameter) -> String;
 
-auto described(const String &plug, Whole parameter, AUDIO::PLUGIN::Control &out)
+auto described(const String &plugin, Whole parameter, AUDIO::PLUGIN::Control &out)
   -> Flag;
 
 auto fed(const String &root, Whole out) -> String;
 
-auto seat(const String &plug) -> String;
-auto seat(const String &plug, const String &name) -> String;
+auto seat(const String &plugin) -> String;
+auto seat(const String &plugin, const String &name) -> String;
 
 auto root(const Vector<Whole> &kinds) -> String;
 auto root(const Vector<Whole> &kinds, const String &name) -> String;
@@ -146,10 +146,10 @@ void main(const String &device);
 constexpr STRING::Hot DEFAULT = "default";
 
 auto surfaces() -> Vector<String>;
-auto bound(const String &plug) -> Flag;
+auto bound(const String &plugin) -> Flag;
 
-auto surface(const String &plug, const String &device) -> String;
-auto surface(const String &plug, const String &device, const String &name)
+auto surface(const String &plugin, const String &device) -> String;
+auto surface(const String &plugin, const String &device, const String &name)
   -> String;
 
 auto unwire(const String &from, Whole out, const String &to, Whole in) -> Flag;
@@ -249,7 +249,7 @@ void clear(const String &node);
 
 void listen();
 
-auto offered(const String &node) -> const PLUG::Offer *;
+auto offered(const String &node) -> const PLUGIN::Offer *;
 auto instance(const String &node) -> void *;
 
 void rest();

@@ -3,7 +3,7 @@
 
 #include "../../graph.hpp"
 #include "../../kind.hpp"
-#include "../../plug.hpp"
+#include "../../plugin.hpp"
 #include "../../render.hpp"
 #include "../../timeline.hpp"
 #include "signals.internal.hpp"
@@ -34,10 +34,10 @@ auto SOUND::VIEWS::SIGNALS::mapped() -> String {
 }
 
 auto SOUND::VIEWS::SIGNALS::named() -> String {
-  const String plug = mapped();
-  if (plug.empty()) return {};
+  const String plugin = mapped();
+  if (plugin.empty()) return {};
   const Whole paged = number();
-  return paged < VIEWS::parameters(plug) ? VIEWS::named(plug, paged) : String();
+  return paged < VIEWS::parameters(plugin) ? VIEWS::named(plugin, paged) : String();
 }
 
 auto SOUND::VIEWS::SIGNALS::unit() -> String {
@@ -47,7 +47,7 @@ auto SOUND::VIEWS::SIGNALS::unit() -> String {
 
 auto SOUND::VIEWS::SIGNALS::delivered(Float value) -> Float {
   AUDIO::PLUGIN::Control published;
-  return ::describes(published) ? PLUG::scaled(published, value) : value;
+  return ::describes(published) ? PLUGIN::scaled(published, value) : value;
 }
 
 auto SOUND::VIEWS::SIGNALS::spoken(Float value) -> String {
@@ -55,12 +55,12 @@ auto SOUND::VIEWS::SIGNALS::spoken(Float value) -> String {
 }
 
 auto SOUND::VIEWS::SIGNALS::worded() -> Vector<Word> {
-  const String plug = mapped();
-  const Whole listed = plug.empty() ? 0 : VIEWS::parameters(plug);
+  const String plugin = mapped();
+  const Whole listed = plugin.empty() ? 0 : VIEWS::parameters(plugin);
   Vector<Word> run;
   for (Whole number = 0; number <= FULL; ++number)
     if (number < listed)
-      run.push_back({.number = number, .name = VIEWS::named(plug, number)});
+      run.push_back({.number = number, .name = VIEWS::named(plugin, number)});
   for (Whole number = 0; number <= FULL; ++number)
     if (number >= listed) run.push_back({.number = number});
   return run;

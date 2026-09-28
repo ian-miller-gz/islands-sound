@@ -8,7 +8,7 @@
 namespace {
 using namespace SOUND;
 
-constexpr STRING::Hot REFUSED = "that plug would not be made";
+constexpr STRING::Hot REFUSED = "that plugin would not be made";
 constexpr STRING::Hot UNOPENED = "that device would not open";
 constexpr STRING::Hot UNSENT = "the track has no audio out to send";
 constexpr STRING::Hot UNHEARD = "that track admits no audio";
@@ -29,10 +29,10 @@ auto covered(const String &node) -> Graph {
 
 }  // namespace
 
-void SOUND::VIEWS::WIRED::take(const String &plug) {
-  const String node = GRAPH::seat(plug);
+void SOUND::VIEWS::WIRED::take(const String &plugin) {
+  const String node = GRAPH::seat(plugin);
   if (!node.empty()) {
-    SESSION::seated(plug);
+    SESSION::seated(plugin);
     GRAPH::claim(node, steering());
     HISTORY::record({.act = "seat", .graph = ::covered(node)});
   }
@@ -40,8 +40,8 @@ void SOUND::VIEWS::WIRED::take(const String &plug) {
 }
 
 void SOUND::VIEWS::WIRED::surface(
-  const String &plug, const String &device, Whole lane) {
-  const String node = GRAPH::surface(plug, device);
+  const String &plugin, const String &device, Whole lane) {
+  const String node = GRAPH::surface(plugin, device);
   if (!node.empty()) {
     GRAPH::claim(node, steering());
     if (lane != 0) GRAPH::lane(node, lane);

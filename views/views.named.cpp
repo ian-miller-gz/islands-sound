@@ -28,8 +28,8 @@ auto SOUND::VIEWS::named(const String &node) -> String {
 
 namespace {
 
-auto preferred(const String &plug) -> String {
-  const Vector<Whole> takes = GRAPH::takes(plug);
+auto preferred(const String &plugin) -> String {
+  const Vector<Whole> takes = GRAPH::takes(plugin);
   const String name = !takes.empty() && takes[0] == KIND::AUDIO
                         ? AUDIO::OUTPUT::GET::preferred()
                         : String();
@@ -42,17 +42,17 @@ auto SOUND::VIEWS::device(const String &node) -> String {
   const Whole stood = GRAPH::at(node);
   if (stood == NONE) return {};
   const Node &held = GRAPH::held().nodes[stood];
-  if (held.seat == Node::ROOT || !GRAPH::bound(held.plug)) return {};
+  if (held.seat == Node::ROOT || !GRAPH::bound(held.plugin)) return {};
   const String worn =
-    held.device.empty() ? ::preferred(held.plug) : held.device;
+    held.device.empty() ? ::preferred(held.plugin) : held.device;
   if (held.lane == 0) return worn;
   return std::format("{} {}-{}", worn, held.lane + 1, held.lane + 2);
 }
 
-auto SOUND::VIEWS::parameters(const String &plug) -> Whole {
-  return GRAPH::parameters(plug);
+auto SOUND::VIEWS::parameters(const String &plugin) -> Whole {
+  return GRAPH::parameters(plugin);
 }
 
-auto SOUND::VIEWS::named(const String &plug, Whole parameter) -> String {
-  return GRAPH::named(plug, parameter);
+auto SOUND::VIEWS::named(const String &plugin, Whole parameter) -> String {
+  return GRAPH::named(plugin, parameter);
 }

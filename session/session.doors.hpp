@@ -8,7 +8,7 @@ namespace SOUND::SESSION {
 
 auto held() -> const Session &;
 
-void seated(const String &plug);
+void seated(const String &plugin);
 
 void adopt(const Session &document);
 

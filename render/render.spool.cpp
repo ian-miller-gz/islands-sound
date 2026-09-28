@@ -5,7 +5,7 @@
 #include "../history.hpp"
 #include "../inventory.hpp"
 #include "../kind.hpp"
-#include "../plug.hpp"
+#include "../plugin.hpp"
 #include "../transport.hpp"
 #include "render.internal.hpp"
 

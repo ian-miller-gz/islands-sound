@@ -92,10 +92,10 @@ auto named(const String &node) -> String;
 
 auto device(const String &node) -> String;
 
-auto named(const String &plug, Whole parameter) -> String;
+auto named(const String &plugin, Whole parameter) -> String;
 
 auto joined(Whole track, Whole lane, const Vector<Whole> &rows) -> Whole;
-auto parameters(const String &plug) -> Whole;
+auto parameters(const String &plugin) -> Whole;
 
 auto split() -> Float;
 

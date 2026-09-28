@@ -122,10 +122,10 @@ auto SOUND::TIMELINE::root(Whole track, const String &node) -> Flag {
   return true;
 }
 
-auto SOUND::TIMELINE::map(Whole track, Whole lane, const String &plug) -> Flag {
+auto SOUND::TIMELINE::map(Whole track, Whole lane, const String &plugin) -> Flag {
   ARRANGEMENT::Track *held = ::reached(track);
   if (held == nullptr || lane >= held->lanes.size()) return false;
-  held->lanes[lane].map = plug;
+  held->lanes[lane].map = plugin;
   return true;
 }
 

@@ -59,11 +59,11 @@ void SOUND::COMMANDS::surface(SHELL::Session &session) {
   const String root = TIMELINE::held().tracks[track].root;
   if (!GRAPH::rooted(root))
     return session.print("surface refused: that track has no root");
-  const String &plug = session.arguments[2];
-  if (!GRAPH::bound(plug))
+  const String &plugin = session.arguments[2];
+  if (!GRAPH::bound(plugin))
     return session.print("surface refused: input, output or midiout");
   const String device = ::tailed(session, 3);
-  const String node = GRAPH::surface(plug, device);
+  const String node = GRAPH::surface(plugin, device);
   if (node.empty())
     return session.print(
       ::listed(device)
@@ -71,5 +71,5 @@ void SOUND::COMMANDS::surface(SHELL::Session &session) {
         : std::format("surface refused: no device named {}", device));
   GRAPH::claim(node, root);
   HISTORY::record({.act = "surface", .graph = ::covered(node)});
-  session.print(std::format("surface {} {} on {}", node, plug, device));
+  session.print(std::format("surface {} {} on {}", node, plugin, device));
 }

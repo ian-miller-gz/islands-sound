@@ -27,7 +27,7 @@ void seated(std::istringstream &line, Graph &wiring) {
   Node node;
   line >> node.seat;
   const String word = SESSION::rest(line);
-  if (node.seat == Node::PLUG) node.plug = word;
+  if (node.seat == Node::PLUGIN) node.plugin = word;
   node.name = ::stamped(wiring, word);
   wiring.nodes.push_back(node);
 }

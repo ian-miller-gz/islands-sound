@@ -5,7 +5,7 @@ splash: true
 size: 1280x800
 version: 3
 islands: 0.3
-release: 0.1.3
+release: 0.1.4
 gui:
   tip: true
   ladder: true

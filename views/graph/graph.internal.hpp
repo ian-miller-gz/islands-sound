@@ -89,9 +89,9 @@ auto unseat(const String &node) -> Flag;
 
 auto dismiss(const String &root) -> Flag;
 
-void take(const String &plug);
+void take(const String &plugin);
 
-void surface(const String &plug, const String &device, Whole lane);
+void surface(const String &plugin, const String &device, Whole lane);
 
 void send(const String &root);
 

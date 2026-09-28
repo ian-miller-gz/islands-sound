@@ -2,7 +2,7 @@
 #pragma once
 #include <threads.hpp>
 
-#include "../../plug.hpp"
+#include "../../plugin.hpp"
 
 namespace SOUND::KEYS {
 

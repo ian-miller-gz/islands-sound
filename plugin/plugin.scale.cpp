@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <cmath>
 
-#include "plug.hpp"
+#include "plugin.hpp"
 
 namespace {
 
@@ -14,7 +14,7 @@ auto landed(const AUDIO::PLUGIN::Control &described, Float fraction) -> Float {
 
 }  // namespace
 
-auto SOUND::PLUG::scaled(const AUDIO::PLUGIN::Control &described, Float drawn)
+auto SOUND::PLUGIN::scaled(const AUDIO::PLUGIN::Control &described, Float drawn)
   -> Float {
   if (described.most <= described.least) return drawn;
   const Float fraction = std::clamp(drawn, Float(0), FULL) / FULL;

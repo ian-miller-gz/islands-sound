@@ -120,7 +120,7 @@ auto SOUND::SESSION::written(const Inventory &pool) -> String {
 
 auto SOUND::SESSION::written(const Vector<String> &recents) -> String {
   String text;
-  for (const String &plug : recents) text += std::format("r {}\n", plug);
+  for (const String &plugin : recents) text += std::format("r {}\n", plugin);
   return text;
 }
 

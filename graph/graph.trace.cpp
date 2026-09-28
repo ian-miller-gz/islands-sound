@@ -18,7 +18,7 @@ auto feeding(const String &node) -> Vector<String> {
   return next;
 }
 
-auto mouth(const Node &node) -> Flag { return node.seat != Node::PLUG; }
+auto mouth(const Node &node) -> Flag { return node.seat != Node::PLUGIN; }
 
 auto carries(const String &node, const String &root) -> Flag {
   return node == root || !::mouth(GRAPH::held().nodes[GRAPH::at(node)]);

@@ -23,7 +23,7 @@ auto stated(Whole track, Whole lane) -> String {
 
 void SOUND::COMMANDS::map(SHELL::Session &session) {
   if (session.arguments.size() < 3)
-    return session.print("map <track> <lane> [plug|none]");
+    return session.print("map <track> <lane> [plugin|none]");
   const Whole track = ::counted(session.arguments[1]);
   const Whole lane = ::counted(session.arguments[2]);
   if (track >= TIMELINE::held().tracks.size())
@@ -32,12 +32,12 @@ void SOUND::COMMANDS::map(SHELL::Session &session) {
     return session.print("map refused: no such lane");
   if (session.arguments.size() > 3) {
     const String &said = session.arguments[3];
-    const String plug = said == "none" ? String() : said;
+    const String plugin = said == "none" ? String() : said;
     const String stood = TIMELINE::held().tracks[track].lanes[lane].map;
-    TIMELINE::map(track, lane, plug);
+    TIMELINE::map(track, lane, plugin);
     HISTORY::record(
       {.act = "map",
-       .maps = {{.track = track, .lane = lane, .map = plug, .stood = stood}}});
+       .maps = {{.track = track, .lane = lane, .map = plugin, .stood = stood}}});
   }
   session.print(::stated(track, lane));
 }

@@ -2,7 +2,7 @@
 #pragma once
 #include <cartridge/plugin.hpp>
 
-namespace SOUND::PLUG {
+namespace SOUND::PLUGIN {
 
 constexpr Whole ROOM = 512;
 
@@ -31,4 +31,4 @@ constexpr Float FULL = 127.0f;
 
 auto scaled(const AUDIO::PLUGIN::Control &described, Float drawn) -> Float;
 
-}  // namespace SOUND::PLUG
+}  // namespace SOUND::PLUGIN

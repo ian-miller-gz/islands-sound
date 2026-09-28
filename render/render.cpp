@@ -17,7 +17,7 @@ auto carries(const Vector<Port> &ports, Whole kind) -> Flag {
 
 void plugged(Whole node, Whole frames) {
   const Node &held = GRAPH::held().nodes[node];
-  const PLUG::Offer *row = GRAPH::offered(held.name);
+  const PLUGIN::Offer *row = GRAPH::offered(held.name);
   void *instance = GRAPH::instance(held.name);
   if (row == nullptr || instance == nullptr) return;
   RENDER::Wave &wave = RENDER::carried()[node];
@@ -34,10 +34,10 @@ void plugged(Whole node, Whole frames) {
   }
   if (row->answer == nullptr || !::carries(held.outs, KIND::NOTES))
     return wave.events.clear();
-  ::room.resize(PLUG::ROOM);
+  ::room.resize(PLUGIN::ROOM);
   const Whole said = row->answer(
     instance, wave.events.data(), wave.events.size(), ::room.data(),
-    PLUG::ROOM);
+    PLUGIN::ROOM);
   wave.events.assign(::room.begin(), ::room.begin() + said);
 }
 
@@ -78,7 +78,7 @@ auto SOUND::RENDER::block(const Walk &walk, Whole frames) -> Flag {
     gather(node, pass);
     const Node &held = GRAPH::held().nodes[node];
     if (held.quiet) continue;
-    if (held.seat == Node::PLUG) ::plugged(node, frames);
+    if (held.seat == Node::PLUGIN) ::plugged(node, frames);
   }
   if (walk.start != NONE) TAP::fed(walk.start, frames);
   return true;

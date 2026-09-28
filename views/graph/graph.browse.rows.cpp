@@ -115,5 +115,5 @@ auto SOUND::VIEWS::WIRED::BROWSE::shelved(
   const Flag played = carries(takes, KIND::NOTES);
   if (carries(gives, KIND::AUDIO)) return played ? INSTRUMENTS : EFFECTS;
   if (carries(gives, KIND::NOTES)) return played ? SHAPERS : CONTROLLERS;
-  return PLUGS;
+  return PLUGINS;
 }
