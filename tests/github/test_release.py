@@ -16,8 +16,9 @@ NOW = 1_800_000_000
 CONFIG = 'tools: 0.1.0\ncompiler: g++\n\ndirectives:\n  engine:\n    ENGINE_VERSION: "0.3.5"\n'
 MANIFEST = 'name: sound\nentry: libsound.so\nrelease: 0.3.5\n'
 PYPROJECT = '[project]\nname = "islands-tools"\nversion = "0.3.5"\n'
+PLUGINS = 'release: 0.3.5\nsound: 0.1\n'
 SHAPES = {'engine': (release.CONFIG, CONFIG), 'bundle': (release.MANIFEST, MANIFEST),
-          'tools': (release.PYPROJECT, PYPROJECT)}
+          'tools': (release.PYPROJECT, PYPROJECT), 'plugins': (release.PLUGINS, PLUGINS)}
 
 
 def test_parse_reads_three_numbers():
@@ -45,6 +46,7 @@ def test_a_numbered_file_names_its_component():
   assert release.kind(CONFIG) == 'engine'
   assert release.kind(MANIFEST) == 'bundle'
   assert release.kind(PYPROJECT) == 'tools'
+  assert release.kind(PLUGINS) == 'plugins'
   assert release.kind('compiler: g++\n') is None
 
 
@@ -287,7 +289,7 @@ def test_notes_table_the_engine_and_every_pin(repo):
   assert table[2] == f'| engine | 0.4.0 | {head} |'
 
 
-@pytest.mark.parametrize('shape', ['bundle', 'tools'])
+@pytest.mark.parametrize('shape', ['bundle', 'tools', 'plugins'])
 def test_a_bundle_or_tools_repo_follows_the_same_rules(repo, shape):
   older = repo.commit('0.3.0', NOW - 30 * DAY, shape=shape)
   repo.git('tag', '0.3.0')
