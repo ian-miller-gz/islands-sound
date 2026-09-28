@@ -1,13 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include "control.hpp"
-#include "graph.hpp"
-#include "history.hpp"
-#include "inventory.hpp"
-#include "render.hpp"
-#include "session.hpp"
-#include "timeline.hpp"
-#include "views.hpp"
-#include "commands.hpp"
+#include "cartridge.hpp"
 
 namespace SOUND {
 namespace {
