@@ -39,9 +39,7 @@ constexpr Float HALF = ::CELL / 2.0f;
 constexpr STRING::Hot PLAYING = "▶";
 constexpr STRING::Hot BYPASSED = "▷";
 constexpr STRING::Hot HINTED = "hint";
-constexpr STRING::Hot HINT =
-  "Bypass - silences this lane's clips at the out; what its in admits still "
-  "plays, and the lane may record.";
+constexpr STRING::Hot HINT = "Bypass";
 
 constexpr STRING::Hot TYPED = "node";
 constexpr STRING::Hot WORDS[] = {

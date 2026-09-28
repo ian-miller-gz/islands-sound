@@ -11,7 +11,6 @@ using namespace SOUND;
 constexpr STRING::Hot PALETTE = "graph.palette";
 constexpr STRING::Hot DOOR = "graph.palette.door";
 constexpr STRING::Hot PLUS = "graph.plus";
-constexpr STRING::Hot HINTED = "hint";
 constexpr STRING::Hot WORN = "place";
 constexpr Float LETTER = 14.0f;
 constexpr Float PAD = 8.0f;
@@ -40,9 +39,6 @@ void build(Whole count) {
     GUI::NODES::create(page, ::PALETTE, "button", id.c_str());
     GUI::set(page, id.c_str(), GUI::Style{::WORN});
     GUI::set(page, id.c_str(), GUI::Size{::LETTER});
-    const String hint = id + "." + ::HINTED;
-    GUI::NODES::create(page, id.c_str(), "label", hint.c_str());
-    GUI::set(page, hint.c_str(), GUI::Visibility{false});
   }
   ::stood = count;
 }
@@ -61,9 +57,6 @@ void SOUND::VIEWS::WIRED::doors() {
     GUI::set(page, id.c_str(), GUI::Position{across, ::NORTH});
     GUI::set(page, id.c_str(), GUI::Extent{run, ::TALL});
     GUI::set(page, id.c_str(), GUI::Text{rows[at].word});
-    GUI::set(
-      page, (id + "." + ::HINTED).c_str(),
-      GUI::Text{PALETTE::sentence(rows[at])});
     if (GUI::GET::clicked(page, id.c_str())) {
       if (browsing() && filed() == rows[at].filing)
         raise(false);

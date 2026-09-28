@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <algorithm>
-#include <format>
 
 #include "../../graph.hpp"
 #include "graph.internal.hpp"
@@ -29,26 +28,4 @@ auto SOUND::VIEWS::WIRED::PALETTE::doors() -> Vector<Door> {
        {VIEWS::WIRED::SOURCES, VIEWS::WIRED::SINKS, VIEWS::WIRED::NOTED})
     rows.push_back({String(device), String(device)});
   return rows;
-}
-
-auto SOUND::VIEWS::WIRED::PALETTE::sentence(const Door &door) -> String {
-  if (door.word == ::BUSSED)
-    return "Bus - the session's buses: the row you take sends this track's "
-           "audio into that bus, and the bus stands on this page.";
-  if (door.word == ::TRACKED)
-    return "Track - the session's other tracks: the row you take sends this "
-           "track's audio into that track, and the track stands on this page.";
-  if (door.word == VIEWS::WIRED::SOURCES)
-    return "In - the soundcard's recording devices: the row you take seats "
-           "that device as the track's own input.";
-  if (door.word == VIEWS::WIRED::SINKS)
-    return "Out - the soundcard's playback devices: the row you take seats "
-           "that device as the track's own output.";
-  if (door.word == VIEWS::WIRED::NOTED)
-    return "MIDI - the soundcard's MIDI devices: the row you take seats that "
-           "device as the track's notes out.";
-  return std::format(
-    "Browse the {} catalog - every plug it offers, with the signature each "
-    "would seat with; the row you take is the plug you seat.",
-    door.word);
 }

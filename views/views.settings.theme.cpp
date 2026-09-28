@@ -16,11 +16,6 @@ constexpr STRING::Hot UP = "up";
 constexpr STRING::Hot DOWN = "down";
 constexpr STRING::Hot LAUNCHER = "configs/launcher.yaml";
 constexpr STRING::Hot PATH = "configs/sound.yaml";
-constexpr STRING::Hot HEADING =
-  "# The sound bundle's own settings, written by its settings plate.\n"
-  "# theme: whose the dress is - launcher (the launcher's last dress is\n"
-  "#   worn at every start) or own (the shade below is).\n"
-  "# shade: the dress worn while the theme is the bundle's own.\n";
 
 Flag own = false;
 String worn;
@@ -40,7 +35,7 @@ auto lined(STRING::Hot path, STRING::Hot wanted) -> String {
 void written() {
   IO::STREAMS::Output out(::PATH);
   if (!out) return;
-  out << ::HEADING << ::OWNED << ": " << (::own ? ::OWN : ::LAUNCHED) << "\n"
+  out << ::OWNED << ": " << (::own ? ::OWN : ::LAUNCHED) << "\n"
       << ::SHADED << ": " << ::worn << "\n";
 }
 
