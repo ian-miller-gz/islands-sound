@@ -69,8 +69,9 @@ auto seated(const String &name) -> String {
   if (stood == NONE) return std::format("node {} gone", name);
   const Node &node = GRAPH::held().nodes[stood];
   const STRING::Hot seat = ::spoken(node.seat);
-  const String seats =
-    node.plugin.empty() || node.plugin == node.name ? String() : " " + node.plugin;
+  const String seats = node.plugin.empty() || node.plugin == node.name
+                         ? String()
+                         : " " + node.plugin;
   const String device = node.device.empty() ? String() : " on " + node.device;
   return std::format(
     "node {} {}{}{}{}{}{}{}{}", node.name, seat, seats,
@@ -101,11 +102,13 @@ auto covered(const String &node) -> Graph {
 void SOUND::COMMANDS::offers(SHELL::Session &session) {
   const Vector<String> names = GRAPH::offers();
   session.print(std::format("plugins {}", names.size()));
-  for (const String &name : names) session.print(name);
+  for (const String &name : names)
+    session.print(std::format("{} {}", name, VIEWS::WIRED::among(name)));
 }
 
 void SOUND::COMMANDS::seat(SHELL::Session &session) {
-  if (session.arguments.size() < 2) return session.print("seat <plugin> [track]");
+  if (session.arguments.size() < 2)
+    return session.print("seat <plugin> [track]");
   String root;
   if (session.arguments.size() > 2) {
     const Whole track = ::counted(session.arguments[2]);

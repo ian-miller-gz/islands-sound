@@ -19,11 +19,17 @@ namespace BROWSE = SOUND::VIEWS::WIRED::BROWSE;
 
 String filing;
 
+void enter(const String &path) {
+  GUI::set(VIEWS::document(), BROWSE::ROWS, GUI::Cursor{0});
+  VIEWS::WIRED::raise(path);
+}
+
 void took(GUI::Handle page, const Vector<BROWSE::Offer> &rows) {
   const Whole row = GUI::GET::cursor(page, BROWSE::ROWS);
   if (row >= rows.size()) return;
-  VIEWS::WIRED::raise(false);
   const BROWSE::Offer &taken = rows[row];
+  if (taken.directory) return ::enter(taken.among);
+  VIEWS::WIRED::raise(false);
   if (taken.from == BROWSE::LANES)
     return void(
       COMMANDS::laned(VIEWS::WIRED::steered(), KIND::meant(taken.name)));
@@ -32,10 +38,21 @@ void took(GUI::Handle page, const Vector<BROWSE::Offer> &rows) {
       BROWSE::surfacing(taken.from), taken.device,
       taken.lane == NONE ? 0 : taken.lane);
   if (!taken.target.empty()) return VIEWS::WIRED::send(taken.target);
-  if (!taken.among.empty())
+  if (taken.from == BROWSE::INPUTS)
     return taken.lane == NONE ? CONTROL::choose(taken.name)
                               : CONTROL::choose(taken.lane);
   VIEWS::WIRED::take(taken.name);
+}
+
+auto said(const BROWSE::Offer &row) -> String {
+  if (row.directory)
+    return std::format("directory {} holds {}", row.name, row.holds);
+  if (!row.reading.empty())
+    return std::format(
+      "offer {} {} among {}", row.name, row.reading, BROWSE::filed(row));
+  return std::format(
+    "offer {} takes {} gives {} among {}", row.name, BROWSE::spelled(row.takes),
+    BROWSE::spelled(row.gives), BROWSE::filed(row));
 }
 
 }  // namespace
@@ -63,6 +80,8 @@ void SOUND::VIEWS::WIRED::browse() {
   const Vector<BROWSE::Offer> rows = BROWSE::rows(::filing);
   listing(page, rows);
   if (!browsing()) return;
+  BROWSE::head(page, ::filing);
+  if (GUI::GET::clicked(page, BROWSE::UP)) return ::enter(BROWSE::up(::filing));
   if (GUI::GET::activated(page, BROWSE::ROWS)) return ::took(page, rows);
   if (VIEWS::elsewhere(DOORS, BROWSE::PANEL)) raise(false);
 }
@@ -74,13 +93,5 @@ void SOUND::VIEWS::WIRED::say(SHELL::Session &session) {
     "browse rows {} cursor {}{}", rows.size(),
     GUI::GET::cursor(document(), BROWSE::ROWS),
     ::filing.empty() ? String() : " filed " + ::filing));
-  for (const BROWSE::Offer &row : rows)
-    session.print(
-      row.reading.empty()
-        ? std::format(
-            "offer {} takes {} gives {} among {}", row.name,
-            BROWSE::spelled(row.takes), BROWSE::spelled(row.gives),
-            BROWSE::filed(row))
-        : std::format(
-            "offer {} {} among {}", row.name, row.reading, BROWSE::filed(row)));
+  for (const BROWSE::Offer &row : rows) session.print(::said(row));
 }

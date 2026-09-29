@@ -161,6 +161,8 @@ namespace WIRED {
 
 auto steering() -> String;
 
+auto among(const String &plugin) -> String;
+
 }  // namespace WIRED
 
 namespace MENU {

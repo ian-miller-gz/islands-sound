@@ -199,7 +199,8 @@ panel root style=clear anchor=stretch
         label browserow.name style=ink size=15 anchor=northwest x=6 y=3
         label browserow.crossing style=muted size=14 anchor=left|right x=140 y=4 w=6 h=20
       panel graph.browse style=sheet visible=false z=11 anchor=northeast x=0 y=0 w=480 h=300 beside=graph.palette side=below air=6
-        label graph.browse.head style=muted size=14 x=10 y=8 w=200 h=18 text="Catalog"
+        button graph.browse.up style=icon size=16 x=6 y=5 w=22 h=22 text="‹" visible=false
+        label graph.browse.head style=muted size=14 x=32 y=8 w=420 h=18 text="Catalog"
         list graph.browse.rows style=clear anchor=stretch x=8 y=32 w=8 h=8 pitch=24 pad=3 mark=selected plain=row pattern=browserow quick=true
     panel params style=clear anchor=stretch x=0 y=0 w=0 h=0
       label params.head style=muted size=14 x=10 y=8 w=160 h=18 text="Parameters"

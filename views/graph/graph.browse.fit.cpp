@@ -20,6 +20,10 @@ constexpr Float EDGE = 10.0f;
 constexpr STRING::Hot HOME = "graph";
 Float authored = 0.0f;
 
+auto titled(const Offer &offer) -> String {
+  return offer.directory ? std::format("{} {}", offer.name, INTO) : offer.name;
+}
+
 struct Fit {
   Float across = 0.0f;
   Float wide = 0.0f;
@@ -28,7 +32,7 @@ struct Fit {
 auto fitted(GUI::Handle page, const Vector<Offer> &rows) -> Fit {
   Float name = 0.0f, reading = 0.0f;
   for (const Offer &offer : rows) {
-    name = std::max(name, Float(offer.name.size()));
+    name = std::max(name, Float(::titled(offer).size()));
     reading = std::max(reading, Float(crossed(offer).size()));
   }
   const Float advance = VIEWS::WIRED::ADVANCE;
@@ -50,6 +54,7 @@ auto fitted(GUI::Handle page, const Vector<Offer> &rows) -> Fit {
 }  // namespace
 
 auto SOUND::VIEWS::WIRED::BROWSE::crossed(const Offer &offer) -> String {
+  if (offer.directory) return std::to_string(offer.holds);
   return std::format("{} {} {}", filed(offer), UNDER, stated(offer));
 }
 
@@ -65,7 +70,7 @@ void SOUND::VIEWS::WIRED::BROWSE::listing(
     if (!GUI::GET::visibility(page, cell.c_str())) break;
     const Offer &offer = rows[first + row];
     const String reading = cell + "." + ::CROSSING;
-    GUI::set(page, (cell + "." + ::NAME).c_str(), GUI::Text{offer.name});
+    GUI::set(page, (cell + "." + ::NAME).c_str(), GUI::Text{::titled(offer)});
     GUI::set(
       page, reading.c_str(),
       GUI::Position{fit.across, GUI::GET::position(page, reading.c_str()).y});

@@ -7,10 +7,16 @@ namespace SOUND::PLUGIN {
 constexpr Whole ROOM = 512;
 
 constexpr STRING::Hot NATIVE = "native";
+constexpr STRING::Hot VST3 = "vst3";
+
+constexpr STRING::Hot MONO = "mono";
+constexpr STRING::Hot POLY = "poly";
 
 struct Offer {
   STRING::Hot name = "";
   STRING::Hot from = NATIVE;
+  STRING::Hot type = "";
+  STRING::Hot voicing = "";
   const AUDIO::PLUGIN::Plug *surface = nullptr;
   auto (*answer)(
     void *instance, const AUDIO::PLUGIN::Event *events, Whole count,

@@ -69,12 +69,14 @@ auto takes(const String &name) -> Vector<Whole>;
 auto gives(const String &name) -> Vector<Whole>;
 
 auto from(const String &name) -> STRING::Hot;
+auto typed(const String &name) -> STRING::Hot;
+auto voiced(const String &name) -> STRING::Hot;
 
 auto parameters(const String &plugin) -> Whole;
 auto named(const String &plugin, Whole parameter) -> String;
 
-auto described(const String &plugin, Whole parameter, AUDIO::PLUGIN::Control &out)
-  -> Flag;
+auto described(
+  const String &plugin, Whole parameter, AUDIO::PLUGIN::Control &out) -> Flag;
 
 auto fed(const String &root, Whole out) -> String;
 

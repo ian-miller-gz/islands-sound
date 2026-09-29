@@ -44,3 +44,13 @@ auto SOUND::GRAPH::from(const String &name) -> STRING::Hot {
   const PLUGIN::Offer *row = PLUGIN::found(name);
   return row == nullptr ? "" : row->from;
 }
+
+auto SOUND::GRAPH::typed(const String &name) -> STRING::Hot {
+  const PLUGIN::Offer *row = PLUGIN::found(name);
+  return row == nullptr ? "" : row->type;
+}
+
+auto SOUND::GRAPH::voiced(const String &name) -> STRING::Hot {
+  const PLUGIN::Offer *row = PLUGIN::found(name);
+  return row == nullptr ? "" : row->voicing;
+}
