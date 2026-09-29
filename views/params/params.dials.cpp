@@ -11,15 +11,13 @@
 namespace {
 using namespace SOUND;
 
-constexpr STRING::Hot BARRED = "bar";
-
 auto dressed(const AUDIO::PLUGIN::Control &published) -> GUI::Dial {
   return {
     .least = published.least,
     .most = published.most,
     .resting = published.resting,
     .steps = published.steps,
-    .graphic = true};
+    .graphic = !VIEWS::RACK::listed(published)};
 }
 
 auto instant() -> Whole {
@@ -74,9 +72,13 @@ auto SOUND::VIEWS::RACK::shown(const Row &row) -> String {
 
 void SOUND::VIEWS::RACK::turn(
   GUI::Handle page, const String &cell, const Row &row) {
-  const String barred = cell + "." + ::BARRED;
-  GUI::set(page, barred.c_str(), ::dressed(described(row)));
+  const String barred = cell + "." + BARRED;
+  const AUDIO::PLUGIN::Control published = described(row);
+  GUI::set(page, barred.c_str(), ::dressed(published));
+  mark(page, cell, published);
   if (GUI::GET::dialled(page, barred.c_str()))
     return moved(row, GUI::GET::value(page, barred.c_str()));
   GUI::set(page, barred.c_str(), GUI::Value{held(row)});
+  if (String(GUI::GET::editing(page)) != barred)
+    GUI::set(page, barred.c_str(), GUI::Text{shown(row)});
 }

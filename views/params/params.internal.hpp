@@ -24,6 +24,16 @@ auto stepped(const AUDIO::PLUGIN::Control &published, Float value) -> Whole;
 auto valued(const AUDIO::PLUGIN::Control &published, Whole step) -> Float;
 
 auto listed(const Row &row) -> Flag;
+auto listed(const AUDIO::PLUGIN::Control &published) -> Flag;
+
+constexpr STRING::Hot BARRED = "bar";
+constexpr STRING::Hot MARKED = "mark";
+
+auto centred(const AUDIO::PLUGIN::Control &published) -> Flag;
+
+void mark(
+  GUI::Handle page, const String &cell,
+  const AUDIO::PLUGIN::Control &published);
 
 void door(GUI::Handle page, const String &cell, const Row &row);
 

@@ -209,6 +209,7 @@ panel root style=clear anchor=stretch
         label rig.name style=ink size=15 anchor=northwest x=6 y=3
         button rig.steps style=icon size=13 visible=false anchor=northwest x=210 y=1 w=22 h=22 text="▼"
         dial rig.bar style=entry size=15 pad=6 anchor=left|right x=236 y=1 w=6 h=22 graphic=true
+        panel rig.mark style=restmark visible=false anchor=northwest x=0 y=1 w=1 h=22
       list params.rows style=clear anchor=stretch x=8 y=36 w=8 h=8 pitch=24 pad=3 plain=row pattern=rig
       panel params.choices style=sheet visible=false z=9 anchor=northwest x=0 y=0 w=160 h=36
         list params.choices.rows style=clear anchor=stretch x=6 y=6 w=6 h=6 pitch=24 pad=3 mark=selected plain=row

@@ -21,9 +21,13 @@ auto SOUND::VIEWS::RACK::valued(
   return published.least + span * Float(step) / Float(published.steps);
 }
 
-auto SOUND::VIEWS::RACK::listed(const Row &row) -> Flag {
-  const AUDIO::PLUGIN::Control published = described(row);
+auto SOUND::VIEWS::RACK::listed(const AUDIO::PLUGIN::Control &published)
+  -> Flag {
   return published.steps > 1 && published.labels.size() == published.steps + 1;
+}
+
+auto SOUND::VIEWS::RACK::listed(const Row &row) -> Flag {
+  return listed(described(row));
 }
 
 void SOUND::VIEWS::RACK::door(

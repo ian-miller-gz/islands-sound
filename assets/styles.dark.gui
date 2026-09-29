@@ -44,6 +44,7 @@ style keytonic color=#d9822b4d border=0
 style gridbeat color=#0000001f border=0
 style gridbar color=#00000059 border=0
 style notch color=#8a6d55e6 border=0
+style restmark color=#f3e9d8b3 border=0
 style grip color=#ffffff66 hover=#ffffff8c press=#ffffffb3 border=0
 style sketch color=#ffffff59 border=0
 style trace color=#8a6d55cc border=0
