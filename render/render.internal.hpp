@@ -36,6 +36,8 @@ auto carried() -> Vector<Wave> &;
 
 auto delivery() -> Whole &;
 
+auto side(const Node &node, Whole in) -> Flag;
+
 void gather(Whole node, const Pass &pass);
 
 void rooted(Whole node, const Pass &pass);

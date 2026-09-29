@@ -15,6 +15,20 @@ auto carries(const Vector<Port> &ports, Whole kind) -> Flag {
   return false;
 }
 
+void laid(const Node &held, RENDER::Wave &wave) {
+  Whole sides = 0;
+  for (Whole in = 0; in < held.ins.size(); ++in)
+    sides += RENDER::side(held, in) ? 1 : 0;
+  ::rows.resize((1 + sides) * wave.lanes.size());
+  Whole row = 0;
+  for (Vector<AUDIO::PLUGIN::Sample> &lane : wave.lanes)
+    ::rows[row++] = lane.data();
+  for (Whole in = 0; in < held.ins.size() && in < wave.ins.size(); ++in)
+    if (RENDER::side(held, in))
+      for (Vector<AUDIO::PLUGIN::Sample> &lane : wave.ins[in])
+        ::rows[row++] = lane.data();
+}
+
 void plugged(Whole node, Whole frames) {
   const Node &held = GRAPH::held().nodes[node];
   const PLUGIN::Offer *row = GRAPH::offered(held.name);
@@ -26,9 +40,7 @@ void plugged(Whole node, Whole frames) {
     row->surface->render != nullptr &&
     (::carries(held.ins, KIND::AUDIO) || ::carries(held.outs, KIND::AUDIO) ||
      ::carries(held.ins, KIND::NOTES))) {
-    ::rows.resize(wave.lanes.size());
-    for (Whole channel = 0; channel < wave.lanes.size(); ++channel)
-      ::rows[channel] = wave.lanes[channel].data();
+    ::laid(held, wave);
     row->surface->render(
       instance, ::rows.data(), frames, wave.events.data(), wave.events.size());
   }

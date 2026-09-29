@@ -26,9 +26,10 @@ auto sooner(const AUDIO::PLUGIN::Event &one, const AUDIO::PLUGIN::Event &two)
   return one.offset < two.offset;
 }
 
-auto onto(RENDER::Wave &wave, Whole seat, Whole in)
+auto onto(RENDER::Wave &wave, const Node &sink, Whole in)
   -> Vector<Vector<AUDIO::PLUGIN::Sample>> & {
-  if (seat == Node::PLUGIN || in >= wave.ins.size()) return wave.lanes;
+  if (in >= wave.ins.size()) return wave.lanes;
+  if (sink.seat == Node::PLUGIN && !RENDER::side(sink, in)) return wave.lanes;
   return wave.ins[in];
 }
 
@@ -98,8 +99,7 @@ void brought(
   const Whole kind = source.outs[wire.out].kind;
   const RENDER::Wave &given = RENDER::carried()[from];
   if (kind == KIND::AUDIO) {
-    Vector<Vector<AUDIO::PLUGIN::Sample>> &into =
-      ::onto(wave, sink.seat, wire.in);
+    Vector<Vector<AUDIO::PLUGIN::Sample>> &into = ::onto(wave, sink, wire.in);
     if (source.seat == Node::ROOT)
       return ::poured(into, source, given, wire, pass);
     return ::sum(given.lanes, into, pass.frames);
@@ -120,6 +120,13 @@ void wired(RENDER::Wave &wave, const Node &sink, const RENDER::Pass &pass) {
       ::brought(wave, sink, wires[row], pass);
 }
 
+auto kept(const Node &held) -> Whole {
+  if (held.seat != Node::PLUGIN) return held.ins.size();
+  for (Whole in = 0; in < held.ins.size(); ++in)
+    if (RENDER::side(held, in)) return held.ins.size();
+  return 0;
+}
+
 void apart(
   Vector<Vector<Vector<AUDIO::PLUGIN::Sample>>> &ins, Whole count,
   Whole frames) {
@@ -129,11 +136,19 @@ void apart(
 
 }  // namespace
 
+auto SOUND::RENDER::side(const Node &node, Whole in) -> Flag {
+  if (node.seat != Node::PLUGIN || in >= node.ins.size()) return false;
+  if (node.ins[in].kind != KIND::AUDIO) return false;
+  for (Whole before = 0; before < in; ++before)
+    if (node.ins[before].kind == KIND::AUDIO) return true;
+  return false;
+}
+
 void SOUND::RENDER::gather(Whole node, const Pass &pass) {
   const Node &held = GRAPH::held().nodes[node];
   Wave &wave = carried()[node];
   ::silence(wave.lanes, pass.frames);
-  ::apart(wave.ins, held.seat == Node::PLUGIN ? 0 : held.ins.size(), pass.frames);
+  ::apart(wave.ins, ::kept(held), pass.frames);
   wave.events.clear();
   if (held.seat == Node::ROOT) rooted(node, pass);
   if (GRAPH::quieted(held.name)) return;
