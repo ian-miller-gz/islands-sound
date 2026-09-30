@@ -1,5 +1,5 @@
 style=assets/islands.gui
-style=cartridges/sound/assets/styles.gui
+style=styles.gui
 style night color=#2a1f18ff border=0
 style day color=#ebe2cfff border=0
 
