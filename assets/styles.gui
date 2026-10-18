@@ -36,11 +36,11 @@ style cycleflag color=#a8560cff border=0 hover=#c26b1cff press=#d97f2cff
 style tagflag color=#1f7a5aff border=0 hover=#2d9670ff press=#3aae84ff
 style endflag color=#6b4bb0ff border=0 hover=#8163c4ff press=#957bd6ff
 style tagword style=entry edge=#f7f9fbff hover=#00000000 press=#00000000
-style keywhite style=clear
-style keyblack color=#0000002a border=0
-style keywhiteout color=#8a6d553d border=0
-style keyblackout color=#8a6d5561 border=0
-style keytonic color=#d9822b4d border=0
+style keywhite style=clear hover=#fcf8f1ff press=#fefdfbff
+style keyblack color=#0000002a hover=#e7e4deff press=#f8f7f5ff border=0
+style keywhiteout color=#8a6d553d hover=#eee8e0ff press=#faf8f6ff border=0
+style keyblackout color=#8a6d5561 hover=#e7dfd6ff press=#f8f5f3ff border=0
+style keytonic color=#d9822b4d hover=#f7e7d5ff press=#fdf8f2ff border=0
 style gridbeat color=#0000001f border=0
 style gridbar color=#00000059 border=0
 style notch color=#8a6d55e6 border=0
@@ -82,7 +82,7 @@ style washcontrol color=#cde3f6ff border=0
 style washprogram color=#eaddd0ff border=0
 style washdata color=#cae8edff border=0
 style plateaudio color=#c3483cff hover=#cc6459ff press=#d47b73ff wash=#ffffff54 border=0
-style platenotes color=#3ea553ff hover=#5bb36dff press=#74be83ff wash=#ffffff54 border=0
+style platenotes color=#2a7f3aff hover=#4a9258ff press=#64a26fff wash=#ffffff54 border=0
 style platelogic color=#c9a35fff hover=#d2b075ff press=#d9bc8aff wash=#ffffff54 border=0
 style platecontrol color=#2c87d9ff hover=#4c99dfff press=#67a9e4ff wash=#ffffff54 border=0
 style plateprogram color=#7b4f2eff hover=#8f6445ff press=#a0785cff wash=#ffffff54 border=0

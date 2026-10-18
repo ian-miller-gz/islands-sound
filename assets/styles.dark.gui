@@ -36,13 +36,13 @@ style cycleflag color=#f0a75aff border=0 hover=#f7bd7cff press=#ffd09aff
 style tagflag color=#5ad9a8ff border=0 hover=#82e6c0ff press=#a5f0d4ff
 style endflag color=#a98af0ff border=0 hover=#c0a6f7ff press=#d3befaff
 style tagword style=entry edge=#f7f9fbff hover=#00000000 press=#00000000
-style keywhite style=clear
-style keyblack color=#0000002a border=0
-style keywhiteout color=#8a6d553d border=0
-style keyblackout color=#8a6d5561 border=0
-style keytonic color=#d9822b4d border=0
-style gridbeat color=#0000001f border=0
-style gridbar color=#00000059 border=0
+style keywhite style=clear hover=#362c27ff press=#473f3aff
+style keyblack color=#8a6d5529 hover=#453930ff press=#554a42ff border=0
+style keywhiteout color=#8a6d553d hover=#4c3f35ff press=#5c4f47ff border=0
+style keyblackout color=#8a6d5561 hover=#59493eff press=#68594eff border=0
+style keytonic color=#d9822b4d hover=#68492dff press=#75593fff border=0
+style gridbeat color=#8a6d551f border=0
+style gridbar color=#8a6d5547 border=0
 style notch color=#8a6d55e6 border=0
 style restmark color=#f3e9d8b3 border=0
 style grip color=#ffffff66 hover=#ffffff8c press=#ffffffb3 border=0

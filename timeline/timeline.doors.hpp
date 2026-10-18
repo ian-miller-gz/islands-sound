@@ -124,6 +124,8 @@ auto dial(
 
 auto valued(const Vector<Turn> &turns, Whole number, Whole at) -> Float;
 
+auto valued(const Turn &one, const Turn &two, Whole at) -> Float;
+
 auto govern(const Inventory &pool, const Address &address, Whole at)
   -> Governed;
 

@@ -58,10 +58,10 @@ void SOUND::COMMANDS::surface(SHELL::Session &session) {
     return session.print("surface refused: no such track");
   const String root = TIMELINE::held().tracks[track].root;
   if (!GRAPH::rooted(root))
-    return session.print("surface refused: that track has no root");
+    return session.print("surface refused: track lacks root");
   const String &plugin = session.arguments[2];
   if (!GRAPH::bound(plugin))
-    return session.print("surface refused: input, output or midiout");
+    return session.print("surface refused: input, output, midiout");
   const String device = ::tailed(session, 3);
   const String node = GRAPH::surface(plugin, device);
   if (node.empty())

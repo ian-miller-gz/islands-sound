@@ -65,8 +65,13 @@ auto SOUND::TIMELINE::valued(const Vector<Turn> &turns, Whole number, Whole at)
   }
   if (one == nullptr) return two == nullptr ? 0.0f : two->value;
   if (two == nullptr) return one->value;
+  return valued(*one, *two, at);
+}
+
+auto SOUND::TIMELINE::valued(const Turn &one, const Turn &two, Whole at)
+  -> Float {
   return ::between(
-    one->value, two->value, one->shape, ::travelled(one->at, two->at, at));
+    one.value, two.value, one.shape, ::travelled(one.at, two.at, at));
 }
 
 auto SOUND::TIMELINE::dial(

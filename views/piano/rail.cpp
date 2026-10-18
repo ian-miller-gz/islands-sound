@@ -21,7 +21,7 @@ constexpr Float INSET = 6.0f;
 constexpr Float PAD = 1.0f;
 constexpr Float RAISED = 2.0f;
 constexpr Float ORIGIN = 0.0f;
-constexpr STRING::Hot ADRIFT = "no notes lane on the chosen track";
+constexpr STRING::Hot ADRIFT = "track lacks notes lane";
 constexpr STRING::Hot WROTE = "write";
 
 Whole stood = 0;

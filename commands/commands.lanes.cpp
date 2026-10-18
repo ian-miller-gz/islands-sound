@@ -58,7 +58,7 @@ void SOUND::COMMANDS::kind(SHELL::Session &session) {
   const Whole kind = KIND::meant(session.arguments[3]);
   if (kind == NONE) return session.print("kind refused: no such kind");
   if (!recast(track, lane, kind))
-    return session.print("kind refused: no such lane, or it holds clips");
+    return session.print("kind refused: no lane, clips held");
   session.print(::stated(track, lane));
 }
 
@@ -74,9 +74,9 @@ void SOUND::COMMANDS::admit(SHELL::Session &session) {
   Flag on = false;
   if (session.arguments.size() > 3) {
     if (!::switched(session.arguments[3], on))
-      return session.print("admit refused: say on or off");
+      return session.print("admit <track> <lane> [on|off]");
     if (!admitted(track, lane, on))
-      return session.print("admit refused: the track has no root");
+      return session.print("admit refused: track lacks root");
   }
   session.print(::stated(track, lane));
 }
@@ -91,7 +91,7 @@ void SOUND::COMMANDS::bypass(SHELL::Session &session) {
   Flag on = false;
   if (session.arguments.size() > 3) {
     if (!::switched(session.arguments[3], on))
-      return session.print("bypass refused: say on or off");
+      return session.print("bypass <node> <out> [on|off]");
     const STRING::Hot refused = GRAPH::bypass(node, out, on);
     if (refused[0] != '\0')
       return session.print(std::format("bypass refused: {}", refused));

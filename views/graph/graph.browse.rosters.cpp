@@ -12,8 +12,8 @@
 namespace {
 using namespace SOUND;
 using namespace SOUND::VIEWS::WIRED::BROWSE;
-using SOUND::VIEWS::WIRED::NOTED, SOUND::VIEWS::WIRED::SINKS,
-  SOUND::VIEWS::WIRED::SOURCES;
+using SOUND::VIEWS::WIRED::INPUTS, SOUND::VIEWS::WIRED::NOTED,
+  SOUND::VIEWS::WIRED::SINKS, SOUND::VIEWS::WIRED::SOURCES;
 
 void paired(
   Vector<Offer> &rows, STRING::Hot directory, const String &name,

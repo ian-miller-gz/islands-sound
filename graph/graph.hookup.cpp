@@ -34,7 +34,7 @@ auto crossed(const Node &source, const Node &sink) -> Flag {
 
 auto worded(STRING::Hot doing, Whole kind) -> STRING::Hot {
   static String said;
-  said = std::format("lane {} is {}", KIND::spoken(kind), doing);
+  said = std::format("lane {} {}", KIND::spoken(kind), doing);
   return said.c_str();
 }
 
@@ -88,25 +88,23 @@ auto SOUND::GRAPH::refusal(
   const Whole source = at(from), sink = at(to);
   if (source == NONE || sink == NONE) return "no such node";
   const Vector<Node> &nodes = standing().nodes;
-  if (source == sink && out == in) return "a port cannot wire to itself";
+  if (source == sink && out == in) return "port wires itself";
   if (::absent(nodes[source].outs, out)) return "no such out";
   if (::absent(nodes[sink].ins, in)) return "no such in";
   if (nodes[source].outs[out].kind != nodes[sink].ins[in].kind)
-    return "the ports carry different kinds";
+    return "kinds differ";
   if (nodes[source].outs[out].type != nodes[sink].ins[in].type)
-    return "the ports carry different types";
+    return "types differ";
   if (::drawn({from, out, to, in})) return "already wired";
-  if (::strayed(nodes[source], nodes[sink]))
-    return "a surface stays in its own track";
-  if (::crossed(nodes[source], nodes[sink]))
-    return "a track's out is its own page's";
+  if (::strayed(nodes[source], nodes[sink])) return "surface crosses tracks";
+  if (::crossed(nodes[source], nodes[sink])) return "out crosses pages";
   if (nodes[sink].seat == Node::RECORD && blocked(nodes[sink].claim, in))
     return ::worded("sending", nodes[sink].ins[in].kind);
   if (
     nodes[source].seat == Node::ROOT && to != recorder(from) &&
     !bypassed(from, out) && joined(recorder(from), Side::IN, out) != 0)
     return ::worded("recording", nodes[source].outs[out].kind);
-  if (circled({from, out, to, in})) return "the tracks would feed in a circle";
+  if (circled({from, out, to, in})) return "tracks circle";
   return "";
 }
 

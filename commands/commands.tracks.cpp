@@ -89,7 +89,7 @@ void SOUND::COMMANDS::bus(SHELL::Session &session) {
   if (session.arguments.size() > 2) {
     const String &said = session.arguments[2];
     if (said != "on" && said != "off")
-      return session.print("bus refused: say on or off");
+      return session.print("bus <track> [on|off]");
     bussed(track, said == HISTORY::WORD::ON);
   }
   session.print(tracked(track));
@@ -104,7 +104,7 @@ void SOUND::COMMANDS::name(SHELL::Session &session) {
   if (session.arguments.size() > 3) {
     const Whole lane = ::counted(session.arguments[2]);
     if (!named(track, lane, session.arguments[3]))
-      return session.print("name refused: no such lane, or no name");
+      return session.print("name refused: no lane, no name");
     return session.print(std::format(
       "lane {} {} on track {}", lane,
       TIMELINE::held().tracks[track].lanes[lane].name, track));

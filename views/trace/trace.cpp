@@ -36,18 +36,6 @@ auto labelled(const String &node) -> String {
   return std::format("{} · {}", VIEWS::named(node), device);
 }
 
-auto walked() -> Vector<GRAPH::TRACE::Step> {
-  Vector<GRAPH::TRACE::Step> steps = GRAPH::TRACE::trace(::attended());
-  if (!steps.empty()) steps.erase(steps.begin());
-  std::stable_sort(
-    steps.begin(), steps.end(),
-    [](const GRAPH::TRACE::Step &one, const GRAPH::TRACE::Step &two) {
-      return one.branch != two.branch ? one.branch < two.branch
-                                      : one.depth < two.depth;
-    });
-  return steps;
-}
-
 auto hue(const GRAPH::TRACE::Step &step) -> Whole {
   return step.branch % ::HUES;
 }
@@ -57,7 +45,7 @@ auto tone(const GRAPH::TRACE::Step &step) -> Whole {
 }
 
 void nodes(GUI::Handle page) {
-  const Vector<GRAPH::TRACE::Step> steps = ::walked();
+  const Vector<GRAPH::TRACE::Step> steps = TRACE::walked();
   GUI::set(page, TRACE::ROWS, GUI::Rows{steps.size()});
   GUI::set(page, TRACE::EMPTY, GUI::Visibility{::attended().empty()});
   const Whole first = GUI::GET::first(page, TRACE::ROWS);
@@ -102,10 +90,11 @@ void run() {
   TRACE::editing();
   if (TRACE::laning()) return TRACE::lanes();
   ::nodes(page);
+  TRACE::aimed(page);
 }
 
 void state(SHELL::Session &session) {
-  const Vector<GRAPH::TRACE::Step> steps = ::walked();
+  const Vector<GRAPH::TRACE::Step> steps = TRACE::walked();
   session.print(std::format("trace rows {}", steps.size()));
   for (Whole row = 0; row < steps.size(); ++row)
     session.print(std::format(
@@ -114,6 +103,7 @@ void state(SHELL::Session &session) {
   if (::attended().empty())
     session.print(
       std::format("empty {}", GUI::GET::text(VIEWS::document(), TRACE::EMPTY)));
+  TRACE::aimed(session);
   TRACE::lanes(session);
   TRACE::editing(session);
 }
@@ -126,4 +116,15 @@ void state(SHELL::Session &session) {
 auto SOUND::VIEWS::TRACE::attended() -> Whole {
   const Whole track = VIEWS::cursor(LIST);
   return track < TIMELINE::held().tracks.size() ? track : NONE;
+}
+auto SOUND::VIEWS::TRACE::walked() -> Vector<GRAPH::TRACE::Step> {
+  Vector<GRAPH::TRACE::Step> steps = GRAPH::TRACE::trace(::attended());
+  if (!steps.empty()) steps.erase(steps.begin());
+  std::stable_sort(
+    steps.begin(), steps.end(),
+    [](const GRAPH::TRACE::Step &one, const GRAPH::TRACE::Step &two) {
+      return one.branch != two.branch ? one.branch < two.branch
+                                      : one.depth < two.depth;
+    });
+  return steps;
 }

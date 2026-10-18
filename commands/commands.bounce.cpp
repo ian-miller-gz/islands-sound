@@ -24,7 +24,7 @@ void SOUND::COMMANDS::note(SHELL::Session &session) {
   const Float velocity = std::strtof(session.arguments[5].c_str(), nullptr);
   if (!GRAPH::develop(
         node, out, at, pitch, velocity, ::counted(session.arguments[6])))
-    return session.print("no such root or out");
+    return session.print("no such root, out");
   GRAPH::sort();
   session.print(std::format(
     "noted {} out {} pitch {} at {} velocity {:.3f} run {}", node, out, pitch,
@@ -41,7 +41,7 @@ void SOUND::COMMANDS::turn(SHELL::Session &session) {
   const Float value = std::strtof(session.arguments[5].c_str(), nullptr);
   if (!GRAPH::develop(
         node, out, {AUDIO::PLUGIN::Event::CONTROLLER, at, number, value}))
-    return session.print("no such root or out");
+    return session.print("no such root, out");
   session.print(std::format(
     "turned {} out {} number {} at {} value {:.3f} run {}", node, out, number,
     at, value, GRAPH::developed(node, out).size()));
@@ -54,7 +54,7 @@ void SOUND::COMMANDS::bounce(SHELL::Session &session) {
   const Whole from =
     session.arguments.size() > 2 ? ::counted(session.arguments[2]) : 0;
   if (!MASTER::bounce(from, ::counted(session.arguments[1]), tally))
-    return session.print("bounce refused: the graph has a cycle");
+    return session.print("bounce refused: graph cycle");
   session.print(std::format(
     "bounced {} frames {:.3f} s {} Hz {} channels notes {} digest {:08x}{}",
     tally.frames, Float(tally.frames) / Float(tally.rate), tally.rate,

@@ -9,11 +9,26 @@ using namespace SOUND;
 Touched held;
 Whole counted = 0;
 
+constexpr STRING::Hot BLIND[] = {
+  HISTORY::WORD::HOME, HISTORY::WORD::NAME, HISTORY::WORD::TAG};
+
+auto blind(const Change &change) -> Flag {
+  for (STRING::Hot word : ::BLIND)
+    if (change.word == word) return true;
+  return false;
+}
+
+auto heard(const Vector<Change> &changes) -> Flag {
+  for (const Change &change : changes)
+    if (!::blind(change)) return true;
+  return false;
+}
+
 auto bounded(const Edit &edit) -> Flag {
   return edit.swept.empty() && edit.graph.nodes.empty() &&
          edit.graph.wires.empty() && edit.graph.slack.empty() &&
          edit.placements.empty() && edit.gone.empty() && edit.maps.empty() &&
-         edit.changes.empty() && edit.rows.empty() && edit.lanes.empty();
+         !::heard(edit.changes) && edit.rows.empty() && edit.lanes.empty();
 }
 
 void stocked(Whole stock) {

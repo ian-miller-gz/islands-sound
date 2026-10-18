@@ -7,7 +7,7 @@
 namespace {
 using namespace SOUND;
 
-constexpr STRING::Hot ADRIFT = "no notes lane on the chosen track";
+constexpr STRING::Hot ADRIFT = "track lacks notes lane";
 constexpr STRING::Hot PAINTED = "paint";
 
 struct Cell {

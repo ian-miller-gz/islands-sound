@@ -21,8 +21,7 @@ auto measured(const String &token) -> Float {
 auto refused(Whole stock) -> STRING::Hot {
   const Inventory &pool = INVENTORY::held();
   if (stock >= pool.stocks.size()) return "no such stock";
-  return pool.stocks[stock].kind == KIND::LOGIC ? ""
-                                                : "the stock carries no curve";
+  return pool.stocks[stock].kind == KIND::LOGIC ? "" : "stock carries no curve";
 }
 
 }  // namespace

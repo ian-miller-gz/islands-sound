@@ -15,7 +15,7 @@ constexpr STRING::Hot KEEP = "file.keep";
 constexpr STRING::Hot FILED = "file";
 constexpr STRING::Hot PICKS = "files";
 
-const Vector<String> ROWS = {"New", "Open", "Save", "Save as..."};
+const Vector<String> ROWS = {"New", "Open", "Save", "Save as"};
 
 enum Raised : Whole { DOWN, MAIN, PICK };
 Whole raised = DOWN;

@@ -68,7 +68,7 @@ void SOUND::COMMANDS::lane(SHELL::Session &session) {
   const Whole track = ::counted(session.arguments[1]);
   const Whole kind = KIND::meant(session.arguments[2]);
   const Whole lane = laned(track, kind);
-  if (lane == NONE) return session.print("lane refused: no such track or kind");
+  if (lane == NONE) return session.print("lane refused: no such track, kind");
   session.print(
     std::format("lane {} {} on track {}", lane, KIND::spoken(kind), track));
 }
@@ -79,7 +79,7 @@ void SOUND::COMMANDS::unlane(SHELL::Session &session) {
   const Whole track = ::counted(session.arguments[1]);
   const Whole lane = ::counted(session.arguments[2]);
   if (!unlaned(track, lane))
-    return session.print("unlane refused: no such track or lane");
+    return session.print("unlane refused: no such lane");
   session.print(std::format("unlaned {} on track {}", lane, track));
 }
 
@@ -95,7 +95,7 @@ void SOUND::COMMANDS::place(SHELL::Session &session) {
   const Whole lane = ::counted(session.arguments[2]);
   const Whole index = TIMELINE::place(INVENTORY::held(), track, lane, span);
   if (index == NONE)
-    return session.print("clip refused: no such lane, stock, kind or span");
+    return session.print("clip refused: lane, stock, kind, span");
   HISTORY::record(
     {.act = "clip",
      .placements = {
@@ -112,7 +112,7 @@ void SOUND::COMMANDS::span(SHELL::Session &session) {
   const Whole placement = ::counted(session.arguments[3]);
   const Placement standing = ::standing(track, lane, placement);
   if (standing.placement == NONE)
-    return session.print("span refused: no such track, lane or placement");
+    return session.print("span refused: no such placement");
   if (session.arguments.size() < 6)
     return session.print(::placed(placement, standing.span));
   const ARRANGEMENT::TRACK::LANE::Clip shaped = {
@@ -122,7 +122,7 @@ void SOUND::COMMANDS::span(SHELL::Session &session) {
                                          : standing.span.from,
     .frames = ::counted(session.arguments[5])};
   if (!TIMELINE::span(track, lane, placement, shaped))
-    return session.print("span refused: no span, or it crosses a neighbour");
+    return session.print("span refused: no span, neighbour crossed");
   HISTORY::record(
     {.act = "span",
      .verb = Edit::CHANGED,
@@ -144,7 +144,7 @@ void SOUND::COMMANDS::restore(SHELL::Session &session) {
     track, lane, ::counted(session.arguments[3]),
     ::counted(session.arguments[4]));
   if (index == NONE)
-    return session.print("restore refused: no such outtake, or it would cross");
+    return session.print("restore refused: no outtake, neighbour crossed");
   session.print(
     ::placed(index, TIMELINE::held().tracks[track].lanes[lane].clips[index]));
 }
@@ -158,7 +158,7 @@ void SOUND::COMMANDS::lift(SHELL::Session &session) {
   if (
     covered.track == NONE ||
     !TIMELINE::lift(covered.track, covered.lane, covered.placement))
-    return session.print("lift refused: nothing stands there");
+    return session.print("lift refused: nothing placed");
   HISTORY::record(
     {.act = "lift", .verb = Edit::REMOVED, .placements = {covered}});
   session.print("lifted");

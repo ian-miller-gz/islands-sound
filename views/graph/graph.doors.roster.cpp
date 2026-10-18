@@ -7,6 +7,7 @@ using namespace SOUND;
 constexpr STRING::Hot PLUGGED = "plugins";
 constexpr STRING::Hot BUSSED = "bus";
 constexpr STRING::Hot TRACKED = "track";
+constexpr STRING::Hot RECORDED = "record";
 
 }  // namespace
 
@@ -17,5 +18,6 @@ auto SOUND::VIEWS::WIRED::PALETTE::doors() -> Vector<Door> {
   for (STRING::Hot device :
        {VIEWS::WIRED::SOURCES, VIEWS::WIRED::SINKS, VIEWS::WIRED::NOTED})
     rows.push_back({String(device), String(device)});
+  rows.push_back({String(::RECORDED), String(VIEWS::WIRED::INPUTS)});
   return rows;
 }

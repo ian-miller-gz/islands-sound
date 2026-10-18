@@ -16,8 +16,7 @@ using namespace SOUND;
 Vector<VIEWS::ROLL::Loose> held;
 Vector<VIEWS::ROLL::Loose> afloat;
 
-constexpr STRING::Hot ADRIFT =
-  "the pasted notes found no notes lane on their track";
+constexpr STRING::Hot ADRIFT = "track lacks notes lane";
 constexpr STRING::Hot PASTED = "paste";
 
 auto pipped(Whole slot) -> VIEWS::ROLL::Pip {

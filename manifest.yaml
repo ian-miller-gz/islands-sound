@@ -4,8 +4,7 @@ assets: assets
 splash: true
 size: 1280x800
 version: 3
-islands: 0.4
-release: 0.2.5
+release: 0.2.6
 gui:
   tip: true
   ladder: true
@@ -16,8 +15,3 @@ gui:
   playhead: true
   seat: true
 summary: Digital Audio Workstation
-engine:
-  platform: [posix, windows]
-platforms:
-  windows:
-    entry: libsound.dll

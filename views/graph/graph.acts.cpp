@@ -10,8 +10,8 @@
 
 namespace SOUND::VIEWS::WIRED {
 namespace {
-constexpr STRING::Hot ROOTED = "a track leaves by its own command";
-constexpr STRING::Hot TAKING = "a track's recorder leaves with its track";
+constexpr STRING::Hot ROOTED = "track command unseats track";
+constexpr STRING::Hot TAKING = "recorder follows track";
 
 auto dot(Whole node) -> String {
   return GUI::SAC::SEAT::named(VIEWS::WIRED::board().c_str(), node) + "." +

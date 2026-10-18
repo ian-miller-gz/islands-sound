@@ -8,10 +8,10 @@
 namespace {
 using namespace SOUND;
 
-constexpr STRING::Hot REFUSED = "that plugin would not be made";
-constexpr STRING::Hot UNOPENED = "that device would not open";
-constexpr STRING::Hot UNSENT = "the track has no audio out to send";
-constexpr STRING::Hot UNHEARD = "that track admits no audio";
+constexpr STRING::Hot REFUSED = "plugin not made";
+constexpr STRING::Hot UNOPENED = "device not opened";
+constexpr STRING::Hot UNSENT = "track lacks audio out";
+constexpr STRING::Hot UNHEARD = "track admits no audio";
 
 auto mouth(const String &root) -> Whole {
   const Node &held = GRAPH::held().nodes[GRAPH::at(root)];

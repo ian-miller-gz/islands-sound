@@ -61,13 +61,22 @@ auto least() -> GUI::Extent;
 void bound();
 void chase();
 
+struct Span {
+  Whole stock = NONE, opens = 0, closes = 0;
+};
+
 struct Point {
   Whole stock = NONE, index = NONE, at = 0, until = 0;
   Float value = 0.0f;
   Whole shape = SHAPE::HOLD;
+  Float low = 0.0f, high = 0.0f;
 };
 
 auto points() -> Vector<Point>;
+
+auto gather(const Span &lit) -> Vector<Point>;
+
+auto folded(const Vector<Point> &points, Float scale) -> Vector<Point>;
 
 struct Row {
   Whole at = NONE;
@@ -112,9 +121,6 @@ constexpr auto inside(const Aim &aim, Whole at) -> Whole {
   return at > aim.opens ? aim.from + (at - aim.opens) : aim.from;
 }
 
-struct Span {
-  Whole stock = NONE, opens = 0, closes = 0;
-};
 auto spans() -> Vector<Span>;
 
 auto seen() -> Span;

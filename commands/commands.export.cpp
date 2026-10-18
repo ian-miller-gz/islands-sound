@@ -70,12 +70,12 @@ auto SOUND::COMMANDS::exported(Whole track, const String &path) -> Export {
   const Vector<ARRANGEMENT::Track> &tracks = TIMELINE::held().tracks;
   if (track >= tracks.size()) return {.refusal = "no such track"};
   const Span span = ::spanned();
-  if (span.to <= span.from) return {.refusal = "nothing placed to render"};
+  if (span.to <= span.from) return {.refusal = "nothing placed"};
   Vector<Vector<Float>> lanes;
   RENDER::spool();
   if (!MASTER::bounce(
         ::outgoing(tracks[track].root), span.from, span.to - span.from, lanes))
-    return {.refusal = "the graph would not render"};
+    return {.refusal = "graph not rendered"};
   const String where = path.empty() ? ::named(tracks[track]) : path;
   std::error_code error;
   std::filesystem::create_directories(

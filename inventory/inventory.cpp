@@ -37,8 +37,7 @@ void SOUND::INVENTORY::adopt(const Inventory &taken) {
 }
 
 auto SOUND::INVENTORY::refuses(Whole kind) -> STRING::Hot {
-  return kind == KIND::DATA ? "a data stock's content awaits its first speaker"
-                            : "";
+  return kind == KIND::DATA ? "data stock awaits first speaker" : "";
 }
 
 auto SOUND::INVENTORY::add(const String &name, Whole kind) -> Whole {

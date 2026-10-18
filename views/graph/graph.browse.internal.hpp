@@ -14,7 +14,6 @@ constexpr STRING::Hot UP = "graph.browse.up";
 constexpr STRING::Hot NOTHING = "-";
 constexpr STRING::Hot INTO = "▸";
 constexpr STRING::Hot WITHIN = "/";
-constexpr STRING::Hot INPUTS = "inputs";
 constexpr STRING::Hot LANES = "lanes";
 
 constexpr STRING::Hot STANDARDS[] = {PLUGIN::NATIVE, PLUGIN::VST3};
@@ -49,6 +48,7 @@ struct Offer {
 
 auto shelved(const Vector<Whole> &takes, const Vector<Whole> &gives) -> Whole;
 
+auto rostered(const String &filing) -> Vector<Offer>;
 auto rows(const String &filing) -> Vector<Offer>;
 auto before(const Offer &one, const Offer &other) -> Flag;
 

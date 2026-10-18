@@ -145,6 +145,7 @@ void state(SHELL::Session &session) {
   VIEWS::ROLL::easel(session);
   VIEWS::ROLL::keys(session);
   VIEWS::ROLL::rail(session);
+  VIEWS::ROLL::dressed(session);
   VIEWS::ROLL::grid(session);
   VIEWS::ROLL::head(session);
   VIEWS::ROLL::ruler(session);

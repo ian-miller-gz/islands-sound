@@ -171,7 +171,7 @@ void SOUND::COMMANDS::join(SHELL::Session &session) {
     rows.push_back(::counted(session.arguments[at]));
   const Whole placement = COMMANDS::joined(track, lane, rows);
   if (placement == NONE)
-    return session.print("join refused: two placements of one lane, at least");
+    return session.print("join refused: two lane placements minimum");
   const Clip &span =
     TIMELINE::held().tracks[track].lanes[lane].clips[placement];
   session.print(std::format(
