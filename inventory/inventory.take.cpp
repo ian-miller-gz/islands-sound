@@ -42,15 +42,14 @@ void lay(
 auto SOUND::INVENTORY::take(Whole stock, const String &path) -> STRING::Hot {
   Inventory &pool = standing();
   if (stock >= pool.stocks.size()) return "no such stock";
-  if (pool.stocks[stock].kind != KIND::AUDIO)
-    return "the stock carries no take";
+  if (pool.stocks[stock].kind != KIND::AUDIO) return "stock carries no take";
   Vector<Byte> bytes;
   if (IO::read(path, bytes) != 0) return "unreadable";
   INVENTORY::RIFF::Shape shape;
-  if (!INVENTORY::RIFF::survey(bytes, shape)) return "not a WAVE";
+  if (!INVENTORY::RIFF::survey(bytes, shape)) return "not WAVE";
   if (shape.format != PCM || shape.width != WIDTH) return "not 16-bit PCM";
   if (shape.channels == 0 || shape.channels > WIDEST) return "too many lanes";
-  if (shape.size < shape.channels * shape.width) return "no frames in it";
+  if (shape.size < shape.channels * shape.width) return "no frames";
   pool.stocks[stock].take.path = path;
   ::lay(bytes, shape, pool.stocks[stock].take.lanes);
   stir(stock);
@@ -61,9 +60,8 @@ auto SOUND::INVENTORY::take(Whole stock, const Vector<Vector<Float>> &lanes)
   -> STRING::Hot {
   Inventory &pool = standing();
   if (stock >= pool.stocks.size()) return "no such stock";
-  if (pool.stocks[stock].kind != KIND::AUDIO)
-    return "the stock carries no take";
-  if (lanes.empty() || lanes[0].empty()) return "no frames in it";
+  if (pool.stocks[stock].kind != KIND::AUDIO) return "stock carries no take";
+  if (lanes.empty() || lanes[0].empty()) return "no frames";
   pool.stocks[stock].take = {.path = {}, .lanes = lanes};
   stir(stock);
   return "";

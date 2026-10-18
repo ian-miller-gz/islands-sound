@@ -80,8 +80,7 @@ void applied(SHELL::Session &session, const Edit &taken, Flag back) {
 auto SOUND::COMMANDS::walked(SHELL::Session &session, Flag back) -> String {
   const Edit *entry = back ? HISTORY::undoable() : HISTORY::redoable();
   if (entry == nullptr)
-    return back ? "undo refused: nothing to undo"
-                : "redo refused: nothing to redo";
+    return back ? "undo refused: no edit" : "redo refused: no undone edit";
   const Edit taken = *entry;
   ::applied(session, taken, back);
   if (back)

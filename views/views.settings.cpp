@@ -13,8 +13,8 @@ constexpr STRING::Hot SHADE = "settings.shade";
 constexpr STRING::Hot CLOSE = "settings.close";
 constexpr STRING::Hot LIT = "loose";
 constexpr STRING::Hot PLAIN = "place";
-constexpr STRING::Hot FOLLOWS = "Theme follows the launcher";
-constexpr STRING::Hot OWNS = "Theme is this application's own";
+constexpr STRING::Hot FOLLOWS = "Launcher theme";
+constexpr STRING::Hot OWNS = "Own theme";
 constexpr STRING::Hot LIGHT = "Light";
 constexpr STRING::Hot DARK = "Dark";
 

@@ -35,10 +35,6 @@ void build(Whole count) {
   VIEWS::built(::pool, count);
 }
 
-auto ran(Whole shape) -> GUI::Shape::Run {
-  return shape < std::size(::RUNS) ? ::RUNS[shape] : GUI::Shape::LINE;
-}
-
 auto run(const VIEWS::SIGNALS::Point &point) -> Float {
   return point.until > point.at ? VIEWS::SIGNALS::across(point.until - point.at)
                                 : 0.0f;
@@ -52,6 +48,30 @@ auto drop(const Vector<VIEWS::SIGNALS::Point> &rows, Whole row) -> Float {
     return VIEWS::SIGNALS::ORIGIN;
   return VIEWS::SIGNALS::down(rows[next].value) -
          VIEWS::SIGNALS::down(rows[row].value);
+}
+
+auto folded(const VIEWS::SIGNALS::Point &point) -> Flag {
+  return point.high > point.low;
+}
+
+auto placed(const VIEWS::SIGNALS::Point &point) -> GUI::Position {
+  return {
+    VIEWS::SIGNALS::across(point.at),
+    VIEWS::SIGNALS::down(::folded(point) ? point.high : point.value)};
+}
+
+auto ends(const Vector<VIEWS::SIGNALS::Point> &rows, Whole row) -> GUI::Ends {
+  const VIEWS::SIGNALS::Point &point = rows[row];
+  if (!::folded(point)) return {{::run(point), ::drop(rows, row)}};
+  return {
+    {VIEWS::SIGNALS::ORIGIN,
+     VIEWS::SIGNALS::down(point.low) - VIEWS::SIGNALS::down(point.high)}};
+}
+
+auto shaped(const VIEWS::SIGNALS::Point &point) -> GUI::Shape {
+  if (::folded(point) || point.shape >= std::size(::RUNS))
+    return {GUI::Shape::LINE};
+  return {::RUNS[point.shape]};
 }
 
 }  // namespace
@@ -71,12 +91,9 @@ void SOUND::VIEWS::SIGNALS::segments() {
   const String skin = dressed(::TREADED);
   for (Whole row = 0; row < rows.size(); ++row) {
     const String id = ::segment(row);
-    GUI::set(
-      page, id.c_str(),
-      GUI::Position{across(rows[row].at), down(rows[row].value)});
-    GUI::set(
-      page, id.c_str(), GUI::Ends{{::run(rows[row]), ::drop(rows, row)}});
-    GUI::set(page, id.c_str(), GUI::Shape{::ran(rows[row].shape)});
+    GUI::set(page, id.c_str(), ::placed(rows[row]));
+    GUI::set(page, id.c_str(), ::ends(rows, row));
+    GUI::set(page, id.c_str(), ::shaped(rows[row]));
     GUI::set(page, id.c_str(), GUI::Style{skin.c_str()});
     GUI::set(page, id.c_str(), GUI::Border{TREAD});
   }

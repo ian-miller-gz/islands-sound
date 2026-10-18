@@ -68,7 +68,7 @@ void SOUND::VIEWS::SIGNALS::plates() {
   const GUI::Handle page = document();
   const String field = board();
   if (VIEWS::reborn(::pool)) ::laid.clear();
-  Vector<Point> wanted = points();
+  Vector<Point> wanted = folded(points(), scaled());
   steadied(wanted);
   const Whole seats = VIEWS::sized(::pool, wanted.size(), window());
   if (seats != ::pool.stood) ::build(page, field, seats);

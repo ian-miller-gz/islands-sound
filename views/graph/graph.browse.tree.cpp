@@ -26,6 +26,15 @@ auto last(const String &path) -> String {
   return at == String::npos ? path : path.substr(at + String(WITHIN).size());
 }
 
+auto laned() -> Offer {
+  return {
+    .name = LANES,
+    .from = LANES,
+    .among = LANES,
+    .directory = true,
+    .holds = lacked(VIEWS::WIRED::steered()).size()};
+}
+
 auto held(const String &directory, const Vector<Offer> &plugins) -> Whole {
   return std::count_if(plugins.begin(), plugins.end(), [&](const Offer &row) {
     const String path = filed(row);
@@ -52,6 +61,7 @@ auto SOUND::VIEWS::WIRED::BROWSE::directories(
        .among = path,
        .directory = true,
        .holds = ::held(path, plugins)});
+  if (filing.empty()) rows.push_back(::laned());
   return rows;
 }
 

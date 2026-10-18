@@ -93,6 +93,7 @@ void dials(SHELL::Session &session);
 
 void rail();
 void rail(SHELL::Session &session);
+void dressed(SHELL::Session &session);
 
 constexpr Float RAILED = 52.0f;
 

@@ -116,12 +116,10 @@ void SOUND::COMMANDS::seat(SHELL::Session &session) {
       return session.print("seat refused: no such track");
     root = TIMELINE::held().tracks[track].root;
     if (!GRAPH::rooted(root))
-      return session.print("seat refused: that track has no root");
+      return session.print("seat refused: track lacks root");
   }
   if (GRAPH::bound(session.arguments[1]))
-    return session.print(
-      "seat refused: a surface seats by its device — "
-      "surface <track> <kind> <device ...>");
+    return session.print("seat refused: surface plugin");
   const String node = GRAPH::seat(session.arguments[1]);
   if (node.empty()) return session.print("no such plugin");
   SESSION::seated(session.arguments[1]);
@@ -182,10 +180,10 @@ void SOUND::COMMANDS::quiet(SHELL::Session &session) {
   if (session.arguments.size() < 3) return session.print("quiet <node> on|off");
   const String &said = session.arguments[2];
   if (said != "on" && said != "off")
-    return session.print("quiet refused: say on or off");
+    return session.print("quiet <node> on|off");
   const String &node = session.arguments[1];
   if (!quieted(node, said == HISTORY::WORD::ON))
-    return session.print("quiet refused: no such node, or a root");
+    return session.print("quiet refused: no such node, root");
   session.print(::seated(node));
 }
 
@@ -195,10 +193,9 @@ void SOUND::COMMANDS::unseat(SHELL::Session &session) {
   if (GRAPH::at(node) == NONE)
     return session.print("unseat refused: no such node");
   if (GRAPH::rooted(node))
-    return session.print("unseat refused: a track leaves by its own command");
+    return session.print("unseat refused: track command unseats track");
   if (GRAPH::held().nodes[GRAPH::at(node)].seat == Node::RECORD)
-    return session.print(
-      "unseat refused: a track's recorder leaves with its track");
+    return session.print("unseat refused: recorder follows track");
   Edit edit = {
     .act = "unseat", .verb = Edit::REMOVED, .graph = ::covered(node)};
   if (!unseated(node, edit.swept)) return session.print("unseat refused");
@@ -216,7 +213,7 @@ void SOUND::COMMANDS::home(SHELL::Session &session) {
   if (!homed(
         node, page, ::valued(session.arguments[2]),
         ::valued(session.arguments[3])))
-    return session.print("home refused: no such node or page");
+    return session.print("home refused: no such node, page");
   const Berth stood = GRAPH::berth(node, page);
   session.print(std::format(
     "homed {} at {:g} {:g}{}", node, stood.across, stood.down,

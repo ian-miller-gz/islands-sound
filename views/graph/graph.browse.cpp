@@ -38,7 +38,7 @@ void took(GUI::Handle page, const Vector<BROWSE::Offer> &rows) {
       BROWSE::surfacing(taken.from), taken.device,
       taken.lane == NONE ? 0 : taken.lane);
   if (!taken.target.empty()) return VIEWS::WIRED::send(taken.target);
-  if (taken.from == BROWSE::INPUTS)
+  if (taken.from == VIEWS::WIRED::INPUTS)
     return taken.lane == NONE ? CONTROL::choose(taken.name)
                               : CONTROL::choose(taken.lane);
   VIEWS::WIRED::take(taken.name);

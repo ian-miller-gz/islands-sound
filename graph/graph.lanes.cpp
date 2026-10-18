@@ -7,7 +7,7 @@
 namespace {
 using namespace SOUND;
 
-constexpr STRING::Hot RECORDING = "lane is sending and recording";
+constexpr STRING::Hot RECORDING = "lane sending, recording";
 
 auto seat(const String &root, Whole out) -> Node * {
   if (!GRAPH::rooted(root)) return nullptr;

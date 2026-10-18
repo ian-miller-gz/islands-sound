@@ -80,6 +80,7 @@ constexpr STRING::Hot TRACKS = "tracks";
 constexpr STRING::Hot SOURCES = "in";
 constexpr STRING::Hot SINKS = "out";
 constexpr STRING::Hot NOTED = "midi";
+constexpr STRING::Hot INPUTS = "inputs";
 
 constexpr STRING::Hot DOORS = "graph.palette.door";
 

@@ -72,7 +72,7 @@ void SOUND::COMMANDS::stretch(SHELL::Session &session) {
   const Whole index = ::counted(session.arguments[2]);
   Score score = INVENTORY::held().stocks[stock].score;
   if (!SCORE::stretch(score, index, ::counted(session.arguments[3])))
-    return session.print("stretch refused: no such note, or no length");
+    return session.print("stretch refused: no note, no length");
   ::taken(stock);
   INVENTORY::score(stock, score);
   ::wrote("stretch", stock);

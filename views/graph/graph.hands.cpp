@@ -13,10 +13,9 @@
 namespace {
 using namespace SOUND;
 
-constexpr STRING::Hot ADRIFT = "that wire lands on nothing the graph holds";
-constexpr STRING::Hot MISSING = "the graph holds no such wire";
-constexpr STRING::Hot CIRCLED =
-  "closes a circle: dormant until a wire in it is cut";
+constexpr STRING::Hot ADRIFT = "wire lands nowhere";
+constexpr STRING::Hot MISSING = "no such wire";
+constexpr STRING::Hot CIRCLED = "wire dormant, circle closed";
 
 struct End {
   String node;

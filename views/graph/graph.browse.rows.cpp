@@ -36,17 +36,23 @@ auto SOUND::VIEWS::WIRED::BROWSE::before(const Offer &one, const Offer &other)
   return one.name < other.name;
 }
 
-auto SOUND::VIEWS::WIRED::BROWSE::rows(const String &filing) -> Vector<Offer> {
-  const Vector<Offer> plugins = catalogued();
+auto SOUND::VIEWS::WIRED::BROWSE::rostered(const String &filing)
+  -> Vector<Offer> {
   Vector<Offer> rows;
+  if (filing.empty()) return rows;
   ::tracked(rows, VIEWS::WIRED::steering());
   recorded(rows);
   surfaced(rows);
   const Vector<Offer> lanes = lacked(VIEWS::WIRED::steered());
   rows.insert(rows.end(), lanes.begin(), lanes.end());
-  if (!filing.empty())
-    std::erase_if(rows, [&](const Offer &row) { return row.from != filing; });
+  std::erase_if(rows, [&](const Offer &row) { return row.from != filing; });
   std::sort(rows.begin(), rows.end(), before);
+  return rows;
+}
+
+auto SOUND::VIEWS::WIRED::BROWSE::rows(const String &filing) -> Vector<Offer> {
+  const Vector<Offer> plugins = catalogued();
+  const Vector<Offer> rows = rostered(filing);
   if (!planted(filing, plugins)) return rows;
   Vector<Offer> level = directories(filing, plugins);
   const Vector<Offer> held = under(filing, plugins);

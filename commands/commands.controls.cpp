@@ -47,11 +47,10 @@ void SOUND::COMMANDS::look(SHELL::Session &session) {
   const String &token = session.arguments[1];
   if (token == ::WHOLE) {
     CONTROL::aim({});
-    return session.print("looking at the whole graph");
+    return session.print("looking whole graph");
   }
   if (GRAPH::at(token) == NONE)
     return session.print("look refused: no such node");
   CONTROL::aim(token);
-  session.print(
-    std::format("looking at node {} {}", token, VIEWS::named(token)));
+  session.print(std::format("looking node {} {}", token, VIEWS::named(token)));
 }

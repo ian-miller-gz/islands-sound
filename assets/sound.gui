@@ -214,7 +214,7 @@ panel root style=clear anchor=stretch
       panel params.choices style=sheet visible=false z=9 anchor=northwest x=0 y=0 w=160 h=36
         list params.choices.rows style=clear anchor=stretch x=6 y=6 w=6 h=6 pitch=24 pad=3 mark=selected plain=row
   panel export.ask style=sheet visible=false z=11 anchor=center x=0 y=0 w=320 h=120
-    label export.ask.head style=muted size=14 x=10 y=8 w=300 h=18 text="Export tracks and buses"
+    label export.ask.head style=muted size=14 x=10 y=8 w=300 h=18 text="Export tracks, buses"
     panel exportrow style=clear visible=false
       label exportrow.tick style=ink size=15 anchor=northwest x=6 y=3 w=18 h=18
       label exportrow.name style=ink size=15 anchor=northwest x=28 y=3 w=260 h=18
