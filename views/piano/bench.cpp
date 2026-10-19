@@ -23,8 +23,8 @@ constexpr Float LONGEST = 16.0f;
 constexpr Float SOFTEST = 1.0f;
 constexpr Float FORTE = 100.0f;
 
-constexpr Flag LETTERED = false;
-constexpr Flag DRAWN = true;
+constexpr GUI::Dial::Graphic LETTERED = GUI::Dial::NONE;
+constexpr GUI::Dial::Graphic DRAWN = GUI::Dial::BAR;
 constexpr Whole SMOOTH = 0;
 
 Flag stood = false;

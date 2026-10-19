@@ -2,6 +2,7 @@
 #pragma once
 #include "../../graph.hpp"
 #include "../views.hpp"
+#include "../views.letters.hpp"
 
 namespace SOUND::VIEWS::WIRED {
 
@@ -17,8 +18,6 @@ constexpr STRING::Hot FACE = "face";
 constexpr STRING::Hot NAME = "name";
 
 constexpr STRING::Hot DEVICE = "device";
-
-constexpr Float ADVANCE = 0.6f;
 
 constexpr Float WIDE = 190.0f;
 constexpr Float CELL = 20.0f;
@@ -38,8 +37,6 @@ void label(
   const GUI::Extent &size, Float letter, const Port &worn);
 
 auto worded(const Port &worn) -> String;
-
-auto cropped(const String &word, Float wide, Float letter) -> String;
 
 void title(
   const String &box, const GUI::Position &at, const GUI::Extent &band,

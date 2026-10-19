@@ -11,13 +11,23 @@
 namespace {
 using namespace SOUND;
 
-auto dressed(const AUDIO::PLUGIN::Control &published) -> GUI::Dial {
+constexpr STRING::Hot PATTERN = "rig.bar";
+
+auto graphic(GUI::Handle page, const AUDIO::PLUGIN::Control &published)
+  -> GUI::Dial::Graphic {
+  if (VIEWS::RACK::listed(published)) return GUI::Dial::NONE;
+  if (published.steps == 1) return GUI::Dial::BAR;
+  return GUI::GET::dial(page, ::PATTERN).graphic;
+}
+
+auto dressed(GUI::Handle page, const AUDIO::PLUGIN::Control &published)
+  -> GUI::Dial {
   return {
     .least = published.least,
     .most = published.most,
     .resting = published.resting,
     .steps = published.steps,
-    .graphic = !VIEWS::RACK::listed(published)};
+    .graphic = ::graphic(page, published)};
 }
 
 auto instant() -> Whole {
@@ -72,10 +82,13 @@ auto SOUND::VIEWS::RACK::shown(const Row &row) -> String {
 
 void SOUND::VIEWS::RACK::turn(
   GUI::Handle page, const String &cell, const Row &row) {
+  if (head(row)) return;
   const String barred = cell + "." + BARRED;
   const AUDIO::PLUGIN::Control published = described(row);
-  GUI::set(page, barred.c_str(), ::dressed(published));
+  GUI::set(page, barred.c_str(), ::dressed(page, published));
   mark(page, cell, published);
+  bound(page, cell, row);
+  typed(page, cell, row);
   if (GUI::GET::dialled(page, barred.c_str()))
     return moved(row, GUI::GET::value(page, barred.c_str()));
   GUI::set(page, barred.c_str(), GUI::Value{held(row)});

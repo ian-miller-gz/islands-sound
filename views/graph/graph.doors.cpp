@@ -27,7 +27,7 @@ Whole born = 0;
 auto named(Whole at) -> String { return std::format("{}.{}", ::DOOR, at); }
 
 auto wide(const String &word) -> Float {
-  return ::PAD * 2.0f + VIEWS::WIRED::ADVANCE * ::LETTER * Float(word.size());
+  return ::PAD * 2.0f + VIEWS::LETTERS::ADVANCE * ::LETTER * Float(word.size());
 }
 
 void build(Whole count) {

@@ -8,6 +8,10 @@ auto SOUND::VIEWS::LANE::field() -> String {
   return String(faced()->name) + "." + BOARD;
 }
 
+auto SOUND::VIEWS::LANE::field(Whole kind) -> String {
+  return String(faced(kind)->name) + "." + BOARD;
+}
+
 auto SOUND::VIEWS::LANE::windowed() -> Float {
   const GUI::Handle page = document();
   const String id = field();

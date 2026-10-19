@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include "views.internal.hpp"
+#include "views.split.hpp"
 
 namespace {
 using namespace SOUND;
@@ -35,6 +36,7 @@ void seated(const FIELDS::Map &face, const String &grip) {
 auto SOUND::VIEWS::kept() -> FIELDS::Map {
   FIELDS::Map face;
   face[::VIEWED] = String(standing());
+  SPLIT::keep(face);
   for (const View &unit : roster()) {
     if (::boarded(unit)) VIEWS::KEPT::board(face, unit);
     const String rows = String(unit.name) + "." + ROWS;
@@ -55,6 +57,7 @@ void SOUND::VIEWS::keep(const FIELDS::Map &face) {
   if (viewed != face.end())
     if (const String *name = std::get_if<String>(&viewed->second))
       choose(*name);
+  SPLIT::restore(face);
   for (const View &unit : roster()) {
     if (::boarded(unit)) VIEWS::KEPT::boarded(face, unit);
     const String rows = String(unit.name) + "." + ROWS;

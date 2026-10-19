@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include "views.internal.hpp"
+#include "views.split.hpp"
 
 auto SOUND::VIEWS::icon(STRING::Hot view) -> String {
   return String(STRIP) + "." + view;
@@ -44,7 +45,8 @@ void SOUND::VIEWS::show(const View &unit, Flag on) {
 void SOUND::VIEWS::show() {
   const Vector<View> &units = registry();
   for (Whole row = 0; row < units.size(); ++row) {
-    const Flag on = units[row].panel ? standings()[row] : row == chosen();
+    const Flag on = units[row].panel ? standings()[row]
+                                     : row == chosen() || row == SPLIT::lower();
     show(units[row], on);
     if (units[row].panel) continue;
     GUI::set(

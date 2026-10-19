@@ -10,6 +10,7 @@ using namespace SOUND;
 
 struct Key {
   Whole opens = 0, closes = 0, kind = NONE, number = NONE, counted = NONE;
+  Whole track = NONE, lane = NONE;
   Vector<Whole> clips;
   auto operator==(const Key &other) const -> Flag = default;
 };
@@ -20,14 +21,17 @@ Vector<VIEWS::SIGNALS::Point> kept;
 auto keyed() -> Key {
   const VIEWS::SIGNALS::Span lit = VIEWS::SIGNALS::seen();
   Key now = {
-    lit.opens, lit.closes, VIEWS::SIGNALS::paged(), VIEWS::SIGNALS::number(),
-    INVENTORY::counted()};
-  for (const ARRANGEMENT::Track &track : TIMELINE::held().tracks)
-    for (const ARRANGEMENT::TRACK::Lane &lane : track.lanes)
-      if (lane.kind == now.kind)
-        for (const ARRANGEMENT::TRACK::LANE::Clip &span : lane.clips)
-          now.clips.insert(
-            now.clips.end(), {span.stock, span.at, span.from, span.frames});
+    lit.opens,
+    lit.closes,
+    VIEWS::SIGNALS::paged(),
+    VIEWS::SIGNALS::number(),
+    INVENTORY::counted(),
+    VIEWS::SIGNALS::attended(),
+    VIEWS::SIGNALS::laned()};
+  for (const ARRANGEMENT::TRACK::LANE::Clip &span :
+       TIMELINE::spans(now.track, now.lane))
+    now.clips.insert(
+      now.clips.end(), {span.stock, span.at, span.from, span.frames});
   return now;
 }
 

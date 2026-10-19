@@ -15,7 +15,7 @@ constexpr STRING::Hot NOTHING = "none";
 constexpr STRING::Hot BETWEEN = " · ";
 constexpr Float LEAST = 0.0f;
 constexpr Float RESTING = 1.0f;
-constexpr Flag LETTERED = false;
+constexpr GUI::Dial::Graphic LETTERED = GUI::Dial::NONE;
 
 Whole paging = KIND::CONTROL;
 Flag stood = false;
@@ -80,6 +80,7 @@ auto SOUND::VIEWS::SIGNALS::number() -> Whole {
 }
 
 void SOUND::VIEWS::SIGNALS::number(Whole paged) {
+  ::shaped(document());
   GUI::set(document(), ::NUMBER, GUI::Value{Float(paged)});
 }
 

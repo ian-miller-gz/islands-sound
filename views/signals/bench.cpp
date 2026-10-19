@@ -16,7 +16,7 @@ constexpr Whole CLIMBED = sizeof(::RUNGS) / sizeof(::RUNGS[0]) - 1;
 constexpr Float FINEST = 0.0f;
 constexpr Float BEAT = 3.0f;
 constexpr Whole LEAST = 1;
-constexpr Flag LETTERED = false;
+constexpr GUI::Dial::Graphic LETTERED = GUI::Dial::NONE;
 
 Flag stood = false;
 Whole born = 0;

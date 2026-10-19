@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #pragma once
 #include "graph.hpp"
+#include "graph.vetted.hpp"
 
 namespace SOUND::GRAPH {
 
@@ -48,8 +49,6 @@ auto mirrored(const Port &port) -> Port;
 auto worn(const String &node, Whole kind) -> Whole;
 
 auto noted(const String &node, Whole out) -> Flag;
-
-auto vetted(const String &node, Whole parameter) -> STRING::Hot;
 
 auto circled(const Wire &candidate) -> Flag;
 

@@ -2,10 +2,9 @@
 #include <format>
 
 #include "../../graph.hpp"
-#include "../../kind.hpp"
 #include "../../plugin.hpp"
 #include "../../render.hpp"
-#include "../../timeline.hpp"
+#include "../lane/lane.face.hpp"
 #include "signals.internal.hpp"
 
 namespace {
@@ -19,13 +18,7 @@ auto describes(AUDIO::PLUGIN::Control &out) -> Flag {
 }  // namespace
 
 auto SOUND::VIEWS::SIGNALS::laned() -> Whole {
-  const Whole track = attended();
-  if (track == NONE) return NONE;
-  const Vector<ARRANGEMENT::TRACK::Lane> &lanes =
-    TIMELINE::held().tracks[track].lanes;
-  for (Whole lane = 0; lane < lanes.size(); ++lane)
-    if (lanes[lane].kind == KIND::CONTROL) return lane;
-  return NONE;
+  return LANE::edited(paged()).lane;
 }
 
 auto SOUND::VIEWS::SIGNALS::mapped() -> String {
@@ -37,7 +30,8 @@ auto SOUND::VIEWS::SIGNALS::named() -> String {
   const String plugin = mapped();
   if (plugin.empty()) return {};
   const Whole paged = number();
-  return paged < VIEWS::parameters(plugin) ? VIEWS::named(plugin, paged) : String();
+  return paged < VIEWS::parameters(plugin) ? VIEWS::named(plugin, paged)
+                                           : String();
 }
 
 auto SOUND::VIEWS::SIGNALS::unit() -> String {

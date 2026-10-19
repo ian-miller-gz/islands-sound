@@ -2,7 +2,6 @@
 #include <format>
 
 #include "../../commands.hpp"
-#include "../../graph.hpp"
 #include "../../kind.hpp"
 #include "../../timeline.hpp"
 #include "trace.internal.hpp"
@@ -15,17 +14,10 @@ constexpr STRING::Hot NAMED = "name";
 constexpr STRING::Hot KIND = "kind";
 constexpr STRING::Hot EDIT = "edit";
 constexpr STRING::Hot SHED = "shed";
-constexpr STRING::Hot SHOWN = "shown";
-constexpr STRING::Hot HIDDEN = "hidden";
 constexpr STRING::Hot KINDS = "trace.kind";
 
 Flag laned = false;
 Whole adding = KIND::AUDIO;
-
-auto admits(Whole track, Whole lane) -> Flag {
-  const String root = TIMELINE::held().tracks[track].root;
-  return GRAPH::rooted(root) && GRAPH::admitted(root, lane) != NONE;
-}
 
 void grown(GUI::Handle page, Whole track) {
   if (!GUI::GET::clicked(page, TRACE::GROW)) return;
@@ -63,6 +55,7 @@ void rowed(GUI::Handle page, Whole track) {
 
 auto SOUND::VIEWS::TRACE::laning() -> Flag { return ::laned; }
 void SOUND::VIEWS::TRACE::laning(Flag on) { ::laned = on; }
+auto SOUND::VIEWS::TRACE::adding() -> Whole { return ::adding; }
 
 auto SOUND::VIEWS::TRACE::kinded(
   GUI::Handle page, STRING::Hot door, STRING::Hot whose, Whole &kind) -> Flag {
@@ -88,20 +81,6 @@ void SOUND::VIEWS::TRACE::lanes() {
   }
   ::rowed(page, track);
   ::grown(page, track);
-}
-
-void SOUND::VIEWS::TRACE::lanes(SHELL::Session &session) {
-  const Whole track = attended();
-  const Whole count =
-    track == NONE ? 0 : TIMELINE::held().tracks[track].lanes.size();
-  session.print(std::format(
-    "lanes {} rows {} kind {}", ::laned ? ::SHOWN : ::HIDDEN, count,
-    KIND::spoken(::adding)));
-  for (Whole lane = 0; lane < count; ++lane) {
-    const ARRANGEMENT::TRACK::Lane &held =
-      TIMELINE::held().tracks[track].lanes[lane];
-    session.print(std::format(
-      "lane {} {} {} admits {}", lane, held.name, KIND::spoken(held.kind),
-      ::admits(track, lane) ? "on" : "off"));
-  }
+  asked(page);
+  marked(page);
 }

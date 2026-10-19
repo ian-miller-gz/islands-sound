@@ -3,10 +3,6 @@
 
 #include "params.internal.hpp"
 
-namespace {
-constexpr STRING::Hot DOOR = "steps";
-}  // namespace
-
 auto SOUND::VIEWS::RACK::stepped(
   const AUDIO::PLUGIN::Control &published, Float value) -> Whole {
   const Float span = published.most - published.least;
@@ -32,7 +28,8 @@ auto SOUND::VIEWS::RACK::listed(const Row &row) -> Flag {
 
 void SOUND::VIEWS::RACK::door(
   GUI::Handle page, const String &cell, const Row &row) {
-  const String id = cell + "." + ::DOOR;
+  if (head(row)) return;
+  const String id = cell + "." + STEPPED;
   GUI::set(page, id.c_str(), GUI::Visibility{listed(row)});
   if (GUI::GET::clicked(page, id.c_str())) return raise(page, id, row);
   seated(page, id, row);

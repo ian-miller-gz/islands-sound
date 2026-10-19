@@ -35,7 +35,7 @@ auto fitted(GUI::Handle page, const Vector<Offer> &rows) -> Fit {
     name = std::max(name, Float(::titled(offer).size()));
     reading = std::max(reading, Float(crossed(offer).size()));
   }
-  const Float advance = VIEWS::WIRED::ADVANCE;
+  const Float advance = VIEWS::LETTERS::ADVANCE;
   const GUI::Position west =
     GUI::GET::position(page, (String(::PATTERN) + "." + ::CROSSING).c_str());
   const GUI::Position named =

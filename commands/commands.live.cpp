@@ -32,6 +32,20 @@ void tapped() {
   RENDER::TAP::aim(::aimed(taking));
 }
 
+void turned(const CONTROL::MAP::Turn &turn) {
+  const Address &address = turn.address;
+  if (GRAPH::vetted(address.node, address.parameter)[0] != '\0') return;
+  const AUDIO::PLUGIN::Plug &surface = *GRAPH::offered(address.node)->surface;
+  AUDIO::PLUGIN::Control control;
+  if (
+    surface.control == nullptr ||
+    !surface.control(GRAPH::instance(address.node), address.parameter, control))
+    return;
+  const Float value = CONTROL::MAP::scaled(control, turn.fraction);
+  GRAPH::hand(address.node, address.parameter, value);
+  CONTROL::turn(address, value);
+}
+
 void route() {
   const Vector<ARRANGEMENT::Track> &tracks = TIMELINE::held().tracks;
   const Whole track = CONTROL::driven();
@@ -39,6 +53,7 @@ void route() {
     for (const AUDIO::PLUGIN::Event &edge : CONTROL::arrived())
       GRAPH::hand(tracks[track].root, edge);
   CONTROL::taken();
+  for (const CONTROL::MAP::Turn &turn : CONTROL::MAP::drained()) ::turned(turn);
 }
 
 }  // namespace

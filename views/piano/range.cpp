@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <algorithm>
-#include <format>
 
 #include <island/gui/nga.hpp>
 #include <island/gui/seat.hpp>
@@ -88,13 +87,4 @@ void SOUND::VIEWS::ROLL::range() {
     GUI::set(page, name.c_str(), GUI::Text{lit[span].name});
     GUI::set(page, name.c_str(), GUI::Position{::held(lit[span]), ::PAD});
   }
-}
-
-void SOUND::VIEWS::ROLL::range(SHELL::Session &session) {
-  const Vector<Span> lit = spans();
-  session.print(std::format("range spans {}", lit.size()));
-  for (const Span &span : lit)
-    session.print(std::format(
-      "range stock {} name {} opens {} closes {}", span.stock, span.name,
-      span.opens, span.closes));
 }

@@ -1,7 +1,7 @@
 style=assets/islands.gui
 style=styles.gui
 style night color=#2a1f18ff border=0
-style day color=#ebe2cfff border=0
+style day color=#fefbf3ff border=0
 
 panel root style=clear anchor=stretch
   panel views style=sheet z=9 anchor=left|right x=240 y=40 w=8 h=34
@@ -13,7 +13,7 @@ panel root style=clear anchor=stretch
     label views.arranger.hint visible=false text="Arranger"
     label views.graph.hint visible=false text="Graph"
     label views.params.hint visible=false text="Parameter"
-    label views.arranger.door.hint visible=false text="Pages"
+    label views.arranger.door.hint visible=false text="Editor"
   panel deck style=sheet z=9 anchor=left|right x=240 y=82 w=8 h=34
     button deck.behind style=icon size=18 x=6 y=3 w=28 h=28 text="⇤"
     button deck.play style=icon size=18 x=36 y=3 w=28 h=28 text="▶"
@@ -103,13 +103,8 @@ panel root style=clear anchor=stretch
       grip arranger.handle style=place z=9 axis=free carry=pointer anchor=northeast x=-8 y=82 w=240 h=12
         panel arranger.palette style=palette z=0 anchor=northeast x=0 y=12 w=240 h=118
           button arranger.session style=icon size=15 z=1 x=8 y=3 w=28 h=24 text="▬"
-          button arranger.notes style=icon size=15 z=1 x=40 y=3 w=28 h=24 text="♪"
-          button arranger.control style=icon size=15 z=1 x=72 y=3 w=36 h=24 text="CC"
-          button arranger.program style=icon size=15 z=1 x=112 y=3 w=44 h=24 text="PGM"
           label arranger.session.hint visible=false text="Arrangement"
-          label arranger.notes.hint visible=false text="Notes"
-          label arranger.control.hint visible=false text="Control"
-          label arranger.program.hint visible=false text="Program"
+          label arranger.lane style=muted size=14 z=1 visible=false x=40 y=6 w=192 h=18
           panel arranger.rule style=rule x=6 y=29 w=228 h=1
           panel arrangement.tools style=clear anchor=northwest x=0 y=0 w=240 h=118
             button arrangement.snap style=icon size=15 x=8 y=31 w=26 h=22 text="#"
@@ -126,9 +121,12 @@ panel root style=clear anchor=stretch
               dial piano.bench.length style=entry size=14 x=58 y=59 w=44 h=24 pad=8
               label piano.bench.loud.label style=muted size=14 x=110 y=63 w=38 h=18 text="Loud"
               dial piano.bench.loud style=entry size=14 x=150 y=59 w=76 h=24 pad=8 graphic=true
-              label piano.bench.key.label style=muted size=14 x=8 y=91 w=32 h=18 text="Key"
-              button piano.bench.tonic style=place size=14 x=42 y=87 w=40 h=24
-              button piano.bench.scale style=place size=14 x=86 y=87 w=78 h=24
+              button piano.bench.notation style=place size=14 x=8 y=87 w=92 h=24
+              button piano.bench.tonic style=place size=14 x=104 y=87 w=40 h=24
+              button piano.bench.scale style=place size=14 x=148 y=87 w=84 h=24
+              button piano.bench.map style=place size=14 x=104 y=87 w=128 h=24 visible=false
+              label piano.bench.notation.hint visible=false text="Notation"
+              label piano.bench.map.hint visible=false text="Map"
               label piano.bench.tonic.hint visible=false text="Tonic"
               label piano.bench.scale.hint visible=false text="Scale"
               label piano.draw.hint visible=false text="Draw"
@@ -207,12 +205,23 @@ panel root style=clear anchor=stretch
       label params.aimed style=ink size=14 x=176 y=8 w=300 h=18
       panel rig style=clear visible=false
         label rig.name style=ink size=15 anchor=northwest x=6 y=3
+        label rig.head style=muted size=14 visible=false anchor=northwest x=6 y=5
         button rig.steps style=icon size=13 visible=false anchor=northwest x=210 y=1 w=22 h=22 text="▼"
-        dial rig.bar style=entry size=15 pad=6 anchor=left|right x=236 y=1 w=6 h=22 graphic=true
+        dial rig.bar style=knob size=15 pad=6 anchor=left|right x=236 y=1 w=58 h=22 graphic=dial
+        label rig.bound style=muted size=13 visible=false anchor=northeast x=-6 y=4 w=48 h=16
         panel rig.mark style=restmark visible=false anchor=northwest x=0 y=1 w=1 h=22
       list params.rows style=clear anchor=stretch x=8 y=36 w=8 h=8 pitch=24 pad=3 plain=row pattern=rig
       panel params.choices style=sheet visible=false z=9 anchor=northwest x=0 y=0 w=160 h=36
         list params.choices.rows style=clear anchor=stretch x=6 y=6 w=6 h=6 pitch=24 pad=3 mark=selected plain=row
+  grip split style=place z=10 axis=down anchor=left|right x=240 y=0 w=8 h=8
+    label split.mark style=muted size=10 anchor=center x=0 y=-1 w=12 h=10 text="═"
+    panel split.views style=sheet visible=false anchor=left|right x=0 y=8 w=0 h=34
+      button split.arranger style=icon size=18 x=4 y=3 w=28 h=28 text="▬"
+      button split.graph style=icon size=18 x=34 y=3 w=28 h=28 text="⇒"
+      button split.params style=icon size=18 x=64 y=3 w=28 h=28 text="≣"
+      label split.arranger.hint visible=false text="Arranger"
+      label split.graph.hint visible=false text="Graph"
+      label split.params.hint visible=false text="Parameter"
   panel export.ask style=sheet visible=false z=11 anchor=center x=0 y=0 w=320 h=120
     label export.ask.head style=muted size=14 x=10 y=8 w=300 h=18 text="Export tracks, buses"
     panel exportrow style=clear visible=false

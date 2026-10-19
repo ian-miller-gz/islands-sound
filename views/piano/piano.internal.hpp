@@ -191,6 +191,14 @@ void stretched(Whole slot, Whole length);
 void discard(const Vector<Whole> &slots);
 
 auto plates() -> const Vector<Pip> &;
+
+auto pips() -> Vector<Pip>;
+
+void seat(
+  GUI::Handle page, const Vector<Pip> &wanted, const Vector<Pip> &shown);
+
+void state(SHELL::Session &session);
+
 auto wide(Whole length) -> Float;
 
 void hands();

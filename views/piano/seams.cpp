@@ -7,24 +7,14 @@
 
 #include "../../boards.hpp"
 #include "../../timeline.hpp"
-#include "piano.internal.hpp"
+#include "piano.seams.hpp"
 
 namespace {
 using namespace SOUND;
+using VIEWS::ROLL::SEAMS::Seam;
 
 constexpr STRING::Hot BED = "seam";
-constexpr STRING::Hot GLYPH = "seamcross";
-constexpr STRING::Hot CROSS = "✖";
 constexpr STRING::Hot LIST = "tracks";
-constexpr Float LETTER = 26.0f;
-constexpr Float HALF = 0.5f;
-constexpr Float STILL = 0.0f;
-
-struct Seam {
-  Whole west = NONE, east = NONE;
-  Whole at = 0;
-  Flag flush = false;
-};
 
 Whole stood = 0;
 Whole edged = 0;
@@ -74,26 +64,6 @@ auto flushed(const Vector<::Seam> &seams) -> Vector<Whole> {
   return pulses;
 }
 
-void crossed(GUI::Handle page, const Vector<::Seam> &seams) {
-  const String bed = ::bed();
-  VIEWS::ROLL::SEAMS::built(
-    page, bed, seams.size(), ::stood, "button", ::GLYPH);
-  const Float scale = VIEWS::ROLL::scaled();
-  const Float mark = VIEWS::ROLL::SEAMS::MARK;
-  const Float wide = scale > ::STILL ? mark / scale : mark;
-  for (Whole seam = 0; seam < seams.size(); ++seam) {
-    const String id = GUI::SAC::SEAT::named(bed.c_str(), seam);
-    GUI::set(page, id.c_str(), GUI::Text{String(::CROSS)});
-    GUI::set(page, id.c_str(), GUI::Size{::LETTER});
-    GUI::set(
-      page, id.c_str(),
-      GUI::Position{
-        VIEWS::ROLL::across(seams[seam].at) - wide * ::HALF,
-        VIEWS::ROLL::DEEP * ::HALF - mark * ::HALF});
-    GUI::set(page, id.c_str(), GUI::Extent{wide, mark});
-  }
-}
-
 auto pressed(GUI::Handle page, const Vector<::Seam> &seams) -> Flag {
   const String bed = ::bed();
   for (Whole seam = 0; seam < seams.size(); ++seam) {
@@ -125,7 +95,7 @@ void SOUND::VIEWS::ROLL::seams() {
   const Vector<::Seam> seams = ::seamed();
   if (::pressed(page, seams)) return;
   VIEWS::ROLL::SEAMS::lined(page, ::flushed(seams), ::edged);
-  ::crossed(page, seams);
+  SEAMS::crossed(page, ::bed(), seams, ::stood);
 }
 
 void SOUND::VIEWS::ROLL::seams(SHELL::Session &session) {

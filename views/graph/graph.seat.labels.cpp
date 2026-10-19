@@ -10,8 +10,6 @@ using namespace SOUND;
 
 constexpr STRING::Hot LABELLED = "label";
 constexpr STRING::Hot INKED = "slabink";
-constexpr STRING::Hot CUT = "…";
-constexpr Whole MARKED = 1;
 
 }  // namespace
 
@@ -19,18 +17,6 @@ auto SOUND::VIEWS::WIRED::worded(const Port &worn) -> String {
   const String kind(KIND::spoken(worn.kind));
   if (worn.kind != KIND::DATA || worn.type.empty()) return kind;
   return std::format("{}.{}", kind, worn.type);
-}
-
-auto SOUND::VIEWS::WIRED::cropped(const String &word, Float wide, Float letter)
-  -> String {
-  const Whole columns = Whole(wide / (ADVANCE * letter));
-  if (UNICODE::columns(word) <= columns) return word;
-  if (columns <= ::MARKED) return {};
-  String cut;
-  Whole at = 0;
-  while (UNICODE::columns(cut) + ::MARKED < columns)
-    cut += UNICODE::encode(UNICODE::decode(word, at));
-  return cut + String(::CUT);
 }
 
 void SOUND::VIEWS::WIRED::title(
@@ -63,5 +49,7 @@ void SOUND::VIEWS::WIRED::label(
   BOARDS::place(page, box.c_str(), "label", id, at, size);
   GUI::set(page, id.c_str(), GUI::Style{::INKED});
   GUI::set(page, id.c_str(), GUI::Size{letter});
-  GUI::set(page, id.c_str(), GUI::Text{cropped(said, size.w, letter).c_str()});
+  GUI::set(
+    page, id.c_str(),
+    GUI::Text{LETTERS::cropped(said, size.w, letter).c_str()});
 }

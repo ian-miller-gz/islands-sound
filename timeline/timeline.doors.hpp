@@ -94,9 +94,9 @@ auto lift(Whole track, Whole lane, Whole placement) -> Flag;
 
 auto ended() -> Whole;
 
-auto spans(Whole track, Whole kind) -> Vector<ARRANGEMENT::TRACK::LANE::Clip>;
+auto spans(Whole track, Whole lane) -> Vector<ARRANGEMENT::TRACK::LANE::Clip>;
 
-auto covered(Whole track, Whole kind, Whole at)
+auto covered(Whole track, Whole lane, Whole at)
   -> ARRANGEMENT::TRACK::LANE::Clip;
 
 auto bump(

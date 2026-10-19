@@ -3,7 +3,6 @@
 #include <format>
 
 #include "../../kind.hpp"
-#include "../../timeline.hpp"
 #include "signals.internal.hpp"
 
 namespace {
@@ -13,7 +12,6 @@ constexpr STRING::Hot BUTTON = "lane.map";
 constexpr STRING::Hot BAND = "signals.tools";
 constexpr STRING::Hot PANEL = "lane.mapping";
 constexpr STRING::Hot ROWS = "lane.mapping.rows";
-constexpr STRING::Hot ACT = "map";
 constexpr STRING::Hot NOTHING = "none";
 constexpr Float WIDE = 220.0f;
 constexpr Float FRAME = 12.0f;
@@ -59,23 +57,13 @@ void browse(GUI::Handle page) {
   ::plate(page);
 }
 
-void wrote(const String &plugin) {
-  const Whole track = VIEWS::SIGNALS::attended();
-  const Whole lane = VIEWS::SIGNALS::laned();
-  if (track == NONE || lane == NONE) return;
-  const String stood = TIMELINE::held().tracks[track].lanes[lane].map;
-  if (!TIMELINE::map(track, lane, plugin)) return;
-  HISTORY::record(
-    {.act = ::ACT,
-     .maps = {{.track = track, .lane = lane, .map = plugin, .stood = stood}}});
-}
-
 void took(GUI::Handle page) {
   const Whole row = GUI::GET::cursor(page, ::ROWS);
   if (row >= ::rows.size()) return;
   if (!::choosing && row + 1 == ::rows.size()) return ::browse(page);
   if (::rows[row].words == 0) return;
-  ::wrote(!::choosing && row == ::HEAD ? String() : ::rows[row].name);
+  VIEWS::SIGNALS::map(
+    !::choosing && row == ::HEAD ? String() : ::rows[row].name);
   ::spread(page, false);
 }
 
@@ -97,14 +85,12 @@ void SOUND::VIEWS::SIGNALS::mapping() {
 void SOUND::VIEWS::SIGNALS::mapping(SHELL::Session &session) {
   const GUI::Handle page = document();
   if (!::standing(page)) return;
-  const Whole track = attended(), lane = laned();
-  const String map = track == NONE || lane == NONE
-                       ? String()
-                       : TIMELINE::held().tracks[track].lanes[lane].map;
+  const ARRANGEMENT::TRACK::Lane *lane = edited();
+  const Flag bare = lane == nullptr || lane->map.empty();
   session.print(std::format(
     "mapping {} rows {} cursor {} map {}", ::choosing ? "catalog" : "wired",
     ::rows.size(), GUI::GET::cursor(page, ::ROWS),
-    map.empty() ? String(::NOTHING) : map));
+    bare ? String(::NOTHING) : lane->map));
   for (const Offer &offer : ::rows)
     session.print(std::format(
       "choice {} params {} {}", offer.name,

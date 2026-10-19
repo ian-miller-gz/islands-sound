@@ -9,10 +9,11 @@
 #include "../../boards.hpp"
 #include "../../inventory.hpp"
 #include "../../score.hpp"
-#include "piano.internal.hpp"
+#include "piano.hands.hpp"
 
 namespace {
 using namespace SOUND;
+namespace HANDS = SOUND::VIEWS::ROLL::HANDS;
 
 constexpr STRING::Hot STEM = "grip";
 constexpr STRING::Hot MOVED = "move";
@@ -35,15 +36,6 @@ struct Hold {
   Integer crossing = 0;
 };
 Hold holding;
-
-constexpr Float WEST = 0.0f;
-constexpr Float NORTH = VIEWS::ROLL::lane(VIEWS::ROLL::HIGHEST);
-constexpr Float SOUTH = VIEWS::ROLL::lane(Whole(0));
-
-auto settled(Whole pulses) -> Whole {
-  const Whole snap = VIEWS::ROLL::bench().snap;
-  return (pulses + snap / 2) / snap * snap;
-}
 
 auto plate(Whole row) -> String {
   return GUI::SAC::SEAT::named(VIEWS::ROLL::board().c_str(), row);
@@ -105,11 +97,6 @@ auto grouped(Vector<::Fall> &falls, Whole stock) -> Vector<SCORE::Landing> & {
   return falls.back().landings;
 }
 
-struct Shift {
-  Integer at = 0;
-  Integer pitch = 0;
-};
-
 auto handed(const Vector<GUI::SAC::CARRY::Drop> &landings, const Hold &hold)
   -> const GUI::SAC::CARRY::Drop * {
   if (hold.row == NONE) return nullptr;
@@ -121,31 +108,9 @@ auto handed(const Vector<GUI::SAC::CARRY::Drop> &landings, const Hold &hold)
   return nullptr;
 }
 
-auto shifted(const Hold &hold, const GUI::SAC::CARRY::Drop &landing)
-  -> ::Shift {
-  return {
-    Integer(::settled(VIEWS::ROLL::across(landing.at.x))) -
-      Integer(hold.pip.at),
-    Integer(VIEWS::ROLL::lane(landing.at.y)) - Integer(hold.pip.pitch)};
-}
-
-auto moved(Whole at, Integer by) -> Whole {
-  const Integer wanted = Integer(at) + by;
-  return wanted <= 0 ? 0 : Whole(wanted);
-}
-
-auto raised(Whole pitch, Integer by, Whole at) -> Whole {
-  const Integer wanted = Integer(pitch) + by;
-  if (wanted <= 0) return VIEWS::ROLL::degreed(0, at);
-  return VIEWS::ROLL::degreed(
-    wanted < Integer(VIEWS::ROLL::HIGHEST) ? Whole(wanted)
-                                           : VIEWS::ROLL::HIGHEST,
-    at);
-}
-
 void fell(
   Vector<::Fall> &falls, Vector<VIEWS::ROLL::Fallen> &fallen, const Hold &hold,
-  const ::Shift &shift, const GUI::SAC::CARRY::Drop &landing) {
+  const HANDS::Shift &shift, const GUI::SAC::CARRY::Drop &landing) {
   const Whole row =
     GUI::SAC::SEAT::row(String(landing.id), VIEWS::ROLL::board().c_str());
   const Vector<VIEWS::ROLL::Pip> &drawn = VIEWS::ROLL::plates();
@@ -153,17 +118,17 @@ void fell(
   if (!leader && row >= drawn.size()) return;
   const VIEWS::ROLL::Pip pip = leader ? hold.pip : drawn[row];
   if (pip.index == NONE) return;
-  const Whole landed = ::moved(pip.at, shift.at);
+  const Whole landed = HANDS::moved(pip.at, shift.at);
   if (pip.stock == NONE)
     return fallen.push_back(
-      {pip.index, landed, ::raised(pip.pitch, shift.pitch, landed)});
+      {pip.index, landed, HANDS::raised(pip.pitch, shift.pitch, landed)});
   if (pip.stock >= INVENTORY::held().stocks.size()) return;
   if (pip.index >= INVENTORY::held().stocks[pip.stock].score.notes.size())
     return;
   ::grouped(falls, pip.stock)
     .push_back(
       {pip.index, ::inside(landed, leader ? hold.crossing : ::crossing(pip)),
-       ::raised(pip.pitch, shift.pitch, landed)});
+       HANDS::raised(pip.pitch, shift.pitch, landed)});
 }
 
 void dropped(GUI::Handle page) {
@@ -174,7 +139,7 @@ void dropped(GUI::Handle page) {
   ::holding = {};
   const GUI::SAC::CARRY::Drop *hand = ::handed(landings, hold);
   if (hand == nullptr) return;
-  const ::Shift shift = ::shifted(hold, *hand);
+  const HANDS::Shift shift = HANDS::shifted(hold.pip, *hand);
   Vector<::Fall> falls;
   Vector<VIEWS::ROLL::Fallen> fallen;
   for (const GUI::SAC::CARRY::Drop &landing : landings)
@@ -233,7 +198,7 @@ auto lengthened(const VIEWS::ROLL::Pip &pip, Float x) -> Whole {
   const Float grown =
     Float(pip.length) / Float(VIEWS::ROLL::GRAIN) + x - ::resting(pip.length);
   return std::max(
-    VIEWS::ROLL::bench().snap, ::settled(VIEWS::ROLL::across(grown)));
+    VIEWS::ROLL::bench().snap, HANDS::settled(VIEWS::ROLL::across(grown)));
 }
 
 void pulled(GUI::Handle page, Whole row, const VIEWS::ROLL::Pip &pip, Float x) {
@@ -308,14 +273,6 @@ void handles(GUI::Handle page, const Vector<VIEWS::ROLL::Pip> &drawn) {
 }
 
 }  // namespace
-
-auto SOUND::VIEWS::ROLL::watched() -> GUI::SAC::CARRY::Watch {
-  return {
-    board().c_str(),
-    {::WEST, GUI::Walls::NONE, ::NORTH, ::SOUTH},
-    HELD,
-    SEATED};
-}
 
 void SOUND::VIEWS::ROLL::SHED::hands() {
   const GUI::Handle page = document();

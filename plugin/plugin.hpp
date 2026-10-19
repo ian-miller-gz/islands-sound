@@ -11,6 +11,7 @@ constexpr STRING::Hot VST3 = "vst3";
 
 constexpr STRING::Hot MONO = "mono";
 constexpr STRING::Hot POLY = "poly";
+constexpr STRING::Hot PERCUSSION = "percussion";
 
 struct Offer {
   STRING::Hot name = "";

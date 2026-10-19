@@ -181,10 +181,6 @@ void menu();
 void pager();
 void pager(SHELL::Session &session);
 
-auto number() -> Whole;
-
-void number(Whole paged);
-
 auto named() -> String;
 
 auto unit() -> String;
@@ -219,6 +215,10 @@ void listing(STRING::Hot id, const Vector<Offer> &rows);
 
 void mapping();
 void mapping(SHELL::Session &session);
+
+auto edited() -> const ARRANGEMENT::TRACK::Lane *;
+
+void map(const String &plugin);
 
 auto mapped() -> String;
 

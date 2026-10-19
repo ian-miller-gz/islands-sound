@@ -22,8 +22,14 @@ void aimed(SHELL::Session &session);
 
 void laning(Flag on);
 
+auto adding() -> Whole;
+
 void lanes();
 void lanes(SHELL::Session &session);
+
+void marked(GUI::Handle page);
+
+void asked(GUI::Handle page);
 
 auto kinded(GUI::Handle page, STRING::Hot door, STRING::Hot whose, Whole &kind)
   -> Flag;

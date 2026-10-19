@@ -19,10 +19,17 @@ auto keys() -> STRING::Hot {
   return GUI::GET::document() == VIEWS::document() ? "held" : "loose";
 }
 
+auto lowered(const VIEWS::View &unit) -> Flag {
+  const Whole row = VIEWS::SPLIT::lower();
+  return row < VIEWS::roster().size() &&
+         String(VIEWS::roster()[row].name) == unit.name;
+}
+
 auto standing(const VIEWS::View &unit) -> STRING::Hot {
   const Flag on = unit.panel ? VIEWS::raised(unit.name)
                              : String(unit.name) == VIEWS::standing();
-  return on ? "shown" : "hidden";
+  if (on) return "shown";
+  return !unit.panel && ::lowered(unit) ? VIEWS::SPLIT::LOWER : "hidden";
 }
 
 void stated(SHELL::Session &session, const VIEWS::View &unit) {
@@ -32,12 +39,19 @@ void stated(SHELL::Session &session, const VIEWS::View &unit) {
   if (unit.state != nullptr) unit.state(session);
 }
 
+void lower(SHELL::Session &session, const VIEWS::View &unit) {
+  if (!VIEWS::SPLIT::open()) return session.print("view refused: split shut");
+  VIEWS::SPLIT::choose(unit.name);
+  ::stated(session, unit);
+}
+
 }  // namespace
 
 void SOUND::COMMANDS::views(SHELL::Session &session) {
   session.print(std::format(
     "views {} main {} keys {}", VIEWS::roster().size(), VIEWS::standing(),
     ::keys()));
+  VIEWS::SPLIT::state(session);
   for (const VIEWS::View &unit : VIEWS::roster())
     session.print(std::format(
       "view {} {} {} controls {}", unit.name, unit.panel ? "panel" : "main",
@@ -52,6 +66,9 @@ void SOUND::COMMANDS::view(SHELL::Session &session) {
   }
   const VIEWS::View *unit = VIEWS::found(session.arguments[1]);
   if (unit == nullptr) return session.print("no such view");
+  if (
+    session.arguments.size() > 2 && session.arguments[2] == VIEWS::SPLIT::LOWER)
+    return ::lower(session, *unit);
   VIEWS::choose(session.arguments[1]);
   ::stated(session, *unit);
 }

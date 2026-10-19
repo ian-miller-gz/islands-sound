@@ -16,39 +16,6 @@ auto attended() -> Whole {
   return track < TIMELINE::held().tracks.size() ? track : NONE;
 }
 
-}  // namespace
-
-auto SOUND::VIEWS::ROLL::opened(Whole frames) -> Whole {
-  return SCORE::pulsed(frames, TRANSPORT::held().tempos);
-}
-
-auto SOUND::VIEWS::ROLL::aimed() -> Aim {
-  return aimed(TRANSPORT::marker().position);
-}
-
-auto SOUND::VIEWS::ROLL::spans() -> Vector<Span> {
-  const Inventory &pool = INVENTORY::held();
-  Vector<Span> lit;
-  for (const ARRANGEMENT::TRACK::LANE::Clip &span :
-       TIMELINE::spans(::attended(), KIND::NOTES))
-    lit.push_back(
-      {span.stock, opened(span.at), opened(span.at + span.frames),
-       span.stock < pool.stocks.size() ? pool.stocks[span.stock].name
-                                       : String("?")});
-  return lit;
-}
-
-auto SOUND::VIEWS::ROLL::laned(Whole track) -> Whole {
-  if (track == NONE) return NONE;
-  const Vector<ARRANGEMENT::TRACK::Lane> &lanes =
-    TIMELINE::held().tracks[track].lanes;
-  for (Whole lane = 0; lane < lanes.size(); ++lane)
-    if (lanes[lane].kind == KIND::NOTES) return lane;
-  return NONE;
-}
-
-namespace {
-
 void joined(Whole track, Whole lane, Whole opens, Whole closes) {
   const auto &clips = TIMELINE::held().tracks[track].lanes[lane].clips;
   Vector<Whole> rows;
@@ -68,9 +35,9 @@ auto barred() -> Whole {
   return (quarters == 0 ? METRE : quarters) * PULSES;
 }
 
-void trimmed(Whole track, Whole at, Whole &opens, Whole &closes) {
+void trimmed(Whole track, Whole lane, Whole at, Whole &opens, Whole &closes) {
   for (const ARRANGEMENT::TRACK::LANE::Clip &span :
-       TIMELINE::spans(track, KIND::NOTES)) {
+       TIMELINE::spans(track, lane)) {
     const Whole ends = span.at + span.frames;
     if (ends <= at && ends > opens) opens = ends;
     if (span.at >= at && span.at < closes) closes = span.at;
@@ -78,6 +45,14 @@ void trimmed(Whole track, Whole at, Whole &opens, Whole &closes) {
 }
 
 }  // namespace
+
+auto SOUND::VIEWS::ROLL::opened(Whole frames) -> Whole {
+  return SCORE::pulsed(frames, TRANSPORT::held().tempos);
+}
+
+auto SOUND::VIEWS::ROLL::aimed() -> Aim {
+  return aimed(TRANSPORT::marker().position);
+}
 
 auto SOUND::VIEWS::ROLL::claimed(Whole pulse) -> Aim {
   return claimed(::attended(), pulse);
@@ -94,7 +69,7 @@ auto SOUND::VIEWS::ROLL::claimed(Whole track, Whole pulse) -> Aim {
   const Whole bar = ::barred();
   Whole opens = SCORE::framed(pulse - pulse % bar, tempos);
   Whole closes = SCORE::framed(pulse - pulse % bar + bar, tempos);
-  ::trimmed(track, at, opens, closes);
+  ::trimmed(track, lane, at, opens, closes);
   if (closes <= opens) return {};
   const Whole stock = INVENTORY::add(
     std::format(
@@ -110,13 +85,6 @@ auto SOUND::VIEWS::ROLL::claimed(Whole track, Whole pulse) -> Aim {
 
 auto SOUND::VIEWS::ROLL::aimed(Whole at) -> Aim {
   return aimed(::attended(), at);
-}
-
-auto SOUND::VIEWS::ROLL::aimed(Whole track, Whole at) -> Aim {
-  const ARRANGEMENT::TRACK::LANE::Clip span =
-    TIMELINE::covered(track, KIND::NOTES, at);
-  if (span.stock == NONE) return {};
-  return {span.stock, span.from, opened(span.at)};
 }
 
 void SOUND::VIEWS::ROLL::aimed(SHELL::Session &session) {

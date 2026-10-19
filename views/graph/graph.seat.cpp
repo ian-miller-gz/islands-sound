@@ -178,12 +178,12 @@ void titled(Whole index, const String &box) {
   const GUI::Extent band = ::banded();
   GUI::set(
     page, (box + "." + VIEWS::WIRED::NAME).c_str(),
-    GUI::Text{VIEWS::WIRED::cropped(VIEWS::named(node.name), band.w, ::LETTER)
+    GUI::Text{VIEWS::LETTERS::cropped(VIEWS::named(node.name), band.w, ::LETTER)
                 .c_str()});
   if (!::surfaced(node)) return;
   GUI::set(
     page, (box + "." + VIEWS::WIRED::DEVICE).c_str(),
-    GUI::Text{VIEWS::WIRED::cropped(
+    GUI::Text{VIEWS::LETTERS::cropped(
                 VIEWS::device(node.name), ::WIDE - ::AIR * ::HALVED, ::SMALL)
                 .c_str()});
 }

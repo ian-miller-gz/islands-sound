@@ -3,6 +3,7 @@
 #include <island/gui/ladder.hpp>
 
 #include "views.hpp"
+#include "views.kept.hpp"
 
 namespace SOUND::VIEWS {
 
@@ -106,16 +107,6 @@ void marked(const String &map, Placed placed);
 void marked(SHELL::Session &session, const String &map, Placed placed);
 
 }  // namespace SOUND::VIEWS
-
-namespace SOUND::VIEWS::KEPT {
-
-auto number(const FIELDS::Map &face, const String &key, Float &value) -> Flag;
-
-void board(FIELDS::Map &face, const View &unit);
-
-void boarded(const FIELDS::Map &face, const View &unit);
-
-}  // namespace SOUND::VIEWS::KEPT
 
 namespace SOUND::VIEWS::ICONS {
 

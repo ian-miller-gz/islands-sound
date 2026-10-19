@@ -3,6 +3,7 @@
 
 #include "../arrangement/arrangement.face.hpp"
 #include "../lane/lane.face.hpp"
+#include "../views.split.hpp"
 #include "arranger.internal.hpp"
 
 namespace {
@@ -12,7 +13,6 @@ using namespace SOUND::VIEWS::ARRANGER;
 constexpr STRING::Hot TOOLS = "tools";
 constexpr STRING::Hot MARKED = "selected";
 constexpr STRING::Hot PLAIN = "icon";
-const String PAGED = String(NAME) + ".page";
 
 Whole paging = 0;
 
@@ -28,13 +28,10 @@ auto stander() -> const VIEWS::View & {
 }
 
 void band(GUI::Handle page) {
-  for (const Page &one : PAGES)
-    if (GUI::GET::clicked(page, ::worded(one).c_str()))
-      ::paging = static_cast<Whole>(&one - PAGES);
-  for (const Page &one : PAGES)
-    GUI::set(
-      page, ::worded(one).c_str(),
-      GUI::Style{&one == &PAGES[::paging] ? ::MARKED : ::PLAIN});
+  const String id = ::worded(PAGES[SESSION]);
+  if (GUI::GET::clicked(page, id.c_str())) ::paging = SESSION;
+  GUI::set(
+    page, id.c_str(), GUI::Style{::paging == SESSION ? ::MARKED : ::PLAIN});
 }
 
 void gated(GUI::Handle page) {
@@ -50,6 +47,8 @@ void gated(GUI::Handle page) {
 void run() {
   const GUI::Handle page = VIEWS::document();
   ::band(page);
+  VIEWS::ARRANGER::label(page);
+  if (VIEWS::ARRANGER::below(page)) return;
   ::gated(page);
   if (PAGES[::paging].kind != NONE) VIEWS::LANE::paged(PAGES[::paging].kind);
   ::stander().run();
@@ -59,18 +58,10 @@ void state(SHELL::Session &session) {
   const VIEWS::View &stands = ::stander();
   session.print(
     std::format("arranger page {} face {}", PAGES[::paging].word, stands.name));
+  if (VIEWS::SPLIT::shared()) VIEWS::ARRANGER::below(session);
+  VIEWS::LANE::marked(session);
+  VIEWS::LANE::faces(session);
   if (stands.state != nullptr) stands.state(session);
-}
-
-void keep(FIELDS::Map &face) { face[::PAGED] = String(PAGES[::paging].word); }
-
-void restore(const FIELDS::Map &face) {
-  const auto found = face.find(::PAGED);
-  if (found == face.end()) return;
-  const String *word = std::get_if<String>(&found->second);
-  if (word == nullptr) return;
-  for (const Page &one : PAGES)
-    if (*word == one.word) ::paging = static_cast<Whole>(&one - PAGES);
 }
 
 [[maybe_unused]] const Flag offered = VIEWS::offer(
@@ -80,10 +71,12 @@ void restore(const FIELDS::Map &face) {
    .run = ::run,
    .door = VIEWS::ARRANGER::door,
    .state = ::state,
+   .words = VIEWS::ARRANGER::words(),
    .faced = VIEWS::ARRANGER::faced,
-   .keep = ::keep,
-   .restore = ::restore,
+   .keep = VIEWS::ARRANGER::keep,
+   .restore = VIEWS::ARRANGER::restore,
    .shed = VIEWS::ARRANGER::shed});
+[[maybe_unused]] const Flag hosted = VIEWS::SPLIT::host(NAME);
 
 }  // namespace
 
@@ -95,4 +88,6 @@ auto SOUND::VIEWS::ARRANGER::turned(Whole page) -> Flag {
   return true;
 }
 
-auto SOUND::VIEWS::ARRANGER::faced() -> const View * { return &::stander(); }
+auto SOUND::VIEWS::ARRANGER::faced() -> const View * {
+  return SPLIT::shared() ? focused() : &::stander();
+}

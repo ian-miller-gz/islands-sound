@@ -18,7 +18,9 @@ void SOUND::VIEWS::RACK::mark(
   const AUDIO::PLUGIN::Control &published) {
   const String id = cell + "." + MARKED;
   const String barred = cell + "." + BARRED;
-  const Flag centre = centred(published);
+  const Flag centre =
+    centred(published) &&
+    GUI::GET::dial(page, barred.c_str()).graphic == GUI::Dial::BAR;
   const GUI::Extent bar = GUI::GET::measured(page, barred.c_str());
   GUI::set(page, id.c_str(), GUI::Visibility{centre});
   GUI::set(

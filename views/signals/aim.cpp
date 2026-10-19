@@ -20,7 +20,7 @@ auto SOUND::VIEWS::SIGNALS::attended() -> Whole {
 auto SOUND::VIEWS::SIGNALS::spans() -> Vector<Span> {
   Vector<Span> lit;
   for (const ARRANGEMENT::TRACK::LANE::Clip &span :
-       TIMELINE::spans(attended(), paged()))
+       TIMELINE::spans(attended(), laned()))
     lit.push_back({span.stock, span.at, span.at + span.frames});
   return lit;
 }
@@ -31,7 +31,7 @@ auto SOUND::VIEWS::SIGNALS::aimed() -> Aim {
 
 auto SOUND::VIEWS::SIGNALS::aimed(Whole at) -> Aim {
   const ARRANGEMENT::TRACK::LANE::Clip span =
-    TIMELINE::covered(attended(), paged(), at);
+    TIMELINE::covered(attended(), laned(), at);
   if (span.stock == NONE) return {};
   return {span.stock, span.from, span.at};
 }

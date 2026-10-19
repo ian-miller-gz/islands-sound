@@ -123,11 +123,6 @@ auto SOUND::VIEWS::ROLL::rekeyed(Vector<Key> &held) -> Flag {
   return true;
 }
 
-auto SOUND::VIEWS::ROLL::degreed(Whole pitch, Whole at) -> Whole {
-  const Whole landing = SCORE::snapped(TRANSPORT::keyed(at), pitch);
-  return landing < HIGHEST ? landing : HIGHEST;
-}
-
 auto SOUND::VIEWS::ROLL::named(Whole pitch) -> String {
   if (pitch % SEMITONES != 0) return String();
   return std::format("C{}", Integer(pitch / SEMITONES) - ::BELOW);

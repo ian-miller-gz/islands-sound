@@ -7,7 +7,7 @@
 
 #include "../../boards.hpp"
 #include "../../transport.hpp"
-#include "piano.internal.hpp"
+#include "piano.grid.hpp"
 
 namespace {
 using namespace SOUND;
@@ -25,21 +25,6 @@ auto mark(Whole at) -> String {
   return std::format("{}.{}.{}", VIEWS::ROLL::board(), ::STEM, at);
 }
 
-auto span() -> Whole {
-  return GUI::SAC::LADDER::climb(
-    PULSES, ::COARSER, VIEWS::ROLL::scaled() / Float(VIEWS::ROLL::GRAIN),
-    ::CROWD, VIEWS::ROLL::window().w * Float(VIEWS::ROLL::GRAIN));
-}
-
-auto dressed() -> Vector<GUI::SAC::LADDER::Mark> {
-  const Float grain = Float(VIEWS::ROLL::GRAIN);
-  const Float west =
-    GUI::NGA::GET::pan(VIEWS::document(), VIEWS::ROLL::board().c_str()).x;
-  return VIEWS::dressed(
-    VIEWS::ROLL::sections(), {PULSES}, ::COARSER, VIEWS::ROLL::scaled() / grain,
-    ::CROWD, west * grain, VIEWS::ROLL::window().w * grain);
-}
-
 auto dress(Flag opens) -> String {
   return String(::STEM) + (opens ? ::BARRED : ::BEATEN);
 }
@@ -47,12 +32,6 @@ auto dress(Flag opens) -> String {
 auto place(Integer at) -> Float {
   return at < 0 ? Float(at) / Float(VIEWS::ROLL::GRAIN)
                 : VIEWS::ROLL::across(Whole(at));
-}
-
-auto hair() -> Float {
-  return ::pool.stood == 0
-           ? 0.0f
-           : GUI::GET::measured(VIEWS::document(), ::mark(0).c_str()).w;
 }
 
 void build(Whole count) {
@@ -75,7 +54,7 @@ void SOUND::VIEWS::ROLL::SHED::grid() {
 
 void SOUND::VIEWS::ROLL::grid() {
   const GUI::Handle page = document();
-  const Vector<GUI::SAC::LADDER::Mark> marks = ::dressed();
+  const Vector<GUI::SAC::LADDER::Mark> marks = GRID::dressed();
   VIEWS::reborn(::pool);
   const Whole seats = VIEWS::sized(::pool, marks.size(), window().w);
   if (seats != ::pool.stood) ::build(seats);
@@ -91,13 +70,25 @@ void SOUND::VIEWS::ROLL::grid() {
   }
 }
 
-void SOUND::VIEWS::ROLL::grid(SHELL::Session &session) {
-  const Whole span = ::span();
-  const Vector<GUI::SAC::LADDER::Mark> marks = ::dressed();
-  const TRANSPORT::Section one = opening();
-  session.print(std::format(
-    "grid marks {} beat {} step {} bar {} first {} hair {} metre {}/{}",
-    ::pool.lit, PULSES, span / PULSES, one.numerator,
-    marks.empty() ? 0 : marks.front().at / Integer(span), ::hair(),
-    one.numerator, one.denominator));
+auto SOUND::VIEWS::ROLL::GRID::span() -> Whole {
+  return GUI::SAC::LADDER::climb(
+    PULSES, ::COARSER, VIEWS::ROLL::scaled() / Float(VIEWS::ROLL::GRAIN),
+    ::CROWD, VIEWS::ROLL::window().w * Float(VIEWS::ROLL::GRAIN));
+}
+
+auto SOUND::VIEWS::ROLL::GRID::dressed() -> Vector<GUI::SAC::LADDER::Mark> {
+  const Float grain = Float(VIEWS::ROLL::GRAIN);
+  const Float west =
+    GUI::NGA::GET::pan(VIEWS::document(), VIEWS::ROLL::board().c_str()).x;
+  return VIEWS::dressed(
+    VIEWS::ROLL::sections(), {PULSES}, ::COARSER, VIEWS::ROLL::scaled() / grain,
+    ::CROWD, west * grain, VIEWS::ROLL::window().w * grain);
+}
+
+auto SOUND::VIEWS::ROLL::GRID::lit() -> Whole { return ::pool.lit; }
+
+auto SOUND::VIEWS::ROLL::GRID::hair() -> Float {
+  return ::pool.stood == 0
+           ? 0.0f
+           : GUI::GET::measured(VIEWS::document(), ::mark(0).c_str()).w;
 }

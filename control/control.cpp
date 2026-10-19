@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include "control.internal.hpp"
+#include "control.map.hpp"
 
 namespace {
 using namespace SOUND;
@@ -23,19 +24,23 @@ auto SOUND::CONTROL::aimed() -> String { return ::live.aim; }
 void SOUND::CONTROL::settle(const Vector<String> &gone) {
   for (const String &name : gone)
     if (::live.aim == name) ::live.aim.clear();
+  MAP::settle(gone);
 }
 
 auto SOUND::CONTROL::read() -> Whole {
-  if (::live.track == NONE) return 0;
   static Vector<MIDI::Message> wire(ROOM);
   const Whole count = MIDI::read(wire);
   Whole folded = 0;
-  for (Whole at = 0; at < count; ++at)
+  for (Whole at = 0; at < count; ++at) {
+    const Flag noted = wire[at].kind != MIDI::Message::CONTROL;
+    if (noted && ::live.track == NONE) continue;
     if (read(wire[at])) ++folded;
+  }
   return folded;
 }
 
 auto SOUND::CONTROL::read(const MIDI::Message &message) -> Flag {
+  if (message.kind == MIDI::Message::CONTROL) return MAP::heard(message);
   if (
     message.kind != MIDI::Message::NOTE_ON &&
     message.kind != MIDI::Message::NOTE_OFF)
@@ -61,4 +66,5 @@ void SOUND::CONTROL::close() {
   listening(false);
   ::live = {};
   values().clear();
+  MAP::adopt({});
 }

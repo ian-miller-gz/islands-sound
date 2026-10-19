@@ -37,6 +37,15 @@ auto chosen(const Stock &stock, const ARRANGEMENT::TRACK::LANE::Clip &span)
   return wanted;
 }
 
+auto gathered(const ARRANGEMENT::TRACK::LANE::Clip &span)
+  -> Vector<VIEWS::SIGNALS::Point> {
+  const Inventory &pool = INVENTORY::held();
+  if (span.stock >= pool.stocks.size()) return {};
+  const Stock &stock = pool.stocks[span.stock];
+  return VIEWS::SIGNALS::paged() == KIND::CONTROL ? ::turned(stock, span)
+                                                  : ::chosen(stock, span);
+}
+
 void stands(Vector<VIEWS::SIGNALS::Point> &wanted, Whole closes) {
   for (Whole row = 0; row < wanted.size(); ++row)
     wanted[row].until = row + 1 < wanted.size() ? wanted[row + 1].at : closes;
@@ -55,20 +64,12 @@ void trimmed(
 
 auto SOUND::VIEWS::SIGNALS::gather(const Span &lit) -> Vector<Point> {
   Vector<Point> wanted;
-  const Inventory &pool = INVENTORY::held();
-  const Whole kind = paged();
-  for (const ARRANGEMENT::Track &track : TIMELINE::held().tracks)
-    for (const ARRANGEMENT::TRACK::Lane &lane : track.lanes) {
-      if (lane.kind != kind) continue;
-      for (const ARRANGEMENT::TRACK::LANE::Clip &span : lane.clips) {
-        if (span.stock >= pool.stocks.size()) continue;
-        const Stock &stock = pool.stocks[span.stock];
-        Vector<Point> rows =
-          kind == KIND::CONTROL ? ::turned(stock, span) : ::chosen(stock, span);
-        ::stands(rows, span.at + span.frames);
-        ::trimmed(rows, lit);
-        wanted.insert(wanted.end(), rows.begin(), rows.end());
-      }
-    }
+  for (const ARRANGEMENT::TRACK::LANE::Clip &span :
+       TIMELINE::spans(attended(), laned())) {
+    Vector<Point> rows = ::gathered(span);
+    ::stands(rows, span.at + span.frames);
+    ::trimmed(rows, lit);
+    wanted.insert(wanted.end(), rows.begin(), rows.end());
+  }
   return wanted;
 }

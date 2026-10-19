@@ -25,7 +25,7 @@ constexpr Filing FILED[] = {
   {"instrument", "instruments"}, {"emulator", "instruments/emulators"},
   {"effect", "effects"},         {"notes", "notes"},
   {"control", "control"},        {"device", "devices"},
-  {"modular", "modular"}};
+  {"modular", "modular"},        {PLUGIN::PERCUSSION, "percussion"}};
 constexpr STRING::Hot VOICED = "instrument";
 
 enum Shelf : Whole { INSTRUMENTS, EFFECTS, SHAPERS, CONTROLLERS, PLUGINS };

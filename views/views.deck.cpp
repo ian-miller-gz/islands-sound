@@ -24,7 +24,7 @@ constexpr STRING::Hot POSITION = "deck.position";
 constexpr STRING::Hot PACE = "deck.tempo";
 
 constexpr Whole SMOOTH = 0;
-constexpr Flag BARE = false;
+constexpr GUI::Dial::Graphic BARE = GUI::Dial::NONE;
 
 void marked(GUI::Handle page, STRING::Hot door, Flag engaged) {
   GUI::set(page, door, GUI::Style{engaged ? VIEWS::MARK : VIEWS::PLAIN});

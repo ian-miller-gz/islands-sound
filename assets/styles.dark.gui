@@ -1,13 +1,16 @@
 
 style ink color=#f3e9d8ff
 style muted color=#c9b59aff
+style listening color=#f0a35aff
 style sheet color=#3a2c22ff edge=#5a4636ff border=1
 style box color=#241a14ff edge=#4a3a2eff border=1
 style place color=#4a3a2eff edge=#f3e9d8ff border=0 hover=#5a4838ff press=#a1652aff
 style entry color=#00000000 edge=#f3e9d8ff border=0 hover=#43352bff press=#a1652aff
-style call color=#d9822bff edge=#fff7ecff border=0 hover=#e8963fff press=#b8681cff
-style selected color=#8a5a2bff hover=#8a5a2bff press=#a1652aff
-style paper color=#1f1712ff edge=#c9b59aff border=1 hover=#8a5a2bff
+style knob style=entry edge=#c9b59aff
+style call color=#d9822bff edge=#2a1f18ff border=0 hover=#e8963fff press=#b8681cff
+style selected color=#66411dff hover=#66411dff press=#a1652aff
+style lanemark style=selected border=0
+style paper color=#1f1712ff edge=#c9b59aff border=1 hover=#66411dff
 style chrome color=#00000000 edge=#f3e9d8ff border=0 hover=#00000000 press=#00000000 glow=#f0a35aff
 
 style row style=entry size=16 pad=6

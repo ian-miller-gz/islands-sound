@@ -5,12 +5,11 @@
 #include "../../transport.hpp"
 #include "../views.internal.hpp"
 #include "piano.internal.hpp"
+#include "piano.notation.hpp"
 
 namespace {
 using namespace SOUND;
 
-constexpr STRING::Hot TONIC = "piano.bench.tonic";
-constexpr STRING::Hot SCALE = "piano.bench.scale";
 constexpr STRING::Hot TONICS = "piano.tonic";
 constexpr STRING::Hot SCALES = "piano.scale";
 constexpr STRING::Hot RESTING = "off";
@@ -33,11 +32,11 @@ void tonics(GUI::Handle page) {
     TRANSPORT::key(
       held.at, row, ::standing(held) ? held.scale : String(::FIRST));
   }
-  if (!GUI::GET::clicked(page, ::TONIC)) return;
+  if (!GUI::GET::clicked(page, VIEWS::ROLL::TONIC)) return;
   Vector<String> rows;
   for (Whole tonic = 0; tonic < CLASSES; ++tonic)
     rows.push_back(String(SCORE::classed(tonic)));
-  ::raise(::TONIC, ::TONICS, rows);
+  ::raise(VIEWS::ROLL::TONIC, ::TONICS, rows);
 }
 
 void scales(GUI::Handle page) {
@@ -48,29 +47,33 @@ void scales(GUI::Handle page) {
     TRANSPORT::key(
       held.at, held.tonic, row < names.size() ? String(names[row]) : String());
   }
-  if (!GUI::GET::clicked(page, ::SCALE)) return;
+  if (!GUI::GET::clicked(page, VIEWS::ROLL::SCALE)) return;
   Vector<String> rows;
   for (STRING::Hot name : names) rows.push_back(String(name));
   rows.push_back(String(::RESTING));
-  ::raise(::SCALE, ::SCALES, rows);
+  ::raise(VIEWS::ROLL::SCALE, ::SCALES, rows);
 }
 
 }  // namespace
 
 void SOUND::VIEWS::ROLL::doors() {
   const GUI::Handle page = document();
+  notate();
   ::tonics(page);
   ::scales(page);
   const Key held = ::section();
-  GUI::set(page, ::TONIC, GUI::Text{String(SCORE::classed(held.tonic))});
   GUI::set(
-    page, ::SCALE,
+    page, VIEWS::ROLL::TONIC, GUI::Text{String(SCORE::classed(held.tonic))});
+  GUI::set(
+    page, VIEWS::ROLL::SCALE,
     GUI::Text{::standing(held) ? held.scale : String(::RESTING)});
 }
 
 void SOUND::VIEWS::ROLL::doors(SHELL::Session &session) {
   const GUI::Handle page = document();
+  notate(session);
+  if (GET::notation() != TONAL) return;
   session.print(std::format(
-    "bench key {} {}", String(GUI::GET::text(page, ::TONIC)),
-    String(GUI::GET::text(page, ::SCALE))));
+    "bench key {} {}", String(GUI::GET::text(page, VIEWS::ROLL::TONIC)),
+    String(GUI::GET::text(page, VIEWS::ROLL::SCALE))));
 }

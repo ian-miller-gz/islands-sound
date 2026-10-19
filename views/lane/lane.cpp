@@ -38,6 +38,7 @@ void shed() {
 
 void run() {
   ::gated(VIEWS::document());
+  VIEWS::LANE::swap(::paged);
   if (::paged != KIND::NOTES) VIEWS::SIGNALS::paged(::paged);
   VIEWS::LANE::minimap();
   VIEWS::LANE::faced()->run();
@@ -66,8 +67,10 @@ auto SOUND::VIEWS::LANE::face() -> const View & {
 
 void SOUND::VIEWS::LANE::paged(Whole kind) { ::paged = kind; }
 
-auto SOUND::VIEWS::LANE::faced() -> const View * {
-  return ::paged == KIND::NOTES ? &ROLL::face() : &SIGNALS::face();
+auto SOUND::VIEWS::LANE::faced() -> const View * { return faced(::paged); }
+
+auto SOUND::VIEWS::LANE::faced(Whole kind) -> const View * {
+  return kind == KIND::NOTES ? &ROLL::face() : &SIGNALS::face();
 }
 
 auto SOUND::VIEWS::LANE::map() -> String {

@@ -2,6 +2,7 @@
 #include <island/gui/nga.hpp>
 
 #include "../../boards.hpp"
+#include "../lane/lane.face.hpp"
 #include "lanes.internal.hpp"
 
 namespace {
@@ -11,6 +12,7 @@ constexpr STRING::Hot HEADED = "header";
 constexpr STRING::Hot DRESSED = "dress";
 constexpr STRING::Hot LABELED = "label";
 constexpr STRING::Hot INK = "muted";
+constexpr STRING::Hot MARK = "lanemark";
 constexpr Float LETTER = 12.0f;
 
 Vector<String> stood;
@@ -22,6 +24,13 @@ auto header(const String &id) -> String { return id + "." + ::HEADED; }
 
 auto dress(const String &id) -> String {
   return ::header(id) + "." + ::DRESSED;
+}
+
+auto style(
+  const VIEWS::ARRANGEMENT::Stand &stand,
+  const VIEWS::LANE::Mark &mark) -> STRING::Hot {
+  const Flag marked = stand.track == mark.track && stand.lane == mark.lane;
+  return marked ? ::MARK : stand.dress.c_str();
 }
 
 void heading(const String &id) {
@@ -68,13 +77,14 @@ void SOUND::VIEWS::ARRANGEMENT::cells(const Vector<Stand> &stands) {
   if (stands.size() != ::stood.size()) ::build(stands);
   ::stood.clear();
   for (const Stand &stand : stands) ::stood.push_back(stand.id);
+  const LANE::Mark mark = LANE::marked();
   for (Whole row = 0; row < stands.size(); ++row) {
     const String head = ::header(stands[row].id);
     const String worn = ::dress(stands[row].id);
     GUI::set(page, head.c_str(), GUI::Position{0.0f, rail(row)});
     GUI::set(page, head.c_str(), GUI::Extent{GUTTER, depth(row)});
     GUI::set(page, worn.c_str(), GUI::Extent{GUTTER, depth(row)});
-    GUI::set(page, worn.c_str(), GUI::Style{stands[row].dress.c_str()});
+    GUI::set(page, worn.c_str(), GUI::Style{::style(stands[row], mark)});
     GUI::set(
       page, ::cell(stands[row].id).c_str(),
       GUI::Position{INSET, rail(row) + CURB + PAD});

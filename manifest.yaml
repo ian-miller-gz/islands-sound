@@ -3,8 +3,8 @@ entry: libsound.so
 assets: assets
 splash: true
 size: 1280x800
-version: 3
-release: 0.2.6
+version: 4
+release: 0.2.7
 gui:
   tip: true
   ladder: true

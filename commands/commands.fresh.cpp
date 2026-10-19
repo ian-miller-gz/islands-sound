@@ -53,6 +53,7 @@ void SOUND::COMMANDS::fresh() {
   GRAPH::close();
   ::founded();
   CONTROL::adopt(SESSION::held().values);
+  CONTROL::MAP::adopt({});
   RENDER::VOICE::drop();
   RENDER::VOICE::claim();
 }
