@@ -4,7 +4,8 @@ assets: assets
 splash: true
 size: 1280x800
 version: 4
-release: 0.2.7
+islands: 0.4
+release: 0.2.8
 gui:
   tip: true
   ladder: true
