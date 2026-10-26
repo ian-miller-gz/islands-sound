@@ -10,12 +10,11 @@ constexpr STRING::Hot PANEL = "graph.browse";
 constexpr STRING::Hot ROWS = "graph.browse.rows";
 constexpr STRING::Hot HEAD = "graph.browse.head";
 constexpr STRING::Hot UP = "graph.browse.up";
-constexpr STRING::Hot FIND = "graph.browse.find";
 
 constexpr STRING::Hot NOTHING = "-";
 constexpr STRING::Hot INTO = "▸";
 constexpr STRING::Hot WITHIN = "/";
-constexpr STRING::Hot FILES = "files";
+constexpr STRING::Hot LANES = "lanes";
 
 constexpr STRING::Hot STANDARDS[] = {PLUGIN::NATIVE, PLUGIN::VST3};
 
@@ -45,7 +44,6 @@ struct Offer {
   String device;
   Flag directory = false;
   Whole holds = 0;
-  String path;
 };
 
 auto shelved(const Vector<Whole> &takes, const Vector<Whole> &gives) -> Whole;
@@ -71,26 +69,7 @@ auto crossed(const Offer &offer) -> String;
 auto carries(const Vector<Whole> &kinds, Whole kind) -> Flag;
 void recorded(Vector<Offer> &rows);
 void surfaced(Vector<Offer> &rows);
+auto lacked(Whole track) -> Vector<Offer>;
 void listing(GUI::Handle page, const Vector<Offer> &rows);
-
-auto files(const String &filing) -> Vector<Offer>;
-
-struct Folder {
-  String path;
-  Vector<String> folders, waves;
-};
-
-auto read(const String &filing) -> Folder;
-auto housed(const String &filing) -> Flag;
-void forget();
-
-auto found(const String &run) -> Vector<Offer>;
-auto shown(const String &filing) -> Vector<Offer>;
-void sought(GUI::Handle page);
-void seat(GUI::Handle page, Flag on);
-void took(GUI::Handle page, const Vector<Offer> &rows);
-
-auto land(const String &path) -> String;
-auto words() -> Vector<SHELL::Command>;
 
 }  // namespace SOUND::VIEWS::WIRED::BROWSE

@@ -104,7 +104,8 @@ void lifted(const GUI::SAC::STROKE::Gesture &gesture) {
 
 void SOUND::VIEWS::ARRANGEMENT::outtakes() {
   const GUI::Handle page = VIEWS::document();
-  const GUI::SAC::STROKE::Gesture gesture = VIEWS::GET::gesture();
+  const GUI::SAC::STROKE::Gesture gesture =
+    GUI::SAC::STROKE::GET::gesture(page);
   if (gesture.closed) ::lifted(gesture);
   if (VIEWS::reborn(::born)) ::stood = 0;
   const Vector<::Plate> wanted = ::plates();

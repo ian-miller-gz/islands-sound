@@ -6,14 +6,7 @@ namespace SOUND::VIEWS::TRACE {
 
 constexpr STRING::Hot ROWS = "trace.rows";
 constexpr STRING::Hot LANES = "trace.lanes";
-constexpr STRING::Hot CLIPS = "trace.clips";
 
-auto faced() -> Whole;
-
-namespace GET {
-
-auto list() -> STRING::Hot;
-
-}  // namespace GET
+auto laning() -> Flag;
 
 }  // namespace SOUND::VIEWS::TRACE

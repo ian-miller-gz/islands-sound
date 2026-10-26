@@ -1,24 +1,21 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include "session.store.internal.hpp"
-#include "session.store.span.hpp"
 
 using namespace SOUND;
 
 namespace {
 
+auto clipped(std::istringstream &line) -> ARRANGEMENT::TRACK::LANE::Clip {
+  ARRANGEMENT::TRACK::LANE::Clip span;
+  line >> span.stock >> span.at >> span.from >> span.frames;
+  return span;
+}
+
 auto spanned(std::istringstream &line) -> Placement {
   Placement one;
   line >> one.track >> one.lane >> one.placement;
-  one.span = SESSION::spanned(line);
+  one.span = ::clipped(line);
   return one;
-}
-
-auto tuning(Edit &edit) -> ARRANGEMENT::TRACK::LANE::Clip * {
-  if (!edit.rows.empty() || !edit.lanes.empty()) return nullptr;
-  if (!edit.gone.empty()) return &edit.gone.back().span;
-  if (edit.placements.empty()) return nullptr;
-  Placement &one = edit.placements.back();
-  return one.was.frames != 0 ? &one.was : &one.span;
 }
 
 auto placed(const String &tag, std::istringstream &line, Edit &edit) -> Flag {
@@ -27,9 +24,7 @@ auto placed(const String &tag, std::istringstream &line, Edit &edit) -> Flag {
   else if (tag == "z")
     edit.gone.push_back(::spanned(line));
   else if (tag == "w" && !edit.placements.empty())
-    edit.placements.back().was = SESSION::spanned(line);
-  else if (tag == "pt" && ::tuning(edit) != nullptr)
-    SESSION::tune(line, *::tuning(edit));
+    edit.placements.back().was = ::clipped(line);
   else
     return false;
   return true;
@@ -67,23 +62,11 @@ auto worded(const String &tag, std::istringstream &line, Edit &edit) -> Flag {
   return true;
 }
 
-auto parted(const String &tag, std::istringstream &line, Edit &edit) -> Flag {
-  if (tag == "xf") {
-    edit.parted.wires.push_back({.from = SESSION::rest(line)});
-    return true;
-  }
-  if (tag != "xe" || edit.parted.wires.empty()) return false;
-  Wire &wire = edit.parted.wires.back();
-  line >> wire.out >> wire.in;
-  wire.to = SESSION::rest(line);
-  return true;
-}
-
 }  // namespace
 
 auto SOUND::SESSION::edited(
   const String &tag, std::istringstream &line, Edit &edit) -> Flag {
   return ::placed(tag, line, edit) || ::headed(tag, line, edit) ||
-         ::worded(tag, line, edit) || ::parted(tag, line, edit) ||
-         rowed(tag, line, edit) || content(tag, line, edit);
+         ::worded(tag, line, edit) || rowed(tag, line, edit) ||
+         content(tag, line, edit);
 }

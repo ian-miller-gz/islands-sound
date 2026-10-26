@@ -6,7 +6,6 @@
 #include "../boards.hpp"
 #include "views.controls.hpp"
 #include "views.internal.hpp"
-#include "views.split.hpp"
 
 namespace {
 using namespace SOUND;
@@ -53,8 +52,7 @@ auto SOUND::VIEWS::GET::board(const View &unit) -> String {
 auto SOUND::VIEWS::zoom(Float factor) -> Flag { return zoom(factor, factor); }
 
 auto SOUND::VIEWS::zoom(Float across, Float down) -> Flag {
-  const View *unit = SPLIT::aimed();
-  const SPLIT::Turn turn(SPLIT::turned());
+  const View *unit = found(String(standing()));
   return unit != nullptr && zoom(*unit, across, down);
 }
 
@@ -67,8 +65,7 @@ auto SOUND::VIEWS::zoom(const View &unit, Float across, Float down) -> Flag {
 }
 
 auto SOUND::VIEWS::pan(Float x, Float y) -> Flag {
-  const View *unit = SPLIT::aimed();
-  const SPLIT::Turn turn(SPLIT::turned());
+  const View *unit = found(String(standing()));
   return unit != nullptr && pan(*unit, x, y);
 }
 
@@ -79,5 +76,5 @@ auto SOUND::VIEWS::pan(const View &unit, Float x, Float y) -> Flag {
 }
 
 auto SOUND::VIEWS::cursor(const String &name) -> Whole {
-  return BOARDS::cursor(SPLIT::home(), (name + "." + ROWS).c_str());
+  return BOARDS::cursor(sheet(), (name + "." + ROWS).c_str());
 }

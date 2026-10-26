@@ -27,10 +27,8 @@ auto heard(const Vector<Change> &changes) -> Flag {
 auto bounded(const Edit &edit) -> Flag {
   return edit.swept.empty() && edit.graph.nodes.empty() &&
          edit.graph.wires.empty() && edit.graph.slack.empty() &&
-         edit.placements.empty() && edit.gone.empty() &&
-         edit.parted.wires.empty() && edit.parted.nodes.empty() &&
-         edit.maps.empty() && !::heard(edit.changes) && edit.rows.empty() &&
-         edit.lanes.empty();
+         edit.placements.empty() && edit.gone.empty() && edit.maps.empty() &&
+         !::heard(edit.changes) && edit.rows.empty() && edit.lanes.empty();
 }
 
 void stocked(Whole stock) {

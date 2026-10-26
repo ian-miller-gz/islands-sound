@@ -7,16 +7,13 @@
 #include "../../boards.hpp"
 #include "../../graph.hpp"
 #include "../../kind.hpp"
+#include "graph.browse.internal.hpp"
 #include "graph.internal.hpp"
-#include "graph.seat.dress.hpp"
 
 namespace {
 using namespace SOUND;
 using VIEWS::WIRED::CELL;
 using VIEWS::WIRED::deep;
-using VIEWS::WIRED::dotted;
-using VIEWS::WIRED::dressed;
-using VIEWS::WIRED::surfaced;
 using VIEWS::WIRED::WIDE;
 
 constexpr Float TALL = 44.0f;
@@ -44,9 +41,35 @@ constexpr STRING::Hot BYPASSED = "▷";
 constexpr STRING::Hot HINTED = "hint";
 constexpr STRING::Hot HINT = "Bypass";
 
-Map<GUI::Handle, Whole> shown, drawn, stirred;
-Map<GUI::Handle, String> pictured;
-Map<GUI::Handle, Whole> born;
+constexpr STRING::Hot TYPED = "node";
+constexpr STRING::Hot WORDS[] = {
+  "instrument", "effect", "shaper", "controller", "plugin"};
+static_assert(std::size(WORDS) == VIEWS::WIRED::BROWSE::PLUGINS + 1);
+constexpr STRING::Hot ROOTED = "root";
+constexpr STRING::Hot TAKING = "record";
+constexpr STRING::Hot TICKING = "clock";
+
+auto dressed(const Node &node) -> String {
+  const STRING::Hot word =
+    node.seat == Node::ROOT     ? ::ROOTED
+    : node.seat == Node::RECORD ? ::TAKING
+    : node.clock                ? ::TICKING
+                                : ::WORDS[VIEWS::WIRED::BROWSE::shelved(
+                     GRAPH::takes(node.plugin), GRAPH::gives(node.plugin))];
+  return String(::TYPED) + word;
+}
+
+auto surfaced(const Node &node) -> Flag {
+  return node.seat == Node::PLUGIN && GRAPH::bound(node.plugin);
+}
+
+auto dotted(const Node &node) -> Flag {
+  return node.seat != Node::ROOT && node.seat != Node::RECORD;
+}
+
+Whole shown = 0, drawn = 0, stirred = 0;
+String pictured;
+Whole born = 0;
 
 auto labelled() -> Float {
   return (::WIDE - ::CELL * ::HALVED - ::AIR) / ::HALVED;
@@ -160,10 +183,9 @@ void titled(Whole index, const String &box) {
   if (!::surfaced(node)) return;
   GUI::set(
     page, (box + "." + VIEWS::WIRED::DEVICE).c_str(),
-    GUI::Text{
-      VIEWS::LETTERS::cropped(
-        VIEWS::WIRED::subtitled(node), ::WIDE - ::AIR * ::HALVED, ::SMALL)
-        .c_str()});
+    GUI::Text{VIEWS::LETTERS::cropped(
+                VIEWS::device(node.name), ::WIDE - ::AIR * ::HALVED, ::SMALL)
+                .c_str()});
 }
 
 void worn(Whole index, const String &box) {
@@ -227,7 +249,7 @@ void hung(
 void build(Whole nodes, Whole wires, const Vector<VIEWS::WIRED::Seen> &seen) {
   const GUI::Handle page = VIEWS::document();
   const String board = VIEWS::WIRED::board();
-  BOARDS::sweep(page, board.c_str(), 0, std::max(::shown[page], nodes));
+  BOARDS::sweep(page, board.c_str(), 0, std::max(::shown, nodes));
   for (Whole index = 0; index < nodes; ++index)
     if (seen[index].stands) ::box(index);
   for (const Wire &wire : GRAPH::held().wires) {
@@ -252,8 +274,8 @@ void build(Whole nodes, Whole wires, const Vector<VIEWS::WIRED::Seen> &seen) {
     ::hung(page, board, source, wire.from, Side::OUT, wire.out);
     ::hung(page, board, sink, wire.to, Side::IN, wire.in);
   }
-  ::shown[page] = nodes;
-  ::drawn[page] = wires;
+  ::shown = nodes;
+  ::drawn = wires;
 }
 
 }  // namespace
@@ -276,14 +298,14 @@ void SOUND::VIEWS::WIRED::draw() {
   const Whole wires = GRAPH::held().wires.size();
   const Vector<Seen> seen = picture();
   const String track = steering();
-  const Flag renewed = VIEWS::reborn(::born[page]);
+  const Flag renewed = VIEWS::reborn(::born);
   const Whole stirred = GRAPH::counted();
-  const Flag reseated = again || nodes != ::shown[page] ||
-                        wires != ::drawn[page] || track != ::pictured[page] ||
-                        stirred != ::stirred[page];
-  if (reseated || renewed) ::build(nodes, wires, seen);
-  ::pictured[page] = track;
-  ::stirred[page] = stirred;
+  const Flag reseated = again || nodes != ::shown || wires != ::drawn ||
+                        track != ::pictured || stirred != ::stirred;
+  const Flag seated = reseated || renewed;
+  if (seated) ::build(nodes, wires, seen);
+  ::pictured = track;
+  ::stirred = stirred;
   const GUI::Extent view = GUI::GET::measured(page, board().c_str());
   for (Whole index = 0; index < nodes; ++index) {
     if (!seen[index].stands) continue;

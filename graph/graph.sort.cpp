@@ -25,10 +25,10 @@ void SOUND::GRAPH::sort(Stand &stand) {
 }
 
 void SOUND::GRAPH::sort() {
-  for (Whole node = 0; node < held().nodes.size(); ++node) sort(stand(node));
+  for (Stand &stand : stands()) sort(stand);
 }
 
 void SOUND::GRAPH::sort(const Vector<String> &nodes) {
   for (const String &node : nodes)
-    if (const Whole stood = at(node); stood != NONE) sort(stand(stood));
+    if (const Whole stood = at(node); stood != NONE) sort(stands()[stood]);
 }

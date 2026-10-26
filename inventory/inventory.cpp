@@ -12,6 +12,13 @@ void ordered(Vector<Row> &rows, const Row &row) {
   rows.insert(rows.begin() + static_cast<Integer>(at), row);
 }
 
+template <typename Row>
+auto taken(Vector<Row> &rows, Whole row) -> Flag {
+  if (row >= rows.size()) return false;
+  rows.erase(rows.begin() + static_cast<Integer>(row));
+  return true;
+}
+
 auto carrying(Whole index, Whole kind) -> SOUND::Stock * {
   if (index >= ::pool.stocks.size()) return nullptr;
   SOUND::Stock &stock = ::pool.stocks[index];
@@ -78,6 +85,16 @@ auto SOUND::INVENTORY::choose(Whole stock, const Choice &choice) -> Flag {
   ::ordered(held->choices, choice);
   stir(stock);
   return true;
+}
+
+auto SOUND::INVENTORY::erase(Whole stock, Whole row) -> Flag {
+  if (stock >= ::pool.stocks.size()) return false;
+  Stock &held = ::pool.stocks[stock];
+  const Flag gone = held.kind == KIND::CONTROL   ? ::taken(held.turns, row)
+                    : held.kind == KIND::PROGRAM ? ::taken(held.choices, row)
+                                                 : false;
+  if (gone) stir(stock);
+  return gone;
 }
 
 void SOUND::INVENTORY::close() {

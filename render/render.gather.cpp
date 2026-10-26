@@ -3,7 +3,6 @@
 
 #include "../kind.hpp"
 #include "render.internal.hpp"
-#include "render.plan.hpp"
 
 namespace {
 using namespace SOUND;
@@ -37,8 +36,7 @@ auto onto(RENDER::Wave &wave, const Node &sink, Whole in)
 void played(
   Vector<Vector<AUDIO::PLUGIN::Sample>> &into, const Wire &wire,
   const RENDER::Pass &pass) {
-  const Vector<Vector<Float>> &laid =
-    GRAPH::PLAN::laid(GRAPH::PLAN::at(wire.from), wire.out);
+  const Vector<Vector<Float>> &laid = GRAPH::laid(wire.from, wire.out);
   RENDER::Leg legs[RENDER::LEGS];
   const Whole count = RENDER::legs(pass.walk, pass.frames, legs);
   for (Whole leg = 0; leg < count; ++leg)
@@ -62,18 +60,18 @@ void handed(
   }
 }
 
-void own(RENDER::Wave &wave, Whole node, const RENDER::Pass &pass) {
+void own(RENDER::Wave &wave, const String &name, const RENDER::Pass &pass) {
   RENDER::Leg legs[RENDER::LEGS];
   const Whole count = RENDER::legs(pass.walk, pass.frames, legs);
   for (Whole leg = 0; leg < count; ++leg)
-    for (const AUDIO::PLUGIN::Event &turn : GRAPH::PLAN::dialled(node))
+    for (const AUDIO::PLUGIN::Event &turn : GRAPH::dialled(name))
       if (
         turn.offset >= legs[leg].start &&
         turn.offset - legs[leg].start < legs[leg].frames)
         wave.events.push_back(
           {turn.kind, turn.offset - legs[leg].start + legs[leg].offset,
            turn.index, turn.value});
-  ::handed(wave, GRAPH::PLAN::taken(node), NONE, KIND::CONTROL);
+  ::handed(wave, GRAPH::taken(name), NONE, KIND::CONTROL);
 }
 
 void poured(
@@ -95,9 +93,9 @@ auto heard(RENDER::Wave &wave, const Node &sink, Whole in)
 void brought(
   RENDER::Wave &wave, const Node &sink, const Wire &wire,
   const RENDER::Pass &pass) {
-  const Whole from = GRAPH::PLAN::at(wire.from);
+  const Whole from = GRAPH::at(wire.from);
   if (from == NONE) return;
-  const Node &source = GRAPH::played().nodes[from];
+  const Node &source = GRAPH::held().nodes[from];
   const Whole kind = source.outs[wire.out].kind;
   const RENDER::Wave &given = RENDER::carried()[from];
   if (kind == KIND::AUDIO) {
@@ -115,8 +113,18 @@ void brought(
 }
 
 void wired(RENDER::Wave &wave, const Node &sink, const RENDER::Pass &pass) {
-  for (const Wire &wire : GRAPH::played().wires)
-    if (wire.to == sink.name) ::brought(wave, sink, wire, pass);
+  const Vector<Wire> &wires = GRAPH::held().wires;
+  const Vector<Flag> &dormant = GRAPH::dormant();
+  for (Whole row = 0; row < wires.size() && row < dormant.size(); ++row)
+    if (wires[row].to == sink.name && !dormant[row])
+      ::brought(wave, sink, wires[row], pass);
+}
+
+auto kept(const Node &held) -> Whole {
+  if (held.seat != Node::PLUGIN) return held.ins.size();
+  for (Whole in = 0; in < held.ins.size(); ++in)
+    if (RENDER::side(held, in)) return held.ins.size();
+  return 0;
 }
 
 void apart(
@@ -137,14 +145,14 @@ auto SOUND::RENDER::side(const Node &node, Whole in) -> Flag {
 }
 
 void SOUND::RENDER::gather(Whole node, const Pass &pass) {
-  const Node &held = GRAPH::played().nodes[node];
+  const Node &held = GRAPH::held().nodes[node];
   Wave &wave = carried()[node];
   ::silence(wave.lanes, pass.frames);
-  ::apart(wave.ins, kept(held), pass.frames);
+  ::apart(wave.ins, ::kept(held), pass.frames);
   wave.events.clear();
   if (held.seat == Node::ROOT) rooted(node, pass);
-  if (held.quiet) return;
-  ::own(wave, node, pass);
+  if (GRAPH::quieted(held.name)) return;
+  ::own(wave, held.name, pass);
   ::wired(wave, held, pass);
   std::stable_sort(wave.events.begin(), wave.events.end(), ::sooner);
   if (held.seat != Node::ROOT) return;

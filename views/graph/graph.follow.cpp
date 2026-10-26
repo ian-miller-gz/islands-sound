@@ -16,7 +16,7 @@ using namespace SOUND;
 constexpr STRING::Hot LIST = "tracks";
 constexpr Float UNMEASURED = 0.0f;
 
-Map<GUI::Handle, String> followed;
+String followed;
 
 void panned(GUI::Handle page, const String &root) {
   const String board = VIEWS::WIRED::board();
@@ -55,7 +55,7 @@ void SOUND::VIEWS::WIRED::follow(Flag again) {
   const GUI::Extent view = GUI::GET::measured(page, board().c_str());
   if (view.w <= ::UNMEASURED || view.h <= ::UNMEASURED) return;
   const String root = attended();
-  if (!again && root == ::followed[page]) return;
-  ::followed[page] = root;
+  if (!again && root == ::followed) return;
+  ::followed = root;
   if (!root.empty()) ::panned(page, root);
 }

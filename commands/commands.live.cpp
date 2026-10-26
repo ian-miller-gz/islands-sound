@@ -44,7 +44,6 @@ void turned(const CONTROL::MAP::Turn &turn) {
   const Float value = CONTROL::MAP::scaled(control, turn.fraction);
   GRAPH::hand(address.node, address.parameter, value);
   CONTROL::turn(address, value);
-  COMMANDS::overrule(address.node, address.parameter);
 }
 
 void route() {
@@ -70,5 +69,4 @@ void SOUND::COMMANDS::tend() {
   if (CONTROL::tend(marker.playing, marker.position, TRANSPORT::paced()))
     land();
   RENDER::follow();
-  RENDER::plan();
 }

@@ -6,13 +6,6 @@
 
 namespace SOUND::VIEWS {
 
-namespace OFFER {
-constexpr Whole ROLL = 5;
-constexpr Whole ARRANGEMENT = 7;
-constexpr Whole SIGNALS = 4;
-constexpr Whole WAVE = 4;
-}  // namespace OFFER
-
 using Ladder = Vector<GUI::SAC::LADDER::Rung> (*)(Whole bar);
 
 auto dressed(

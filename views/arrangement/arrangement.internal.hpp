@@ -106,7 +106,6 @@ struct Ribbon {
 
 auto ribbons() -> Vector<Ribbon>;
 void names();
-void names(SHELL::Session &session);
 
 auto ribboned(Float down) -> Whole;
 
@@ -182,7 +181,6 @@ void ends();
 auto sketched(Whole band) -> Flag;
 
 auto gripped(Whole frames) -> Flag;
-auto gripped(const Box &box) -> String;
 
 auto snapped() -> Flag;
 void snap();

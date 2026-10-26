@@ -26,7 +26,7 @@ auto SOUND::VIEWS::ARRANGEMENT::ribboned(Float down) -> Whole {
 
 void SOUND::VIEWS::ARRANGEMENT::choose() {
   const GUI::Handle page = VIEWS::document();
-  const Whole track = ::chose(VIEWS::GET::gesture());
+  const Whole track = ::chose(GUI::SAC::STROKE::GET::gesture(page));
   if (track == NONE) return;
   GUI::set(page, VIEWS::TRACKS::ROWS, GUI::Cursor{track});
 }

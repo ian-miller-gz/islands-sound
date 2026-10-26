@@ -14,16 +14,4 @@ auto asked(GUI::Handle page, STRING::Hot list) -> Whole;
 
 auto offer(GUI::Handle page, STRING::Hot list, const Vector<Act> &acts) -> Flag;
 
-auto keyed(GUI::Handle page, STRING::Hot list) -> Whole;
-
-void park(GUI::Handle page, const String &cell);
-
-void keys();
-
 }  // namespace SOUND::VIEWS::MENU
-
-namespace SOUND::VIEWS::MENU::GET {
-
-auto door() -> String;
-
-}  // namespace SOUND::VIEWS::MENU::GET

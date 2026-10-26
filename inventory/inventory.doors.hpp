@@ -8,8 +8,6 @@ auto held() -> const Inventory &;
 
 auto counted() -> Whole;
 
-auto stirred(Whole stock) -> Whole;
-
 auto touched() -> const Touched &;
 
 void settled();
@@ -22,20 +20,11 @@ auto refuses(Whole kind) -> STRING::Hot;
 
 auto add(const String &name, Whole kind) -> Whole;
 
-auto name(Whole stock, const String &name) -> Flag;
-
 auto score(Whole stock, const Score &content) -> Flag;
 
 auto content(Whole stock, const Stock &clip) -> Flag;
 
 auto take(Whole stock, const String &path) -> STRING::Hot;
-
-struct Heard {
-  Whole channels = 0, rate = 0, frames = 0;
-  STRING::Hot refusal = "";
-};
-
-auto heard(const String &path) -> Heard;
 
 auto aim(Whole stock, const Address &address) -> Flag;
 
@@ -49,8 +38,6 @@ auto erase(Whole stock, Whole row) -> Flag;
 auto shape(Whole stock, Whole row, Whole shape) -> Flag;
 
 auto shape(Whole stock, Whole row) -> Whole;
-
-auto bend(Whole stock, Whole row, Float bend) -> Flag;
 
 auto take(Whole stock, const Vector<Vector<Float>> &lanes) -> STRING::Hot;
 

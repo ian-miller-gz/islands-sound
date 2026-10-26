@@ -39,13 +39,8 @@ void SOUND::VIEWS::LANE::restore(const FIELDS::Map &face) {
   for (const ::Marking &row : ::MARKS)
     KEPT::number(face, ::marking(row.leaf), stored().*row.field);
   Whole count = 0;
-  KEPT::number(face, ::FACES, count);
+  if (!KEPT::number(face, ::FACES, count)) return;
   records().clear();
   forget();
   for (Whole n = 0; n < count; ++n) restore(face, n, records().emplace_back());
-}
-
-auto SOUND::VIEWS::LANE::marked(const FIELDS::Map &face) -> Flag {
-  Whole kind = NONE;
-  return KEPT::number(face, ::marking(::MARKS[0].leaf), kind);
 }

@@ -63,10 +63,6 @@ auto threading() -> Flag;
 
 auto claims() -> Vector<String>;
 
-auto shifted() -> Flag;
-
-auto overridden(const TIMELINE::Sent &edge) -> Flag;
-
 auto threaded() -> Whole &;
 
 auto moved() -> Whole;

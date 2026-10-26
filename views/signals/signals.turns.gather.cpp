@@ -4,7 +4,7 @@
 #include "../../inventory.hpp"
 #include "../../kind.hpp"
 #include "../../timeline.hpp"
-#include "signals.plotted.hpp"
+#include "signals.internal.hpp"
 
 namespace {
 using namespace SOUND;
@@ -19,7 +19,7 @@ auto turned(const Stock &stock, const ARRANGEMENT::TRACK::LANE::Clip &span)
     if (move.at < span.from || move.at - span.from >= span.frames) continue;
     wanted.push_back(
       {span.stock, row, span.at + move.at - span.from, 0, move.value,
-       move.shape, move.bend});
+       move.shape});
   }
   return wanted;
 }
@@ -37,25 +37,13 @@ auto chosen(const Stock &stock, const ARRANGEMENT::TRACK::LANE::Clip &span)
   return wanted;
 }
 
-struct Gather {
-  Whole kind = NONE;
-  auto (*gather)(const Stock &stock, const ARRANGEMENT::TRACK::LANE::Clip &span)
-    -> Vector<VIEWS::SIGNALS::Point> = nullptr;
-};
-
-constexpr Gather GATHERS[] = {
-  {KIND::CONTROL, ::turned},
-  {KIND::PROGRAM, ::chosen},
-  {KIND::LOGIC, VIEWS::SIGNALS::plotted}};
-
 auto gathered(const ARRANGEMENT::TRACK::LANE::Clip &span)
   -> Vector<VIEWS::SIGNALS::Point> {
   const Inventory &pool = INVENTORY::held();
   if (span.stock >= pool.stocks.size()) return {};
-  for (const ::Gather &row : ::GATHERS)
-    if (row.kind == VIEWS::SIGNALS::paged())
-      return row.gather(pool.stocks[span.stock], span);
-  return {};
+  const Stock &stock = pool.stocks[span.stock];
+  return VIEWS::SIGNALS::paged() == KIND::CONTROL ? ::turned(stock, span)
+                                                  : ::chosen(stock, span);
 }
 
 void stands(Vector<VIEWS::SIGNALS::Point> &wanted, Whole closes) {

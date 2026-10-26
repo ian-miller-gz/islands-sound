@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include <algorithm>
+#include <cmath>
 #include <cstdlib>
 #include <format>
 
@@ -59,9 +61,7 @@ auto claimed(const String &name) -> String {
 }
 
 auto hushed(const String &name) -> String {
-  return std::format(
-    "{}{}", GRAPH::quieted(name) ? " quiet" : "",
-    GRAPH::missing(name) ? " missing" : "");
+  return GRAPH::quieted(name) ? " quiet" : String();
 }
 
 auto seated(const String &name) -> String {

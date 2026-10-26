@@ -81,7 +81,6 @@ auto SOUND::GRAPH::bypass(const String &root, Whole out, Flag on)
   if (!on && ::sending(root, out) && joined(recorder(root), Side::IN, out) != 0)
     return ::RECORDING;
   held->outs[out].bypassed = on;
-  PLAN::owe();
   return "";
 }
 

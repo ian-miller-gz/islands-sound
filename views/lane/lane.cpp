@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include <algorithm>
 #include <format>
-#include <iterator>
 
 #include "../../kind.hpp"
 #include "../piano/piano.face.hpp"
 #include "../signals/signals.face.hpp"
-#include "../wave/wave.face.hpp"
 #include "lane.face.hpp"
 #include "lane.internal.hpp"
 
@@ -15,21 +12,13 @@ using namespace SOUND;
 
 constexpr STRING::Hot NAME = "lane";
 constexpr STRING::Hot TOOLS = "tools";
-constexpr Whole EDITABLE[] = {
-  KIND::NOTES, KIND::AUDIO, KIND::CONTROL, KIND::PROGRAM, KIND::LOGIC};
-
-struct Faced {
-  Whole kind = NONE;
-  const VIEWS::View &(*face)() = nullptr;
-};
-
-constexpr Faced FACES[] = {
-  {KIND::NOTES, VIEWS::ROLL::face}, {KIND::AUDIO, VIEWS::WAVE::face}};
+constexpr STRING::Hot MAPPED = "minimap";
+constexpr STRING::Hot SLIDING = "slide";
 
 Whole paged = KIND::NOTES;
 
 auto faces() -> Vector<const VIEWS::View *> {
-  return {&VIEWS::ROLL::face(), &VIEWS::SIGNALS::face(), &VIEWS::WAVE::face()};
+  return {&VIEWS::ROLL::face(), &VIEWS::SIGNALS::face()};
 }
 
 void gated(GUI::Handle page) {
@@ -50,18 +39,15 @@ void shed() {
 void run() {
   ::gated(VIEWS::document());
   VIEWS::LANE::swap(::paged);
-  if (VIEWS::LANE::faced() == &VIEWS::SIGNALS::face())
-    VIEWS::SIGNALS::paged(::paged);
+  if (::paged != KIND::NOTES) VIEWS::SIGNALS::paged(::paged);
   VIEWS::LANE::minimap();
   VIEWS::LANE::faced()->run();
-  VIEWS::LANE::bound();
 }
 
 void state(SHELL::Session &session) {
   const VIEWS::View *stands = VIEWS::LANE::faced();
   session.print(
     std::format("lane page {} face {}", KIND::spoken(::paged), stands->name));
-  VIEWS::LANE::scoped(session);
   if (stands->state != nullptr) stands->state(session);
   VIEWS::LANE::minimap(session);
 }
@@ -81,14 +67,16 @@ auto SOUND::VIEWS::LANE::face() -> const View & {
 
 void SOUND::VIEWS::LANE::paged(Whole kind) { ::paged = kind; }
 
-auto SOUND::VIEWS::LANE::editable(Whole kind) -> Flag {
-  return std::ranges::find(::EDITABLE, kind) != std::end(::EDITABLE);
-}
-
 auto SOUND::VIEWS::LANE::faced() -> const View * { return faced(::paged); }
 
 auto SOUND::VIEWS::LANE::faced(Whole kind) -> const View * {
-  for (const ::Faced &row : ::FACES)
-    if (row.kind == kind) return &row.face();
-  return &SIGNALS::face();
+  return kind == KIND::NOTES ? &ROLL::face() : &SIGNALS::face();
+}
+
+auto SOUND::VIEWS::LANE::map() -> String {
+  return String(::NAME) + "." + ::MAPPED;
+}
+
+auto SOUND::VIEWS::LANE::slide() -> String {
+  return String(::NAME) + "." + ::SLIDING;
 }

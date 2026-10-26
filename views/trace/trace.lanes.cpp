@@ -16,6 +16,7 @@ constexpr STRING::Hot EDIT = "edit";
 constexpr STRING::Hot SHED = "shed";
 constexpr STRING::Hot KINDS = "trace.kind";
 
+Flag laned = false;
 Whole adding = KIND::AUDIO;
 
 void grown(GUI::Handle page, Whole track) {
@@ -52,6 +53,8 @@ void rowed(GUI::Handle page, Whole track) {
 
 }  // namespace
 
+auto SOUND::VIEWS::TRACE::laning() -> Flag { return ::laned; }
+void SOUND::VIEWS::TRACE::laning(Flag on) { ::laned = on; }
 auto SOUND::VIEWS::TRACE::adding() -> Whole { return ::adding; }
 
 auto SOUND::VIEWS::TRACE::kinded(

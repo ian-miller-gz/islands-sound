@@ -5,7 +5,7 @@
 #include "../../graph.hpp"
 #include "../../kind.hpp"
 #include "../../timeline.hpp"
-#include "graph.replace.hpp"
+#include "graph.browse.internal.hpp"
 
 namespace {
 using namespace SOUND;
@@ -43,23 +43,22 @@ auto SOUND::VIEWS::WIRED::BROWSE::rostered(const String &filing)
   ::tracked(rows, VIEWS::WIRED::steering());
   recorded(rows);
   surfaced(rows);
+  const Vector<Offer> lanes = lacked(VIEWS::WIRED::steered());
+  rows.insert(rows.end(), lanes.begin(), lanes.end());
   std::erase_if(rows, [&](const Offer &row) { return row.from != filing; });
   std::sort(rows.begin(), rows.end(), before);
   return rows;
 }
 
 auto SOUND::VIEWS::WIRED::BROWSE::rows(const String &filing) -> Vector<Offer> {
-  if (housed(filing)) return files(filing);
   const Vector<Offer> plugins = catalogued();
   const Vector<Offer> rows = rostered(filing);
   if (!planted(filing, plugins)) return rows;
   Vector<Offer> level = directories(filing, plugins);
-  const Vector<Offer> shelf = files(filing);
-  level.insert(level.end(), shelf.begin(), shelf.end());
   const Vector<Offer> held = under(filing, plugins);
   level.insert(level.end(), held.begin(), held.end());
   level.insert(level.end(), rows.begin(), rows.end());
-  return narrow(filing, level);
+  return level;
 }
 
 auto SOUND::VIEWS::WIRED::BROWSE::filed(const Offer &offer) -> String {
@@ -86,6 +85,10 @@ auto SOUND::VIEWS::WIRED::BROWSE::surfacing(const String &directory) -> String {
       return name;
   }
   return {};
+}
+
+auto SOUND::VIEWS::WIRED::BROWSE::devised(const String &directory) -> Flag {
+  return directory == SOURCES || directory == SINKS || directory == NOTED;
 }
 
 auto SOUND::VIEWS::WIRED::BROWSE::spelled(const Vector<Whole> &kinds)

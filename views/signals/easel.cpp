@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <format>
 
-#include "signals.bend.hpp"
+#include "../../kind.hpp"
+#include "signals.internal.hpp"
 
 namespace {
 using namespace SOUND;
@@ -18,20 +19,21 @@ Whole shape = NONE;
 Whole wrote = 0;
 
 auto worded() -> STRING::Hot {
-  return VIEWS::SIGNALS::continuous() ? ::MODE : ::LAYS;
+  return VIEWS::SIGNALS::paged() == KIND::CONTROL ? ::MODE : ::LAYS;
 }
 
 auto standing() -> Whole {
-  return VIEWS::SIGNALS::continuous() ? ::shape : NONE;
+  return VIEWS::SIGNALS::paged() == KIND::CONTROL ? ::shape : NONE;
 }
 
 void stated(GUI::Handle page) {
   const String board = VIEWS::SIGNALS::board();
-  VIEWS::draw(
+  GUI::SAC::STROKE::draw(
+    page,
     ::drawing
       ? GUI::SAC::STROKE::
           Mode{board.c_str(), ::worded(), {VIEWS::SIGNALS::across(VIEWS::SIGNALS::grain()), VIEWS::SIGNALS::STEP}, GUI::SAC::STROKE::Mode::BOARD}
-      : VIEWS::SIGNALS::bow());
+      : GUI::SAC::STROKE::Mode{});
   GUI::SAC::CARRY::watch(
     page, ::drawing ? GUI::SAC::CARRY::Watch{} : VIEWS::SIGNALS::watched());
 }
@@ -56,7 +58,7 @@ void worn(GUI::Handle page) {
   GUI::set(
     page, ::DRAW, GUI::Style{::drawing && stands == NONE ? ::MARKED : ::PLAIN});
   const Vector<VIEWS::SIGNALS::Shape> &family = VIEWS::SIGNALS::shapes();
-  const Flag shown = VIEWS::SIGNALS::continuous();
+  const Flag shown = VIEWS::SIGNALS::paged() == KIND::CONTROL;
   for (Whole row = 0; row < family.size(); ++row) {
     GUI::set(
       page, family[row].id,
@@ -66,7 +68,7 @@ void worn(GUI::Handle page) {
 }
 
 void filled(GUI::Handle page, const GUI::SAC::STROKE::Gesture &gesture) {
-  if (!VIEWS::SIGNALS::continuous()) {
+  if (VIEWS::SIGNALS::paged() != KIND::CONTROL) {
     if (gesture.opened) VIEWS::SIGNALS::drawn({gesture.from.cell});
     return;
   }
@@ -85,7 +87,8 @@ void SOUND::VIEWS::SIGNALS::easel() {
   ::worn(page);
   ::stated(page);
   if (!::drawing) return;
-  const GUI::SAC::STROKE::Gesture gesture = VIEWS::GET::gesture();
+  const GUI::SAC::STROKE::Gesture gesture =
+    GUI::SAC::STROKE::GET::gesture(page);
   if (!gesture.standing && !gesture.closed) return;
   if (gesture.opened) begun();
   ::filled(page, gesture);

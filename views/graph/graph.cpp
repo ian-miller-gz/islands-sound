@@ -6,8 +6,7 @@
 
 #include "../../boards.hpp"
 #include "../../graph.hpp"
-#include "../views.split.hpp"
-#include "graph.browse.internal.hpp"
+#include "graph.internal.hpp"
 
 namespace {
 using namespace SOUND;
@@ -54,10 +53,7 @@ void state(SHELL::Session &session) {
    .least = VIEWS::WIRED::least,
    .controls = {VIEWS::ZOOM, VIEWS::PAN},
    .run = VIEWS::WIRED::draw,
-   .state = ::state,
-   .words = VIEWS::WIRED::BROWSE::words()});
-
-[[maybe_unused]] const Flag mirrored = VIEWS::SPLIT::mirror(::NAME);
+   .state = ::state});
 
 }  // namespace
 

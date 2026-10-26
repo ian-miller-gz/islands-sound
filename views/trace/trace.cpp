@@ -13,6 +13,13 @@ namespace TRACE = SOUND::VIEWS::TRACE;
 constexpr STRING::Hot CHIP = "chip";
 constexpr STRING::Hot NAMED = "name";
 constexpr STRING::Hot DRESS = "trace";
+constexpr STRING::Hot RESTING = "tab";
+constexpr STRING::Hot STANDING = "standing";
+constexpr STRING::Hot RESTINGWORD = "tabword";
+constexpr STRING::Hot STANDINGWORD = "standingword";
+constexpr STRING::Hot PLATE = "plate";
+constexpr STRING::Hot FOOT = "trace.face.foot";
+constexpr Float FOOTED = 1.0f;
 constexpr Whole HUES = 6;
 constexpr Whole TONES = 4;
 
@@ -55,10 +62,35 @@ void nodes(GUI::Handle page) {
   }
 }
 
+void dressed(GUI::Handle page, STRING::Hot tab, Flag standing) {
+  const String plate = String(tab) + "." + ::PLATE;
+  GUI::set(page, plate.c_str(), GUI::Style{standing ? ::STANDING : ::RESTING});
+  GUI::set(page, tab, GUI::Style{standing ? ::STANDINGWORD : ::RESTINGWORD});
+}
+
+void turned(GUI::Handle page) {
+  if (GUI::GET::clicked(page, TRACE::NODED)) TRACE::laning(false);
+  if (GUI::GET::clicked(page, TRACE::LANED)) TRACE::laning(true);
+  const Flag laned = TRACE::laning();
+  ::dressed(page, TRACE::NODED, !laned);
+  ::dressed(page, TRACE::LANED, laned);
+  GUI::set(page, ::FOOT, laned ? GUI::NORTHEAST : GUI::NORTHWEST);
+  GUI::Position foot = GUI::GET::position(page, ::FOOT);
+  foot.x = laned ? -::FOOTED : ::FOOTED;
+  GUI::set(page, ::FOOT, foot);
+  GUI::set(page, TRACE::ROWS, GUI::Visibility{!laned});
+  for (STRING::Hot id : {TRACE::LANES, TRACE::KINDED, TRACE::GROW})
+    GUI::set(page, id, GUI::Visibility{laned});
+  if (laned) GUI::set(page, TRACE::EMPTY, GUI::Visibility{false});
+}
+
 void run() {
-  TRACE::turned(VIEWS::document());
+  const GUI::Handle page = VIEWS::document();
+  ::turned(page);
   TRACE::editing();
-  TRACE::read();
+  if (TRACE::laning()) return TRACE::lanes();
+  ::nodes(page);
+  TRACE::aimed(page);
 }
 
 void state(SHELL::Session &session) {
@@ -73,7 +105,6 @@ void state(SHELL::Session &session) {
       std::format("empty {}", GUI::GET::text(VIEWS::document(), TRACE::EMPTY)));
   TRACE::aimed(session);
   TRACE::lanes(session);
-  TRACE::clips(session);
   TRACE::editing(session);
 }
 
@@ -86,12 +117,6 @@ auto SOUND::VIEWS::TRACE::attended() -> Whole {
   const Whole track = VIEWS::cursor(LIST);
   return track < TIMELINE::held().tracks.size() ? track : NONE;
 }
-void SOUND::VIEWS::TRACE::nodes() {
-  const GUI::Handle page = document();
-  ::nodes(page);
-  aimed(page);
-}
-
 auto SOUND::VIEWS::TRACE::walked() -> Vector<GRAPH::TRACE::Step> {
   Vector<GRAPH::TRACE::Step> steps = GRAPH::TRACE::trace(::attended());
   if (!steps.empty()) steps.erase(steps.begin());

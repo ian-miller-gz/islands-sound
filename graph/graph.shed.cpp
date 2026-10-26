@@ -59,7 +59,7 @@ auto SOUND::GRAPH::shed(const String &root, Whole out) -> Flag {
   ::unfed(root, out);
   ::unmirrored(root, out);
   outs.erase(outs.begin() + static_cast<Integer>(out));
-  for (Tape &tape : stand(stood).tapes)
+  for (Tape &tape : stands()[stood].tapes)
     tape.runs.erase(tape.runs.begin() + static_cast<Integer>(out));
   stir();
   return true;

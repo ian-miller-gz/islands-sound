@@ -62,13 +62,16 @@ void reclaimed(const String &gone) {
 void plucked(const String &node) {
   Graph &wiring = GRAPH::standing();
   const Whole stood = GRAPH::at(node);
+  Vector<GRAPH::Stand> &halves = GRAPH::stands();
+  const GRAPH::Stand &stand = halves[stood];
+  if (stand.instance != nullptr) stand.offer->surface->destroy(stand.instance);
   for (const Wire &wire : wiring.wires)
     if (wire.from == node && GRAPH::noted(node, wire.out)) GRAPH::hush(wire.to);
   wiring.wires = ::without(node);
   GRAPH::shed(node);
   ::reclaimed(node);
   wiring.nodes.erase(wiring.nodes.begin() + static_cast<Integer>(stood));
-  GRAPH::retire(stood);
+  halves.erase(halves.begin() + static_cast<Integer>(stood));
   GRAPH::stir();
 }
 

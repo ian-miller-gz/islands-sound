@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include <island/input.hpp>
+
 #include <island/gui/seat.hpp>
 
 #include "../../boards.hpp"
@@ -8,6 +10,9 @@
 
 namespace SOUND::VIEWS::WIRED {
 namespace {
+constexpr STRING::Hot ROOTED = "track command unseats track";
+constexpr STRING::Hot TAKING = "recorder follows track";
+
 auto dot(Whole node) -> String {
   return GUI::SAC::SEAT::named(VIEWS::WIRED::board().c_str(), node) + "." +
          VIEWS::WIRED::QUIET;
@@ -47,6 +52,37 @@ void opened(GUI::Handle page) {
   open(standing(GUI::SAC::SEAT::selected(page, deck.c_str())));
 }
 
+auto chosen(GUI::Handle page) -> Vector<String> {
+  const String deck = VIEWS::WIRED::board();
+  Vector<String> nodes;
+  for (const STRING::Cold &id : GUI::NGA::GET::selections(page, deck.c_str())) {
+    const String node = standing(GUI::SAC::SEAT::row(String(id), deck.c_str()));
+    if (!node.empty()) nodes.push_back(node);
+  }
+  return nodes;
+}
+
+void deleted(GUI::Handle page) {
+  const INPUT::KEYS::Event key = GUI::GET::keyed(page);
+  if (VIEWS::journaled(key)) return;
+  if (key.action != INPUT::KEYS::DELETE) return;
+  const Vector<String> nodes = chosen(page);
+  if (nodes.empty()) return;
+  GUI::set(page, VIEWS::WIRED::NOTICE, GUI::Text{""});
+  for (const String &node : nodes) {
+    if (GRAPH::at(node) == NONE) continue;
+    if (GRAPH::rooted(node)) {
+      GUI::set(page, VIEWS::WIRED::NOTICE, GUI::Text{ROOTED});
+      continue;
+    }
+    if (GRAPH::held().nodes[GRAPH::at(node)].seat == Node::RECORD) {
+      GUI::set(page, VIEWS::WIRED::NOTICE, GUI::Text{TAKING});
+      continue;
+    }
+    VIEWS::WIRED::unseat(node);
+  }
+}
+
 }  // namespace
 
 void acts() {
@@ -60,6 +96,7 @@ void acts() {
     knobbed(page, row, GRAPH::held().nodes[row]);
   }
   opened(page);
+  deleted(page);
 }
 
 }  // namespace SOUND::VIEWS::WIRED

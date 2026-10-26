@@ -24,8 +24,7 @@ void SOUND::VIEWS::TRACE::lanes(SHELL::Session &session) {
   const Whole count =
     track == NONE ? 0 : TIMELINE::held().tracks[track].lanes.size();
   session.print(std::format(
-    "lanes {} rows {} kind {}",
-    String(GET::list()) == LANES ? ::SHOWN : ::HIDDEN, count,
+    "lanes {} rows {} kind {}", laning() ? ::SHOWN : ::HIDDEN, count,
     KIND::spoken(adding())));
   for (Whole lane = 0; lane < count; ++lane) {
     const ARRANGEMENT::TRACK::Lane &held =

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #pragma once
 #include "control.hpp"
-#include "control.map.hpp"
 
 namespace SOUND::CONTROL {
 
@@ -21,8 +20,6 @@ struct Live {
   Input input;
   Whole lanes = CHANNELS;
   Whole picked = 0;
-  Flag sustained = false;
-  Vector<AUDIO::PLUGIN::Event> deferred;
 };
 
 auto standing() -> Live &;
@@ -37,16 +34,4 @@ void capture(const AUDIO::PLUGIN::Event &edge);
 
 void listening(Flag on);
 
-auto pedal(const MIDI::Message &message) -> Flag;
-
-auto hold(const AUDIO::PLUGIN::Event &edge) -> Flag;
-
-void lift();
-
 }  // namespace SOUND::CONTROL
-
-namespace SOUND::CONTROL::MAP {
-
-auto learned() -> Vector<Binding> &;
-
-}  // namespace SOUND::CONTROL::MAP

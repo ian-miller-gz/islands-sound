@@ -50,7 +50,6 @@ auto least() -> GUI::Extent;
 void bound();
 
 void park();
-void settle();
 
 void chase();
 

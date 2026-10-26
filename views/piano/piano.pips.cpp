@@ -8,57 +8,21 @@
 #include "../../inventory.hpp"
 #include "../../timeline.hpp"
 #include "../lane/lane.face.hpp"
-#include "piano.notation.hpp"
-#include "piano.pips.hpp"
+#include "piano.internal.hpp"
 
 namespace {
 using namespace SOUND;
 
-auto boxed(const VIEWS::ROLL::Pip &pip, Flag struck) -> VIEWS::ROLL::Box {
-  const Float x = VIEWS::ROLL::across(pip.at);
-  const Float lane = VIEWS::ROLL::ROWS::lane(pip.pitch, pip.at);
-  if (struck)
-    return {
-      {x, lane + VIEWS::ROLL::LIFT}, {VIEWS::ROLL::SPACE, VIEWS::ROLL::SPACE}};
-  return {{x, lane}, {VIEWS::ROLL::wide(pip.length), VIEWS::ROLL::TALL}};
-}
+constexpr STRING::Hot LOOSE = "loose";
 
-Vector<VIEWS::ROLL::Box> laid;
-Flag carried = false;
-Whole born = 0;
-
-void lay(GUI::Handle page, const String &id, const VIEWS::ROLL::Box &box) {
-  if (!GUI::SAC::CARRY::GET::dragged(page, id.c_str()))
-    GUI::set(page, id.c_str(), box.at);
-  GUI::set(page, id.c_str(), box.size);
-}
-
-void placed(
-  GUI::Handle page, const Vector<VIEWS::ROLL::Pip> &wanted, Whole kept) {
-  const String board = VIEWS::ROLL::board();
-  const Flag struck = VIEWS::ROLL::GET::notation() == VIEWS::ROLL::PERCUSSION;
-  const Flag carrying = !GUI::SAC::CARRY::GET::carried(page).empty();
-  if (VIEWS::reborn(::born) || (::carried && !carrying)) ::laid.clear();
-  ::carried = carrying;
-  ::laid.resize(std::min(::laid.size(), kept));
-  ::laid.resize(wanted.size());
-  for (Whole row = 0; row < wanted.size(); ++row) {
-    const VIEWS::ROLL::Box box = ::boxed(wanted[row], struck);
-    if (box == ::laid[row]) continue;
-    ::lay(page, GUI::SAC::SEAT::named(board.c_str(), row), box);
-    ::laid[row] = box;
-  }
-}
-
-}  // namespace
-
-void SOUND::VIEWS::ROLL::gathered(
-  const LANE::Clip &span, Whole track, Vector<Pip> &wanted) {
+void gathered(
+  const ARRANGEMENT::TRACK::LANE::Clip &span, Whole track,
+  Vector<VIEWS::ROLL::Pip> &wanted) {
   const Inventory &pool = INVENTORY::held();
   if (span.stock >= pool.stocks.size()) return;
   const Score &score = pool.stocks[span.stock].score;
-  const Whole opens = opened(span.at);
-  const Whole held = opened(span.frames);
+  const Whole opens = VIEWS::ROLL::opened(span.at);
+  const Whole held = VIEWS::ROLL::opened(span.frames);
   for (Whole index = 0; index < score.notes.size(); ++index) {
     const Note &note = score.notes[index];
     if (note.at < span.from || note.at - span.from >= held) continue;
@@ -68,25 +32,54 @@ void SOUND::VIEWS::ROLL::gathered(
   }
 }
 
-auto SOUND::VIEWS::ROLL::boxed(const Pip &pip) -> Box {
-  return ::boxed(pip, GET::notation() == PERCUSSION);
+auto loosely(const VIEWS::ROLL::Pip &pip) -> Flag { return pip.stock == NONE; }
+
+void dressed(
+  GUI::Handle page, const Vector<VIEWS::ROLL::Pip> &wanted,
+  const Vector<VIEWS::ROLL::Pip> &shown) {
+  const String board = VIEWS::ROLL::board();
+  for (Whole row = 0; row < wanted.size(); ++row) {
+    const Flag loose = ::loosely(wanted[row]);
+    if (row < shown.size() && ::loosely(shown[row]) == loose) continue;
+    const String id = GUI::SAC::SEAT::named(board.c_str(), row);
+    GUI::set(page, id.c_str(), GUI::Style{loose ? ::LOOSE : BOARDS::PLATE});
+    GUI::set(
+      page, id.c_str(),
+      GUI::Depth{loose ? VIEWS::ROLL::LOOSE : VIEWS::ROLL::SEATED});
+  }
 }
+
+void placed(GUI::Handle page, const Vector<VIEWS::ROLL::Pip> &wanted) {
+  const String board = VIEWS::ROLL::board();
+  for (Whole row = 0; row < wanted.size(); ++row) {
+    const String id = GUI::SAC::SEAT::named(board.c_str(), row);
+    if (!GUI::SAC::CARRY::GET::dragged(page, id.c_str()))
+      GUI::set(
+        page, id.c_str(),
+        GUI::Position{
+          VIEWS::ROLL::across(wanted[row].at),
+          VIEWS::ROLL::lane(wanted[row].pitch)});
+    GUI::set(
+      page, id.c_str(),
+      GUI::Extent{VIEWS::ROLL::wide(wanted[row].length), VIEWS::ROLL::TALL});
+  }
+}
+
+}  // namespace
 
 auto SOUND::VIEWS::ROLL::pips() -> Vector<Pip> {
   const LANE::Mark mark = LANE::edited(KIND::NOTES);
   Vector<Pip> wanted;
   for (const ARRANGEMENT::TRACK::LANE::Clip &span :
        TIMELINE::spans(mark.track, mark.lane))
-    gathered(span, mark.track, wanted);
+    ::gathered(span, mark.track, wanted);
   return wanted;
 }
 
 void SOUND::VIEWS::ROLL::seat(
   GUI::Handle page, const Vector<Pip> &wanted, const Vector<Pip> &shown) {
-  dressed(page, wanted, shown);
-  ::placed(page, wanted, shown.size());
-  HEADS::seat(page, wanted);
-  ghosts(page);
+  ::dressed(page, wanted, shown);
+  ::placed(page, wanted);
 }
 
 auto SOUND::VIEWS::ROLL::wide(Whole length) -> Float {

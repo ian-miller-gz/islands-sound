@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <format>
+#include <iterator>
 
 #include "../../boards.hpp"
 #include "../../shape.hpp"
-#include "signals.bend.hpp"
-#include "signals.overridden.hpp"
+#include "signals.internal.hpp"
 
 namespace {
 using namespace SOUND;
@@ -12,6 +12,10 @@ using namespace SOUND;
 constexpr STRING::Hot STROKE = "stroke";
 constexpr STRING::Hot TREADED = "wash";
 constexpr STRING::Hot STEM = "segment";
+
+constexpr GUI::Shape::Run RUNS[] = {
+  GUI::Shape::HOLD, GUI::Shape::LINE, GUI::Shape::RISE, GUI::Shape::FALL,
+  GUI::Shape::EASE};
 
 VIEWS::Pool pool;
 
@@ -31,9 +35,43 @@ void build(Whole count) {
   VIEWS::built(::pool, count);
 }
 
-auto bent(Whole row) -> String {
-  const Float bend = VIEWS::SIGNALS::bowed(row);
-  return bend == 0.0f ? String() : std::format(" bend {:g}", bend);
+auto run(const VIEWS::SIGNALS::Point &point) -> Float {
+  return point.until > point.at ? VIEWS::SIGNALS::across(point.until - point.at)
+                                : 0.0f;
+}
+
+auto drop(const Vector<VIEWS::SIGNALS::Point> &rows, Whole row) -> Float {
+  const Whole next = row + 1;
+  if (rows[row].shape == SHAPE::HOLD || next >= rows.size())
+    return VIEWS::SIGNALS::ORIGIN;
+  if (rows[next].stock != rows[row].stock || rows[next].at != rows[row].until)
+    return VIEWS::SIGNALS::ORIGIN;
+  return VIEWS::SIGNALS::down(rows[next].value) -
+         VIEWS::SIGNALS::down(rows[row].value);
+}
+
+auto folded(const VIEWS::SIGNALS::Point &point) -> Flag {
+  return point.high > point.low;
+}
+
+auto placed(const VIEWS::SIGNALS::Point &point) -> GUI::Position {
+  return {
+    VIEWS::SIGNALS::across(point.at),
+    VIEWS::SIGNALS::down(::folded(point) ? point.high : point.value)};
+}
+
+auto ends(const Vector<VIEWS::SIGNALS::Point> &rows, Whole row) -> GUI::Ends {
+  const VIEWS::SIGNALS::Point &point = rows[row];
+  if (!::folded(point)) return {{::run(point), ::drop(rows, row)}};
+  return {
+    {VIEWS::SIGNALS::ORIGIN,
+     VIEWS::SIGNALS::down(point.low) - VIEWS::SIGNALS::down(point.high)}};
+}
+
+auto shaped(const VIEWS::SIGNALS::Point &point) -> GUI::Shape {
+  if (::folded(point) || point.shape >= std::size(::RUNS))
+    return {GUI::Shape::LINE};
+  return {::RUNS[point.shape]};
 }
 
 }  // namespace
@@ -50,19 +88,13 @@ void SOUND::VIEWS::SIGNALS::segments() {
   const Whole seats = VIEWS::sized(::pool, rows.size(), window());
   if (seats != ::pool.stood) ::build(seats);
   VIEWS::light(::pool, ::segment, rows.size());
-  const String skin = worn(::TREADED);
+  const String skin = dressed(::TREADED);
   for (Whole row = 0; row < rows.size(); ++row) {
     const String id = ::segment(row);
-    traced(page, id, rows, row);
+    GUI::set(page, id.c_str(), ::placed(rows[row]));
+    GUI::set(page, id.c_str(), ::ends(rows, row));
+    GUI::set(page, id.c_str(), ::shaped(rows[row]));
     GUI::set(page, id.c_str(), GUI::Style{skin.c_str()});
     GUI::set(page, id.c_str(), GUI::Border{TREAD});
   }
-}
-
-void SOUND::VIEWS::SIGNALS::segments(SHELL::Session &session) {
-  const Vector<Point> &rows = shown();
-  for (Whole row = 0; row < rows.size(); ++row)
-    session.print(std::format(
-      "segment {} at {} until {} shape {}{}", row, rows[row].at,
-      rows[row].until, SHAPE::spoken(rows[row].shape), ::bent(row)));
 }

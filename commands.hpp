@@ -2,7 +2,6 @@
 #pragma once
 #include <cartridge/interface.hpp>
 
-#include "commands/commands.aim.hpp"
 #include "graph.hpp"
 
 namespace SOUND::COMMANDS {
@@ -69,8 +68,6 @@ void bounce(SHELL::Session &session);
 auto root(Whole track, const String &name) -> String;
 
 auto laned(Whole track, Whole kind) -> Whole;
-auto landing(Whole track, Whole kind) -> Whole;
-void covered(Whole track, Whole lane, Whole opens, Whole closes);
 
 auto admitted(Whole track, Whole lane, Flag on) -> Flag;
 auto recast(Whole track, Whole lane, Whole kind) -> Flag;
@@ -101,14 +98,6 @@ void restore(SHELL::Session &session);
 auto joined(Whole track, Whole lane, Vector<Whole> rows) -> Whole;
 void join(SHELL::Session &session);
 
-auto split(Whole track, Whole lane, Whole placement, Whole at) -> Whole;
-
-auto quantized(
-  Whole track, Whole lane, Whole placement, Whole grid, Float sense) -> Whole;
-
-auto tuned(Whole track, Whole lane, Whole placement, Float strength) -> Whole;
-auto untuned(Whole track, Whole lane, Whole placement) -> Flag;
-
 struct Export {
   String path;
   Whole frames = 0;
@@ -128,9 +117,6 @@ auto quieted(const String &node, Flag on) -> Flag;
 
 auto homed(const String &node, const String &page, Float across, Float down)
   -> Flag;
-
-auto dialled(const String &node, Whole parameter, Float value) -> Flag;
-void overrule(const String &node, Whole parameter);
 
 auto paced(Whole at, Float tempo) -> Flag;
 auto paced(Whole at) -> Flag;

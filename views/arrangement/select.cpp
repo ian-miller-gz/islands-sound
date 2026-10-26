@@ -142,7 +142,8 @@ void SOUND::VIEWS::ARRANGEMENT::marquee() {
     GUI::set(page, ::BAND, GUI::Depth{::HELD});
     ::stood = true;
   }
-  const GUI::SAC::STROKE::Gesture gesture = VIEWS::GET::gesture();
+  const GUI::SAC::STROKE::Gesture gesture =
+    GUI::SAC::STROKE::GET::gesture(page);
   const Flag picking = !drawing(gesture) && ::grounded(gesture);
   ::shown(
     page, gesture.standing && picking ? gesture : GUI::SAC::STROKE::Gesture{});

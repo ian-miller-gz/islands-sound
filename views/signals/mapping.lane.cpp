@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include "../../inventory.hpp"
 #include "../../timeline.hpp"
-#include "../views.aim.hpp"
-#include "signals.mapping.hpp"
+#include "signals.internal.hpp"
 
 namespace {
 using namespace SOUND;
@@ -26,15 +24,4 @@ void SOUND::VIEWS::SIGNALS::map(const String &plugin) {
   HISTORY::record(
     {.act = ::ACT,
      .maps = {{.track = track, .lane = lane, .map = plugin, .stood = stood}}});
-}
-
-void SOUND::VIEWS::SIGNALS::aim(const Address &address) {
-  const Inventory &pool = INVENTORY::held();
-  HISTORY::begin();
-  for (const Span &span : spans())
-    if (
-      span.stock < pool.stocks.size() &&
-      pool.stocks[span.stock].kind == KIND::LOGIC)
-      VIEWS::aimed(span.stock, address.node, address.parameter);
-  HISTORY::end();
 }

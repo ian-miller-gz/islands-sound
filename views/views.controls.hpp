@@ -4,8 +4,6 @@
 
 namespace SOUND::VIEWS {
 
-constexpr STRING::Hot MAP = "minimap";
-
 void wheeled(const View &unit, const GUI::NGA::Wheel &turn);
 
 auto zoom(const View &unit, Float across, Float down) -> Flag;

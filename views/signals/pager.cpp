@@ -37,7 +37,7 @@ void pages(GUI::Handle page) {
   const Flag numbered = ::paging == KIND::CONTROL;
   GUI::set(page, ::NUMBER, GUI::Visibility{numbered});
   GUI::set(page, ::LABELLED, GUI::Visibility{numbered});
-  GUI::set(page, ::MEANT, GUI::Visibility{numbered || ::paging == KIND::LOGIC});
+  GUI::set(page, ::MEANT, GUI::Visibility{numbered});
 }
 
 void taken(GUI::Handle page) {
@@ -54,7 +54,7 @@ auto dialled(GUI::Handle page) -> Whole {
 
 auto labelled() -> String {
   const String word = VIEWS::SIGNALS::named(), suffix = VIEWS::SIGNALS::unit();
-  if (word.empty() || suffix.empty() || ::paging == KIND::LOGIC) return word;
+  if (word.empty() || suffix.empty()) return word;
   return word + ::BETWEEN + suffix;
 }
 
@@ -92,7 +92,4 @@ void SOUND::VIEWS::SIGNALS::pager(SHELL::Session &session) {
     number() == NONE ? String(::NOTHING) : std::to_string(number()),
     numbered ? "shown" : "hidden", meant.empty() ? String(::NOTHING) : meant,
     plugin.empty() ? String(::NOTHING) : plugin));
-  const String node = governs();
-  session.print(
-    std::format("governs {}", node.empty() ? String(::NOTHING) : node));
 }

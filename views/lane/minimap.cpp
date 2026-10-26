@@ -34,7 +34,7 @@ auto folded(Float share, Float deep) -> Float {
 
 void build(GUI::Handle page, Whole count) {
   const String bed = ::ground();
-  if (count != 0 && !GUI::GET::visibility(page, bed.c_str()))
+  if (::pool.stood == 0 && count != 0)
     BOARDS::place(page, VIEWS::LANE::map().c_str(), "panel", bed, {}, {});
   BOARDS::sweep(page, bed.c_str(), count, ::pool.stood);
   for (Whole line = ::pool.stood; line < count; ++line) {
@@ -47,7 +47,6 @@ void build(GUI::Handle page, Whole count) {
 }
 
 void derive(GUI::Handle page, const String &id, Float wide) {
-  if (VIEWS::LANE::spanned(page, id, wide)) return;
   const String field = VIEWS::LANE::field();
   const Float scale =
     GUI::NGA::GET::zoom(page, field.c_str()).value * VIEWS::LANE::RATIO;
@@ -62,6 +61,17 @@ void derive(GUI::Handle page, const String &id, Float wide) {
     page, id.c_str(),
     GUI::NGA::Pan{
       wall == GUI::Walls::NONE ? west : std::max(wall, west), ::ORIGIN});
+}
+
+void strolled(GUI::Handle page, const String &id) {
+  const GUI::NGA::Ask stroke = GUI::NGA::GET::stroked(page, id.c_str());
+  if (stroke.board.empty()) return;
+  VIEWS::wandered();
+  const String field = VIEWS::LANE::field();
+  const GUI::NGA::Pan held = GUI::NGA::GET::pan(page, field.c_str());
+  GUI::NGA::set(
+    page, field.c_str(),
+    GUI::NGA::Pan{stroke.x - VIEWS::LANE::windowed() * ::HALF, held.y});
 }
 
 void placed(
@@ -92,7 +102,7 @@ void SOUND::VIEWS::LANE::minimap() {
   const String id = map();
   const GUI::Extent strip = GUI::GET::measured(page, id.c_str());
   VIEWS::reborn(::pool);
-  strolled(page, id);
+  ::strolled(page, id);
   ::derive(page, id, strip.w);
   const Overview read = faced()->overview();
   const Whole seats = VIEWS::sized(::pool, read.dashes.size(), windowed());

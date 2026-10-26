@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <algorithm>
-#include <cmath>
 
-#include "timeline.derived.hpp"
 #include "timeline.internal.hpp"
 
 namespace {
@@ -19,26 +17,17 @@ void copied(
   run.push_back(std::move(stretch));
 }
 
-auto offset(const ARRANGEMENT::TRACK::LANE::Clip &span) -> Whole {
-  if (span.ratio == ARRANGEMENT::TRACK::LANE::Clip{}.ratio) return span.from;
-  return Whole(std::lround(std::max(Float(span.from) * span.ratio, 0.0f)));
-}
-
 void stretched(
-  Vector<TIMELINE::Laid> &run, Whole track, const String &root, Whole lane,
-  const ARRANGEMENT::TRACK::LANE::Clip &span, Whole from, Whole until) {
-  const TIMELINE::Derived source = TIMELINE::derived(span.stock, span);
-  if (source.take == nullptr) return;
-  const Take &take = *source.take;
+  Vector<TIMELINE::Laid> &run, const Take &take, Whole track,
+  const String &root, Whole lane, const ARRANGEMENT::TRACK::LANE::Clip &span,
+  Whole from, Whole until) {
   const Whole carried = take.lanes.empty() ? 0 : take.lanes[0].size();
   if (carried == 0) return;
   const Whole ends = std::min(span.at + span.frames, until);
   for (Whole begins = std::max(span.at, from); begins < ends;) {
-    const Whole reads =
-      TIMELINE::wrapped(::offset(span), begins - span.at, carried);
+    const Whole reads = TIMELINE::wrapped(span.from, begins - span.at, carried);
     const Whole length = std::min(ends - begins, carried - reads);
     ::copied(run, take, track, root, lane, begins - from, reads, length);
-    TIMELINE::fade(run.back(), span, begins - span.at);
     begins += length;
   }
 }
@@ -62,7 +51,9 @@ auto SOUND::TIMELINE::lay(
       if (stood.kind != KIND::AUDIO) continue;
       for (const ARRANGEMENT::TRACK::LANE::Clip &span : stood.clips)
         if (span.stock < pool.stocks.size())
-          ::stretched(run, index, track.root, lane, span, from, until);
+          ::stretched(
+            run, pool.stocks[span.stock].take, index, track.root, lane, span,
+            from, until);
     }
   }
   std::stable_sort(run.begin(), run.end(), ::sooner);

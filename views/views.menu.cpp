@@ -4,7 +4,6 @@
 
 #include "../boards.hpp"
 #include "views.internal.hpp"
-#include "views.split.hpp"
 
 namespace {
 using namespace SOUND;
@@ -13,7 +12,8 @@ constexpr STRING::Hot PANEL = "menu";
 constexpr STRING::Hot ROWS = "menu.rows";
 constexpr STRING::Hot ROOT = "root";
 constexpr Float WIDE = 176.0f;
-constexpr Float FRAME = 12.0f, FOOT = 4.0f;
+constexpr Float FRAME = 12.0f;
+constexpr Float FOOT = 4.0f;
 Vector<String> said;
 String claim;
 String hung;
@@ -50,7 +50,7 @@ void pointed(GUI::Handle page) {
 
 void SOUND::VIEWS::MENU::raise(
   const Vector<String> &rows, Float x, Float y, STRING::Hot whose) {
-  const GUI::Handle page = SPLIT::home();
+  const GUI::Handle page = document();
   ::said = rows;
   ::claim = whose;
   ::hung.clear();
@@ -63,7 +63,7 @@ void SOUND::VIEWS::MENU::raise(
 
 void SOUND::VIEWS::MENU::raise(
   const Vector<String> &rows, STRING::Hot whose, STRING::Hot door) {
-  const GUI::Handle page = SPLIT::home();
+  const GUI::Handle page = document();
   ::said = rows;
   ::claim = whose;
   ::hung = door;
@@ -74,15 +74,15 @@ void SOUND::VIEWS::MENU::raise(
 }
 
 void SOUND::VIEWS::MENU::lower() {
-  GUI::set(SPLIT::home(), ::PANEL, GUI::Visibility{false});
+  GUI::set(document(), ::PANEL, GUI::Visibility{false});
 }
 
 auto SOUND::VIEWS::MENU::standing() -> Flag {
-  return GUI::GET::visibility(SPLIT::home(), ::PANEL);
+  return GUI::GET::visibility(document(), ::PANEL);
 }
 
 auto SOUND::VIEWS::MENU::taken(STRING::Hot whose) -> Whole {
-  const GUI::Handle page = SPLIT::home();
+  const GUI::Handle page = document();
   if (!standing() || ::claim != whose) return NONE;
   if (!GUI::GET::activated(page, ::ROWS)) return NONE;
   GUI::set(page, ::PANEL, GUI::Visibility{false});
@@ -91,7 +91,7 @@ auto SOUND::VIEWS::MENU::taken(STRING::Hot whose) -> Whole {
 }
 
 void SOUND::VIEWS::MENU::frame() {
-  const GUI::Handle page = SPLIT::home();
+  const GUI::Handle page = document();
   if (page == GUI::NONE || !standing()) return;
   ::worded(page);
   if (::hung.empty()) ::pointed(page);

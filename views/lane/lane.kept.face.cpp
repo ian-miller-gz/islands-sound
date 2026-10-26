@@ -9,7 +9,6 @@ namespace KEPT = SOUND::VIEWS::KEPT;
 
 constexpr STRING::Hot FACES = "lane.faces";
 constexpr STRING::Hot MAPPED = "mapped";
-constexpr STRING::Hot ADDED = "added";
 
 template <typename Type>
 struct Row {
@@ -25,17 +24,11 @@ constexpr Row<Float> REALS[] = {
   {"x", [](LANE::Face &one) -> Float & { return one.pan.x; }},
   {"y", [](LANE::Face &one) -> Float & { return one.pan.y; }},
   {"across", [](LANE::Face &one) -> Float & { return one.zoom.value; }},
-  {"down", [](LANE::Face &one) -> Float & { return one.zoom.down; }},
-  {"sense", [](LANE::Face &one) -> Float & { return one.sense; }}};
+  {"down", [](LANE::Face &one) -> Float & { return one.zoom.down; }}};
 
 constexpr Row<Whole> COUNTS[] = {
   {"number", [](LANE::Face &one) -> Whole & { return one.number; }},
-  {"notation", [](LANE::Face &one) -> Whole & { return one.notation; }},
-  {"presentation", [](LANE::Face &one) -> Whole & { return one.presentation; }},
-  {"clip", [](LANE::Face &one) -> Whole & { return one.clip; }},
-  {"onsets", [](LANE::Face &one) -> Whole & { return one.onsets; }},
-  {"notes", [](LANE::Face &one) -> Whole & { return one.notes; }},
-  {"loudness", [](LANE::Face &one) -> Whole & { return one.loudness; }}};
+  {"notation", [](LANE::Face &one) -> Whole & { return one.notation; }}};
 
 auto read(const FIELDS::Map &face, const String &key, String &value) -> Flag {
   return KEPT::text(face, key, value);
@@ -71,7 +64,6 @@ void SOUND::VIEWS::LANE::keep(FIELDS::Map &face, Whole n, Face &one) {
   face[mapped] = one.mapped.size();
   for (Whole m = 0; m < one.mapped.size(); ++m)
     face[KEPT::join(mapped, m)] = one.mapped[m];
-  keep(face, KEPT::join(::FACES, n, ::ADDED), one.added);
 }
 
 void SOUND::VIEWS::LANE::restore(const FIELDS::Map &face, Whole n, Face &one) {
@@ -86,5 +78,4 @@ void SOUND::VIEWS::LANE::restore(const FIELDS::Map &face, Whole n, Face &one) {
     if (KEPT::text(face, KEPT::join(mapped, m), name))
       one.mapped.push_back(name);
   }
-  restore(face, KEPT::join(::FACES, n, ::ADDED), one.added);
 }

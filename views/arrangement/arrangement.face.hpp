@@ -6,10 +6,4 @@ namespace SOUND::VIEWS::ARRANGEMENT {
 
 auto face() -> const View &;
 
-namespace GET {
-
-auto opened() -> Flag;
-
-}  // namespace GET
-
 }  // namespace SOUND::VIEWS::ARRANGEMENT

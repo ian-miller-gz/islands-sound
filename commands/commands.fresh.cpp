@@ -45,7 +45,6 @@ void founded() {
 }  // namespace
 
 void SOUND::COMMANDS::fresh() {
-  RENDER::VOICE::drop();
   SESSION::adopt({});
   TRANSPORT::adopt(SESSION::held().setting);
   TIMELINE::adopt(SESSION::held().arrangement);
@@ -54,6 +53,8 @@ void SOUND::COMMANDS::fresh() {
   GRAPH::close();
   ::founded();
   CONTROL::adopt(SESSION::held().values);
+  CONTROL::MAP::adopt({});
+  RENDER::VOICE::drop();
   RENDER::VOICE::claim();
 }
 

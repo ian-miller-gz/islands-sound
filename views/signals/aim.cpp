@@ -3,7 +3,6 @@
 
 #include "../../timeline.hpp"
 #include "../../transport.hpp"
-#include "../lane/lane.face.hpp"
 #include "signals.internal.hpp"
 
 namespace {
@@ -31,7 +30,6 @@ auto SOUND::VIEWS::SIGNALS::aimed() -> Aim {
 }
 
 auto SOUND::VIEWS::SIGNALS::aimed(Whole at) -> Aim {
-  if (!LANE::GET::admitted(at)) return {};
   const ARRANGEMENT::TRACK::LANE::Clip span =
     TIMELINE::covered(attended(), laned(), at);
   if (span.stock == NONE) return {};

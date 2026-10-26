@@ -7,7 +7,6 @@
 #include "../kind.hpp"
 #include "../timeline.hpp"
 #include "../commands.hpp"
-#include "commands.retouch.hpp"
 
 namespace {
 using namespace SOUND;
@@ -18,14 +17,14 @@ auto counted(const String &token) -> Whole {
 
 auto placed(Whole index, const ARRANGEMENT::TRACK::LANE::Clip &span) -> String {
   return std::format(
-    "placed {} stock {} at {} from {} for {}{}", index, span.stock, span.at,
-    span.from, span.frames, COMMANDS::tailed(span));
+    "placed {} stock {} at {} from {} for {}", index, span.stock, span.at,
+    span.from, span.frames);
 }
 
 auto bumped(Whole index, const ARRANGEMENT::TRACK::LANE::Clip &span) -> String {
   return std::format(
-    "outtake {} stock {} at {} from {} for {}{}", index, span.stock, span.at,
-    span.from, span.frames, COMMANDS::tailed(span));
+    "outtake {} stock {} at {} from {} for {}", index, span.stock, span.at,
+    span.from, span.frames);
 }
 
 auto standing(Whole track, Whole lane, Whole placement) -> Placement {
@@ -116,13 +115,23 @@ void SOUND::COMMANDS::span(SHELL::Session &session) {
     return session.print("span refused: no such placement");
   if (session.arguments.size() < 6)
     return session.print(::placed(placement, standing.span));
-  ARRANGEMENT::TRACK::LANE::Clip shaped = standing.span;
-  shaped.at = ::counted(session.arguments[4]);
-  shaped.frames = ::counted(session.arguments[5]);
-  if (session.arguments.size() > 6)
-    shaped.from = ::counted(session.arguments[6]);
-  if (!COMMANDS::retouch(track, lane, placement, shaped, "span"))
+  const ARRANGEMENT::TRACK::LANE::Clip shaped = {
+    .stock = standing.span.stock,
+    .at = ::counted(session.arguments[4]),
+    .from = session.arguments.size() > 6 ? ::counted(session.arguments[6])
+                                         : standing.span.from,
+    .frames = ::counted(session.arguments[5])};
+  if (!TIMELINE::span(track, lane, placement, shaped))
     return session.print("span refused: no span, neighbour crossed");
+  HISTORY::record(
+    {.act = "span",
+     .verb = Edit::CHANGED,
+     .placements = {
+       {.track = track,
+        .lane = lane,
+        .placement = placement,
+        .span = shaped,
+        .was = standing.span}}});
   session.print(::placed(placement, shaped));
 }
 

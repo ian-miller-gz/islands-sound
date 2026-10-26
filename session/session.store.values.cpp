@@ -6,19 +6,11 @@
 
 using namespace SOUND;
 
-namespace {
-
-constexpr STRING::Hot VALUE = "v";
-constexpr STRING::Hot OVERRIDE = "o";
-
-}  // namespace
-
 auto SOUND::SESSION::written(const Vector<Value> &values) -> String {
   String text;
   for (const Value &value : values)
     text += std::format(
-      "{} {} {} {}\n", value.overridden ? ::OVERRIDE : ::VALUE,
-      value.address.parameter, value.value, value.address.node);
+      "v {} {} {}\n", value.address.parameter, value.value, value.address.node);
   return text;
 }
 
@@ -30,11 +22,11 @@ void SOUND::SESSION::taken(
     std::istringstream line(held);
     String tag;
     line >> tag;
-    if (tag != ::VALUE && tag != ::OVERRIDE) {
+    if (tag != "v") {
       husked(held, at, husks);
       continue;
     }
-    Value value = {.overridden = tag == ::OVERRIDE};
+    Value value;
     line >> value.address.parameter >> value.value;
     value.address.node = rest(line);
     if (!value.address.node.empty()) values.push_back(value);

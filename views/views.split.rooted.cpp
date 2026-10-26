@@ -9,6 +9,8 @@ namespace {
 using namespace SOUND;
 using VIEWS::SPLIT::SHUT;
 
+constexpr STRING::Hot MAIN = "main";
+
 void placed(GUI::Handle page, STRING::Hot root, Float down, Float margin) {
   GUI::Position at = GUI::GET::position(page, root);
   GUI::Extent size = GUI::GET::extent(page, root);
@@ -23,10 +25,10 @@ auto above(const VIEWS::SPLIT::Seat &seat, Float tall) -> Float {
 }  // namespace
 
 auto SOUND::VIEWS::SPLIT::measured(GUI::Handle page) -> Seat {
-  const GUI::Extent main = GUI::GET::measured(page, MAIN);
+  const GUI::Extent main = GUI::GET::measured(page, ::MAIN);
   const Float least = GUI::GET::extent(page, BAND).h;
   return {
-    GUI::GET::position(page, MAIN).y + main.h, main.h,
+    GUI::GET::position(page, ::MAIN).y + main.h, main.h,
     GUI::GET::extent(page, BAR).h, least, std::max(main.h - least, SHUT)};
 }
 

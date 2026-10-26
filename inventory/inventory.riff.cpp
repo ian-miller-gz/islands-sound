@@ -49,7 +49,6 @@ auto SOUND::INVENTORY::RIFF::survey(const Vector<Byte> &bytes, Shape &shape)
     }
     if (::tagged(bytes, at, "data")) {
       shape.at = body;
-      shape.declared = size;
       shape.size = std::min(size, static_cast<Whole>(bytes.size() - body));
     }
     at = body + size + (size & 1u);

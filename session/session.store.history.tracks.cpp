@@ -2,7 +2,6 @@
 #include <format>
 
 #include "session.store.internal.hpp"
-#include "session.store.span.hpp"
 
 using namespace SOUND;
 
@@ -12,8 +11,8 @@ auto spanned(STRING::Hot tag, const Vector<ARRANGEMENT::TRACK::LANE::Clip> &of)
   -> String {
   String text;
   for (const ARRANGEMENT::TRACK::LANE::Clip &span : of)
-    text += std::format("{} {}\n", tag, SESSION::spanned(span)) +
-            SESSION::tuned(span);
+    text += std::format(
+      "{} {} {} {} {}\n", tag, span.stock, span.at, span.from, span.frames);
   return text;
 }
 

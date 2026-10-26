@@ -25,24 +25,97 @@ void reread() {
   }
 }
 
+auto mirrored(const String &name) -> Vector<Whole> {
+  const Vector<ARRANGEMENT::Track> &tracks = TIMELINE::held().tracks;
+  for (Whole track = 0; track < tracks.size(); ++track)
+    if (tracks[track].root == name) return TIMELINE::kinds(track);
+  return {};
+}
+
+auto stood(const Node &planned) -> String {
+  if (planned.seat == Node::ROOT)
+    return GRAPH::root(::mirrored(planned.name), planned.name);
+  if (planned.seat == Node::RECORD)
+    return GRAPH::record(planned.claim, planned.name);
+  if (planned.clock) return GRAPH::clock(planned.device, planned.name);
+  if (!planned.device.empty())
+    return GRAPH::surface(planned.plugin, planned.device, planned.name);
+  return GRAPH::seat(planned.plugin, planned.name);
+}
+
+void laned(const Node &planned) {
+  for (const Port &in : planned.ins)
+    if (in.lane != NONE) GRAPH::admit(planned.name, in.lane, true);
+  for (Whole out = 0; out < planned.outs.size(); ++out)
+    if (planned.outs[out].bypassed) GRAPH::bypass(planned.name, out, true);
+}
+
+void restood(SHELL::Session &session, const Graph &plan) {
+  for (const Node &planned : plan.nodes) {
+    const String node = ::stood(planned);
+    if (node.empty()) {
+      session.print(std::format("seat refused: {}", planned.name));
+      continue;
+    }
+    if (planned.seat == Node::ROOT) ::laned(planned);
+    if (planned.across != NONE) GRAPH::home(node, planned.across, planned.down);
+  }
+  for (const Node &planned : plan.nodes)
+    for (const Berth &berth : planned.berths)
+      GRAPH::home(planned.name, berth.page, berth.across, berth.down);
+}
+
+void refilled() {
+  for (const ARRANGEMENT::Track &track : TIMELINE::held().tracks)
+    if (GRAPH::rooted(track.root) && GRAPH::recorder(track.root).empty())
+      GRAPH::record(track.root);
+}
+
+void redrawn(SHELL::Session &session, const Graph &plan) {
+  for (const Wire &wire : plan.wires) {
+    const STRING::Hot refused =
+      GRAPH::refusal(wire.from, wire.out, wire.to, wire.in);
+    if (refused[0] != '\0')
+      session.print(std::format(
+        "wire refused: {} {} {} {} {}", wire.from, wire.out, wire.to, wire.in,
+        refused));
+    else
+      GRAPH::hookup(wire.from, wire.out, wire.to, wire.in);
+  }
+}
+
+void reclaimed(const Graph &plan) {
+  for (const Node &planned : plan.nodes)
+    if (!planned.claim.empty()) GRAPH::claim(planned.name, planned.claim);
+}
+
+void remarked(const Graph &plan) {
+  for (const Node &planned : plan.nodes) {
+    if (planned.quiet) GRAPH::quiet(planned.name, true);
+    if (planned.lane != 0) GRAPH::lane(planned.name, planned.lane);
+  }
+  RENDER::VOICE::drop();
+  RENDER::VOICE::claim();
+}
+
 void reasserted() {
   for (const Value &value : SESSION::held().values)
     GRAPH::hand(value.address.node, value.address.parameter, value.value);
 }
 
-auto said(const COMMANDS::Gathered &told) -> String {
-  String lines;
-  for (const String &line : told.lines)
-    lines += (lines.empty() ? "" : "\n") + line;
-  return lines;
-}
-
 }  // namespace
+
+void SOUND::COMMANDS::stand(SHELL::Session &session, const Graph &plan) {
+  ::restood(session, plan);
+  ::refilled();
+  ::reclaimed(plan);
+  ::redrawn(session, plan);
+  ::remarked(plan);
+}
 
 auto SOUND::COMMANDS::open(const String &name) -> String {
   const STRING::Hot refused = SESSION::open(name);
   if (refused[0] != '\0') return std::format("open refused: {}", refused);
-  RENDER::VOICE::drop();
   Gathered told;
   TRANSPORT::adopt(SESSION::held().setting);
   TIMELINE::adopt(SESSION::held().arrangement);
@@ -60,5 +133,18 @@ auto SOUND::COMMANDS::open(const String &name) -> String {
   FIELDS::Map face;
   if (SESSION::kept(SESSION::held().name, face)) VIEWS::keep(face);
   told.print(std::format("opened {}", SESSION::held().name));
-  return ::said(told);
+  String said;
+  for (const String &line : told.lines)
+    said += (said.empty() ? "" : "\n") + line;
+  return said;
+}
+
+void SOUND::COMMANDS::open(SHELL::Session &session) {
+  if (session.arguments.size() < 2) return session.print("open <name>");
+  const String said = open(session.arguments[1]);
+  for (Whole from = 0, at = 0; at <= said.size(); ++at)
+    if (at == said.size() || said[at] == '\n') {
+      session.print(said.substr(from, at - from));
+      from = at + 1;
+    }
 }

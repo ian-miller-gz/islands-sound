@@ -4,7 +4,6 @@
 #include "../../inventory.hpp"
 #include "../../timeline.hpp"
 #include "../../transport.hpp"
-#include "../lane/lane.face.hpp"
 #include "piano.internal.hpp"
 
 namespace {
@@ -63,7 +62,6 @@ auto SOUND::VIEWS::ROLL::claimed(Whole track, Whole pulse) -> Aim {
   const Vector<Tempo> &tempos = TRANSPORT::held().tempos;
   const Whole at = SCORE::framed(pulse, tempos);
   if (track >= TIMELINE::held().tracks.size()) return {};
-  if (!LANE::GET::admitted(at)) return {};
   const Aim standing = aimed(track, at);
   if (standing.stock != NONE) return standing;
   const Whole lane = laned(track);

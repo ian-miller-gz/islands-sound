@@ -23,7 +23,4 @@ auto shut(const String &track, const String &lane) -> Flag;
 
 auto shut(Whole band) -> Flag;
 
-auto overridden() -> Vector<Row>;
-void wear();
-
 }  // namespace SOUND::VIEWS::ARRANGEMENT

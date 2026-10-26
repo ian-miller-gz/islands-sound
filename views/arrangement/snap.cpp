@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <format>
 
-#include "../views.quantize.hpp"
 #include "arrangement.internal.hpp"
 
 namespace {
@@ -12,12 +11,6 @@ constexpr STRING::Hot MARKED = "selected";
 constexpr STRING::Hot PLAIN = "icon";
 
 Flag standing = true;
-
-auto grid() -> Whole {
-  return ::standing ? VIEWS::ARRANGEMENT::rung().span : 0;
-}
-
-[[maybe_unused]] const Flag stated = VIEWS::GRID::state(::grid);
 
 }  // namespace
 

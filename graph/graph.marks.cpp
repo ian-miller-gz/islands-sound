@@ -24,7 +24,6 @@ auto SOUND::GRAPH::quiet(const String &node, Flag on) -> Flag {
     for (const Wire &wire : standing().wires)
       if (wire.from == node && noted(node, wire.out)) hush(wire.to);
   nodes[stood].quiet = on;
-  PLAN::owe();
   return true;
 }
 

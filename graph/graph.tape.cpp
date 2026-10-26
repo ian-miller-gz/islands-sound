@@ -16,13 +16,6 @@ Whole counted = 0;
 Whole writing = 0;
 Whole reading = 0;
 
-auto run(Whole node, Whole out) -> const GRAPH::Run * {
-  const Vector<GRAPH::Stand *> &stands = GRAPH::played().stands;
-  if (node >= stands.size()) return nullptr;
-  const Vector<GRAPH::Run> &runs = stands[node]->tapes[::reading].runs;
-  return out < runs.size() ? &runs[out] : nullptr;
-}
-
 }  // namespace
 
 auto SOUND::GRAPH::written(Stand &stand) -> Tape & {
@@ -50,18 +43,4 @@ auto SOUND::GRAPH::adopt() -> Flag {
   ::reading = live;
   ::taken.store(::counts[live], memory_order_release);
   return fresh;
-}
-
-auto SOUND::GRAPH::PLAN::developed(Whole node, Whole out)
-  -> const Vector<AUDIO::PLUGIN::Event> & {
-  static const Vector<AUDIO::PLUGIN::Event> nothing;
-  const Run *held = ::run(node, out);
-  return held == nullptr ? nothing : held->developed;
-}
-
-auto SOUND::GRAPH::PLAN::laid(Whole node, Whole out)
-  -> const Vector<Vector<Float>> & {
-  static const Vector<Vector<Float>> nothing;
-  const Run *held = ::run(node, out);
-  return held == nullptr ? nothing : held->laid;
 }

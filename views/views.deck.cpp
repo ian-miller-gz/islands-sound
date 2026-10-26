@@ -9,7 +9,6 @@
 #include "../timeline.hpp"
 #include "../transport.hpp"
 #include "views.internal.hpp"
-#include "views.deck.restore.hpp"
 
 namespace {
 using namespace SOUND;
@@ -74,6 +73,10 @@ void shown(GUI::Handle page, const TRANSPORT::Marker &marker) {
   GUI::set(page, ::PACE, GUI::Value{held});
 }
 
+}  // namespace
+
+namespace {
+
 constexpr STRING::Hot TRACKS = "tracks";
 
 Flag dialling = false;
@@ -115,5 +118,4 @@ void SOUND::VIEWS::deck() {
   Float tempo = TRANSPORT::paced();
   if (::taken(page, tempo)) COMMANDS::paced(0, tempo);
   ::shown(page, TRANSPORT::marker());
-  DECK::restore(page);
 }

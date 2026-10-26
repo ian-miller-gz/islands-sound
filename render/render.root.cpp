@@ -23,7 +23,7 @@ void broken(
 void handed(
   Vector<AUDIO::PLUGIN::Event> &into, const String &root, Whole out,
   Whole kind) {
-  const GRAPH::Intake &intake = GRAPH::PLAN::taken(GRAPH::PLAN::at(root));
+  const GRAPH::Intake &intake = GRAPH::taken(root);
   for (Whole slot = 0; slot < intake.size; ++slot) {
     const GRAPH::Handed &entry = intake.handed[slot];
     if (entry.out != out || !KIND::carries(kind, entry.edge.kind)) continue;
@@ -36,8 +36,7 @@ void handed(
 void taped(
   Vector<AUDIO::PLUGIN::Event> &into, const String &root, Whole out, Whole kind,
   const RENDER::Leg &leg) {
-  const Whole node = GRAPH::PLAN::at(root);
-  for (const AUDIO::PLUGIN::Event &edge : GRAPH::PLAN::developed(node, out)) {
+  for (const AUDIO::PLUGIN::Event &edge : GRAPH::developed(root, out)) {
     if (edge.offset < leg.start || edge.offset - leg.start >= leg.frames)
       continue;
     if (!KIND::carries(kind, edge.kind)) continue;
@@ -70,11 +69,11 @@ void passed(
 }  // namespace
 
 void SOUND::RENDER::rooted(Whole node, const Pass &pass) {
-  const Node &held = GRAPH::played().nodes[node];
+  const Node &held = GRAPH::held().nodes[node];
   Wave &wave = carried()[node];
   wave.outs.resize(held.outs.size());
   for (Vector<AUDIO::PLUGIN::Event> &out : wave.outs) out.clear();
-  if (held.quiet) return;
+  if (GRAPH::quieted(held.name)) return;
   for (Whole out = 0; out < held.outs.size(); ++out)
     ::passed(wave.outs[out], held.name, out, held.outs[out], pass);
 }

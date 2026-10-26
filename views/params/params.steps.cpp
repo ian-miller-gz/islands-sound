@@ -1,8 +1,29 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include <algorithm>
+
 #include "params.internal.hpp"
 
+auto SOUND::VIEWS::RACK::stepped(
+  const AUDIO::PLUGIN::Control &published, Float value) -> Whole {
+  const Float span = published.most - published.least;
+  const Float fraction = std::clamp(
+    span > 0.0f ? (value - published.least) / span : value, 0.0f, 1.0f);
+  return Whole(fraction * Float(published.steps) + 0.5f);
+}
+
+auto SOUND::VIEWS::RACK::valued(
+  const AUDIO::PLUGIN::Control &published, Whole step) -> Float {
+  const Float span = published.most - published.least;
+  return published.least + span * Float(step) / Float(published.steps);
+}
+
+auto SOUND::VIEWS::RACK::listed(const AUDIO::PLUGIN::Control &published)
+  -> Flag {
+  return published.steps > 1 && published.labels.size() == published.steps + 1;
+}
+
 auto SOUND::VIEWS::RACK::listed(const Row &row) -> Flag {
-  return RIG::listed(described(row));
+  return listed(described(row));
 }
 
 void SOUND::VIEWS::RACK::door(

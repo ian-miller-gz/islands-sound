@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <algorithm>
 #include <island/audio.hpp>
-#include <threads.hpp>
 
 #include "../graph.hpp"
 #include "render.hpp"
-#include "render.plan.hpp"
-#include "render.voice.hpp"
 #include "../transport.hpp"
 
 namespace SOUND::RENDER::VOICE {
@@ -16,10 +13,6 @@ Whole voice = AUDIO::OUTPUT::NONE;
 String clock;
 Whole width = CHANNELS;
 Whole lane = 0;
-THREADS::Shared<Whole> begun{0};
-THREADS::Shared<Whole> ended{0};
-THREADS::Shared<Whole> torn{0};
-THREADS::Shared<Whole> underruns{0};
 
 auto quantized(Float held) -> AUDIO::Sample {
   return static_cast<AUDIO::Sample>(
@@ -44,42 +37,21 @@ auto walked(AUDIO::Sample *into, Whole made, Whole run) -> Flag {
   return true;
 }
 
-auto counted(AUDIO::Sample *into, Whole made, Whole run) -> Flag {
-  begun.fetch_add(1);
-  GRAPH::SIGNAL::clean();
-  const Whole head = GRAPH::SIGNAL::counted();
-  const Flag walk = walked(into, made, run);
-  if (GRAPH::SIGNAL::touched() && GRAPH::SIGNAL::counted() != head)
-    torn.fetch_add(1);
-  ended.fetch_add(1);
-  return walk;
-}
-
 auto pulled(AUDIO::Sample *into, Whole frames, void *) -> Whole {
   Whole made = 0;
   while (made < frames) {
     const Whole run = std::min<Whole>(frames - made, RENDER::BLOCK);
-    if (!counted(into, made, run)) break;
+    if (!walked(into, made, run)) return made;
     made += run;
   }
-  if (made < frames) underruns.fetch_add(1);
   return made;
 }
 
 }  // namespace
 }  // namespace SOUND::RENDER::VOICE
 
-auto SOUND::RENDER::VOICE::blocks() -> Blocks {
-  return {begun.load(), ended.load(), torn.load(), underruns.load()};
-}
-
-auto SOUND::RENDER::VOICE::standing() -> Flag {
-  return voice != AUDIO::OUTPUT::NONE;
-}
-
 void SOUND::RENDER::VOICE::claim() {
-  if (standing()) return;
-  RENDER::plan();
+  if (voice != AUDIO::OUTPUT::NONE) return;
   clock = GRAPH::clock();
   if (clock.empty()) return;
   const Node &node = GRAPH::held().nodes[GRAPH::at(clock)];

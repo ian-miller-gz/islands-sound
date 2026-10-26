@@ -11,10 +11,6 @@ namespace {
 
 constexpr STRING::Hot WHOLE = "none";
 
-constexpr STRING::Hot SCALED = "zoom {} {:g} {:g}";
-
-constexpr STRING::Hot PANNED = "pan {} {:g} {:g}";
-
 auto measured(const String &token) -> Float {
   return std::strtof(token.c_str(), nullptr);
 }
@@ -22,10 +18,6 @@ auto measured(const String &token) -> Float {
 }  // namespace
 
 void SOUND::COMMANDS::zoom(SHELL::Session &session) {
-  const VIEWS::Seen seen = VIEWS::GET::seen();
-  if (session.arguments.size() < 2 && *seen.name != '\0')
-    return session.print(
-      std::format(::SCALED, seen.name, seen.zoom.value, seen.zoom.down));
   if (session.arguments.size() < 2)
     return session.print("zoom <across> [<down>]");
   const Flag paired = session.arguments.size() > 2;
@@ -40,10 +32,6 @@ void SOUND::COMMANDS::zoom(SHELL::Session &session) {
 }
 
 void SOUND::COMMANDS::pan(SHELL::Session &session) {
-  const VIEWS::Seen seen = VIEWS::GET::seen();
-  if (session.arguments.size() < 2 && *seen.name != '\0')
-    return session.print(
-      std::format(::PANNED, seen.name, seen.pan.x, seen.pan.y));
   if (session.arguments.size() < 3) return session.print("pan <x> <y>");
   if (!VIEWS::pan(
         ::measured(session.arguments[1]), ::measured(session.arguments[2])))

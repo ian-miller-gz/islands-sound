@@ -79,19 +79,22 @@ void landed(
 }  // namespace
 
 void SOUND::VIEWS::ARRANGEMENT::draft() {
+  const GUI::Handle page = VIEWS::document();
   const GUI::SAC::LADDER::Rung step = rung();
-  const GUI::SAC::STROKE::Gesture gesture = VIEWS::GET::gesture();
-  VIEWS::draw(
-    {board().c_str(),
-     drawing(gesture) ? ::MODE : ::PICKED,
-     {across(step.span), ::DEEP},
-     GUI::SAC::STROKE::Mode::BOARD});
+  const GUI::SAC::STROKE::Gesture gesture =
+    GUI::SAC::STROKE::GET::gesture(page);
+  GUI::SAC::STROKE::draw(
+    page, {board().c_str(),
+           drawing(gesture) ? ::MODE : ::PICKED,
+           {across(step.span), ::DEEP},
+           GUI::SAC::STROKE::Mode::BOARD});
   if (gesture.closed && drawing(gesture) && ::pencilled(gesture))
     ::landed(step, gesture);
 }
 
 auto SOUND::VIEWS::ARRANGEMENT::drafting() -> Draft {
-  const GUI::SAC::STROKE::Gesture gesture = VIEWS::GET::gesture();
+  const GUI::SAC::STROKE::Gesture gesture =
+    GUI::SAC::STROKE::GET::gesture(VIEWS::document());
   if (!gesture.standing || !drawing(gesture) || !::pencilled(gesture))
     return {};
   const Row seat = ::seated(gesture);

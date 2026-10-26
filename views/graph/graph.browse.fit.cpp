@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <format>
 
-#include "graph.browse.crop.hpp"
 #include "graph.browse.internal.hpp"
 
 namespace {
@@ -10,6 +9,12 @@ using namespace SOUND;
 using namespace SOUND::VIEWS::WIRED::BROWSE;
 
 constexpr STRING::Hot PATTERN = "browserow";
+constexpr STRING::Hot NAME = "name";
+constexpr STRING::Hot CROSSING = "crossing";
+constexpr Float SIZED = 15.0f;
+constexpr Float READ = 14.0f;
+constexpr Float AIR = 12.0f;
+constexpr Float RIM = 16.0f;
 constexpr Float EDGE = 10.0f;
 
 constexpr STRING::Hot HOME = "graph";
@@ -19,9 +24,10 @@ auto titled(const Offer &offer) -> String {
   return offer.directory ? std::format("{} {}", offer.name, INTO) : offer.name;
 }
 
-auto part(GUI::Handle page, STRING::Hot cell) -> Float {
-  return GUI::GET::position(page, (String(::PATTERN) + "." + cell).c_str()).x;
-}
+struct Fit {
+  Float across = 0.0f;
+  Float wide = 0.0f;
+};
 
 auto fitted(GUI::Handle page, const Vector<Offer> &rows) -> Fit {
   Float name = 0.0f, reading = 0.0f;
@@ -30,15 +36,19 @@ auto fitted(GUI::Handle page, const Vector<Offer> &rows) -> Fit {
     reading = std::max(reading, Float(crossed(offer).size()));
   }
   const Float advance = VIEWS::LETTERS::ADVANCE;
-  const Float named = ::part(page, VIEWS::WIRED::NAME);
+  const GUI::Position west =
+    GUI::GET::position(page, (String(::PATTERN) + "." + ::CROSSING).c_str());
+  const GUI::Position named =
+    GUI::GET::position(page, (String(::PATTERN) + "." + ::NAME).c_str());
   const Float across =
-    std::max(::part(page, CROSSING), named + name * advance * SIZED + AIR);
+    std::max(west.x, named.x + name * advance * ::SIZED + ::AIR);
   const GUI::Position seat = GUI::GET::position(page, PANEL);
   const GUI::Extent home = GUI::GET::measured(page, ::HOME);
-  const Float run = across + reading * advance * READ + RIM;
-  const Fit whole{across, across - named - AIR, std::max(run, ::authored)};
-  if (home.w <= 0.0f) return whole;
-  return cut(whole, run, named, home.w + seat.x - ::EDGE);
+  Float wide = across + reading * advance * ::READ + ::RIM;
+  if (::authored > 0.0f) wide = std::max(wide, ::authored);
+  const Float room = home.w + seat.x - ::EDGE;
+  if (home.w > 0.0f) wide = std::min(wide, room);
+  return {across, wide};
 }
 
 }  // namespace
@@ -59,6 +69,11 @@ void SOUND::VIEWS::WIRED::BROWSE::listing(
     const String cell = std::format("{}.{}", ROWS, row);
     if (!GUI::GET::visibility(page, cell.c_str())) break;
     const Offer &offer = rows[first + row];
-    crop(page, cell, ::titled(offer), crossed(offer), fit);
+    const String reading = cell + "." + ::CROSSING;
+    GUI::set(page, (cell + "." + ::NAME).c_str(), GUI::Text{::titled(offer)});
+    GUI::set(
+      page, reading.c_str(),
+      GUI::Position{fit.across, GUI::GET::position(page, reading.c_str()).y});
+    GUI::set(page, reading.c_str(), GUI::Text{crossed(offer)});
   }
 }

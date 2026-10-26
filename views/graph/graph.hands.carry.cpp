@@ -9,7 +9,7 @@
 namespace {
 using namespace SOUND;
 
-Map<GUI::Handle, Flag> carrying;
+Flag carrying = false;
 
 }  // namespace
 
@@ -18,15 +18,15 @@ void SOUND::VIEWS::WIRED::carried(GUI::Handle page) {
   for (Whole row = 0; row < GRAPH::held().nodes.size(); ++row) {
     const String box = GUI::SAC::SEAT::named(board().c_str(), row);
     if (!GUI::GET::moved(page, box.c_str())) continue;
-    if (!::carrying[page]) {
+    if (!::carrying) {
       HISTORY::begin();
-      ::carrying[page] = true;
+      ::carrying = true;
     }
     moved = true;
     const GUI::Position at = GUI::GET::position(page, box.c_str());
     COMMANDS::homed(GRAPH::held().nodes[row].name, steering(), at.x, at.y);
   }
-  if (moved || !::carrying[page]) return;
+  if (moved || !::carrying) return;
   HISTORY::end();
-  ::carrying[page] = false;
+  ::carrying = false;
 }

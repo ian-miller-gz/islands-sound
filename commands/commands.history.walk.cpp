@@ -66,11 +66,9 @@ void applied(SHELL::Session &session, const Edit &taken, Flag back) {
       ::dropped(taken);
     else
       ::stood(session, taken);
-    ::placed(taken.gone);
-    return COMMANDS::rewired(session, taken, true);
+    return ::placed(taken.gone);
   }
   ::lifted(taken.gone);
-  COMMANDS::rewired(session, taken, false);
   if (taken.verb == Edit::ADDED)
     ::stood(session, taken);
   else

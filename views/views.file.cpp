@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include <island/input.hpp>
+
 #include "../commands.hpp"
 #include "../session.hpp"
 #include "views.internal.hpp"
@@ -70,7 +72,7 @@ void asked(GUI::Handle page) {
     ::sheet(page, false);
     return;
   }
-  if (VIEWS::escaped()) ::sheet(page, false);
+  if (INPUT::GET::pressed(INPUT::KEYS::ESCAPE)) ::sheet(page, false);
 }
 
 }  // namespace

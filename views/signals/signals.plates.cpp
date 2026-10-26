@@ -6,7 +6,7 @@
 #include "../../boards.hpp"
 #include "../../kind.hpp"
 #include "../../shape.hpp"
-#include "signals.bend.hpp"
+#include "signals.internal.hpp"
 
 namespace {
 using namespace SOUND;
@@ -95,5 +95,4 @@ void SOUND::VIEWS::SIGNALS::plates(SHELL::Session &session) {
       "plate {} stock {} index {} at {} value {:g} until {} shape {}", row,
       ::laid[row].stock, ::laid[row].index, ::laid[row].at, ::laid[row].value,
       ::laid[row].until, SHAPE::spoken(::laid[row].shape)));
-  segments(session);
 }

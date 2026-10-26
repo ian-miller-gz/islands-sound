@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <format>
 
+#include <island/input.hpp>
+
+#include "../../control.hpp"
 #include "params.internal.hpp"
-#include "params.kept.hpp"
-#include "params.map.hpp"
-#include "params.overruled.hpp"
 
 namespace {
 using namespace SOUND;
@@ -21,8 +21,9 @@ auto whose() -> String {
 
 void run() {
   const GUI::Handle page = VIEWS::document();
-  const Flag spent = VIEWS::RACK::cancel(page);
-  if (!spent && !VIEWS::RACK::choosing() && VIEWS::escaped()) CONTROL::aim({});
+  VIEWS::RACK::cancel();
+  if (!VIEWS::RACK::choosing() && INPUT::GET::pressed(INPUT::KEYS::ESCAPE))
+    CONTROL::aim({});
   GUI::set(page, ::AIMED, GUI::Text{::whose()});
   const Vector<Row> wanted = VIEWS::RACK::rows();
   GUI::set(page, ::ROWS, GUI::Rows{wanted.size()});
@@ -38,20 +39,6 @@ void run() {
   }
   VIEWS::RACK::chooser();
   VIEWS::RACK::menu(page);
-  VIEWS::RACK::mapped(page);
-  VIEWS::journaled(VIEWS::struck());
-  VIEWS::RACK::settle();
-}
-
-void crop(SHELL::Session &session, Whole row, const Row &held) {
-  const GUI::Handle page = VIEWS::document();
-  const Whole first = GUI::GET::first(page, ::ROWS);
-  if (row < first) return;
-  const String cell = std::format("{}.{}", ::ROWS, row - first);
-  if (!GUI::GET::visibility(page, cell.c_str())) return;
-  const String whole = VIEWS::RACK::shown(held);
-  if (VIEWS::RACK::fitted(page, cell, held) != whole)
-    session.print(std::format("cropped {} {}", row, whole));
 }
 
 void print(SHELL::Session &session, const Vector<Row> &wanted) {
@@ -64,7 +51,6 @@ void print(SHELL::Session &session, const Vector<Row> &wanted) {
     const String whole = VIEWS::RACK::titled(held);
     if (VIEWS::RACK::cut(page, held, column) != whole)
       session.print(std::format("cut {} {}", row, whole));
-    ::crop(session, row, held);
   }
 }
 
@@ -83,7 +69,6 @@ void state(SHELL::Session &session) {
           "aimed {} {}", node, GUI::GET::text(VIEWS::document(), ::AIMED)));
   ::print(session, wanted);
   VIEWS::RACK::bound(session);
-  VIEWS::RACK::overruled(session);
   VIEWS::RACK::chooser(session);
 }
 

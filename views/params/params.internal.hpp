@@ -2,7 +2,6 @@
 #pragma once
 #include "../../control.hpp"
 #include "../views.hpp"
-#include "../rig/rig.hpp"
 
 namespace SOUND::VIEWS::RACK {
 
@@ -36,25 +35,24 @@ auto described(const Row &row) -> AUDIO::PLUGIN::Control;
 
 void moved(const Row &row, Float value);
 
-void dial(const Row &row, Float value);
-void settle();
+auto stepped(const AUDIO::PLUGIN::Control &published, Float value) -> Whole;
+auto valued(const AUDIO::PLUGIN::Control &published, Whole step) -> Float;
 
 auto listed(const Row &row) -> Flag;
+auto listed(const AUDIO::PLUGIN::Control &published) -> Flag;
 
-using RIG::BOUND;
-using RIG::DIALLED;
-using RIG::NAMED;
-using RIG::STEPPED;
+constexpr STRING::Hot BARRED = "bar";
 constexpr STRING::Hot MARKED = "mark";
+constexpr STRING::Hot NAMED = "name";
 constexpr STRING::Hot HEADED = "head";
+constexpr STRING::Hot STEPPED = "steps";
 
 auto column(GUI::Handle page, const Vector<Row> &wanted) -> Float;
 auto cut(GUI::Handle page, const Row &row, Float column) -> String;
 
-void seat(GUI::Handle page, const String &cell, const Row &row, Float column);
+void seat(GUI::Handle page, const String &cell, Float column);
 void title(GUI::Handle page, const String &cell, const Row &row, Float column);
 void show(GUI::Handle page, const String &cell, const Row &row, Float column);
-auto fitted(GUI::Handle page, const String &cell, const Row &row) -> String;
 
 auto centred(const AUDIO::PLUGIN::Control &published) -> Flag;
 
@@ -73,8 +71,6 @@ void raise(GUI::Handle page, const String &cell, const Row &row);
 
 void seated(GUI::Handle page, const String &cell, const Row &row);
 
-auto hung(GUI::Handle page, const String &cell) -> GUI::Position;
-
 auto addressed(const Row &row) -> Address;
 
 auto listening(const Row &row) -> Flag;
@@ -82,7 +78,10 @@ auto listening(const Row &row) -> Flag;
 void bound(GUI::Handle page, const String &cell, const Row &row);
 void bound(SHELL::Session &session);
 
-auto cancel(GUI::Handle page) -> Flag;
+void cancel();
+
+void keep(FIELDS::Map &face);
+void restore(const FIELDS::Map &face);
 
 auto words() -> Vector<SHELL::Command>;
 

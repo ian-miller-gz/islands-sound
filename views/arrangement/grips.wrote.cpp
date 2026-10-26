@@ -10,13 +10,18 @@ using namespace SOUND;
 using VIEWS::ARRANGEMENT::Box;
 using VIEWS::ARRANGEMENT::Carry;
 
+auto clip(const Box &cut) -> ARRANGEMENT::TRACK::LANE::Clip {
+  return {
+    .stock = cut.stock, .at = cut.at, .from = cut.from, .frames = cut.frames};
+}
+
 auto moved(const Box &cut, const Box &was) -> Placement {
   return {
     .track = cut.track,
     .lane = cut.lane,
     .placement = cut.placement,
-    .span = VIEWS::ARRANGEMENT::clip(cut, was),
-    .was = VIEWS::ARRANGEMENT::clip(was, was)};
+    .span = ::clip(cut),
+    .was = ::clip(was)};
 }
 
 void spanned(const Vector<Carry> &carried) {
@@ -25,7 +30,7 @@ void spanned(const Vector<Carry> &carried) {
     const Box was = VIEWS::ARRANGEMENT::boxes()[carry.row];
     if (TIMELINE::span(
           carry.cut.track, carry.cut.lane, carry.cut.placement,
-          VIEWS::ARRANGEMENT::clip(carry.cut, was)))
+          ::clip(carry.cut)))
       shaped.push_back(::moved(carry.cut, was));
   }
   if (!shaped.empty())
@@ -36,9 +41,7 @@ void spanned(const Vector<Carry> &carried) {
 }
 
 void shaped(const Box &cut, const Box &was) {
-  if (!TIMELINE::span(
-        cut.track, cut.lane, cut.placement, VIEWS::ARRANGEMENT::clip(cut, was)))
-    return;
+  if (!TIMELINE::span(cut.track, cut.lane, cut.placement, ::clip(cut))) return;
   HISTORY::record(
     {.act = VIEWS::ARRANGEMENT::SHAPED,
      .verb = Edit::CHANGED,
@@ -48,7 +51,8 @@ void shaped(const Box &cut, const Box &was) {
 }  // namespace
 
 void SOUND::VIEWS::ARRANGEMENT::grips() {
-  const GUI::SAC::STROKE::Gesture gesture = VIEWS::GET::gesture();
+  const GUI::SAC::STROKE::Gesture gesture =
+    GUI::SAC::STROKE::GET::gesture(VIEWS::document());
   if (!gesture.closed || !gesture.dragged) return;
   const Claim claim = claimed(gesture);
   if (claim.row == NONE) return;

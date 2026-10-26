@@ -1,29 +1,47 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include <algorithm>
+#include <cmath>
+#include <cstdlib>
+
 #include "params.internal.hpp"
 
 namespace {
 using namespace SOUND;
 
-void open(
-  GUI::Handle page, const String &cell, const String &dial,
-  const VIEWS::RACK::Row &row) {
-  if (String(GUI::GET::editing(page)) != dial || !GUI::GET::seated(page))
-    return;
-  const String whole = VIEWS::RACK::shown(row);
-  const String run = GUI::GET::text(page, dial.c_str());
-  if (run == whole || run != VIEWS::RACK::fitted(page, cell, row)) return;
-  GUI::set(page, dial.c_str(), GUI::Text{whole});
-  GUI::set(page, dial.c_str(), GUI::Caret{.at = whole.size(), .from = 0});
+auto worded(
+  const AUDIO::PLUGIN::Control &published, const String &run,
+  Float &value) -> Flag {
+  if (published.steps == 0 || published.labels.size() != published.steps + 1)
+    return false;
+  for (Whole step = 0; step < published.labels.size(); ++step) {
+    if (published.labels[step] != run) continue;
+    value = VIEWS::RACK::valued(published, step);
+    return true;
+  }
+  return false;
+}
+
+auto numbered(const String &run, Float &value) -> Flag {
+  char *end = nullptr;
+  value = std::strtof(run.c_str(), &end);
+  return end != run.c_str() && std::isfinite(value);
+}
+
+auto settled(const AUDIO::PLUGIN::Control &published, Float value) -> Float {
+  if (published.most <= published.least) return value;
+  return std::clamp(value, published.least, published.most);
 }
 
 }  // namespace
 
 void SOUND::VIEWS::RACK::typed(
   GUI::Handle page, const String &cell, const Row &row) {
-  const String dial = cell + "." + DIALLED;
-  ::open(page, cell, dial, row);
-  if (!GUI::GET::committed(page, dial.c_str())) return;
+  const String barred = cell + "." + BARRED;
+  if (!GUI::GET::committed(page, barred.c_str())) return;
+  GUI::edit(page, "");
+  const AUDIO::PLUGIN::Control published = described(row);
+  const String run = GUI::GET::text(page, barred.c_str());
   Float value = 0.0f;
-  if (RIG::parsed(described(row), GUI::GET::text(page, dial.c_str()), value))
-    moved(row, value);
+  if (::worded(published, run, value) || ::numbered(run, value))
+    moved(row, ::settled(published, value));
 }

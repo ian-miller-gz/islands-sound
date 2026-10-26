@@ -5,7 +5,7 @@
 #include "piano.notation.hpp"
 
 auto SOUND::VIEWS::ROLL::degreed(Whole pitch, Whole at) -> Whole {
-  if (GET::notation() == PERCUSSION || ROWS::folded()) return pitch;
+  if (GET::notation() == PERCUSSION) return pitch;
   const Whole landing = SCORE::snapped(TRANSPORT::keyed(at), pitch);
   return landing < HIGHEST ? landing : HIGHEST;
 }

@@ -20,14 +20,14 @@ void SOUND::VIEWS::ROLL::SEAMS::crossed(
   built(page, bed, seams.size(), stood, "button", ::GLYPH);
   const Float scale = scaled();
   const Float wide = scale > ::STILL ? MARK / scale : MARK;
-  const Float top = ROWS::deep() * ::HALF - MARK * ::HALF;
   for (Whole seam = 0; seam < seams.size(); ++seam) {
     const String id = GUI::SAC::SEAT::named(bed.c_str(), seam);
     GUI::set(page, id.c_str(), GUI::Text{String(::CROSS)});
     GUI::set(page, id.c_str(), GUI::Size{::LETTER});
     GUI::set(
       page, id.c_str(),
-      GUI::Position{across(seams[seam].at) - wide * ::HALF, top});
+      GUI::Position{
+        across(seams[seam].at) - wide * ::HALF, DEEP * ::HALF - MARK * ::HALF});
     GUI::set(page, id.c_str(), GUI::Extent{wide, MARK});
   }
 }

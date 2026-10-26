@@ -5,19 +5,10 @@ style listening color=#8f4a10ff
 style sheet color=#fbf6eaff edge=#d9c9a8ff border=1
 style box color=#f8f1e3ff edge=#d9c9a8ff border=1
 style place color=#f4eee1ff edge=#3b2a1eff border=0 hover=#fbf7efff press=#ebbe7bff
-style divider color=#fefbf3ff edge=#8a6d55ff border=1 hover=#ffcf8eff press=#efbd74ff
-style handle color=#8a6d55ff border=0
-style handlelit color=#8f4a10ff border=0
-style region color=#f8f1e3ff edge=#8a6d55ff border=1 hover=#f8f1e3ff press=#f8f1e3ff
-style bare color=#00000000 border=0 hover=#00000000 press=#00000000
 style entry color=#00000000 edge=#3b2a1eff border=0 hover=#f5ecdaff press=#ebbe7bff
-style knob style=entry edge=#745841ff press=#ac5c15ff track=#9c8773ff
-style hearing style=knob edge=#8f4a10ff press=#8f4a10ff
-style overruled style=knob press=#745841ff
-style call color=#d9822bff edge=#3b2a1eff border=0 hover=#e8963fff press=#f0a35aff
+style knob style=entry edge=#745841ff
+style call color=#d9822bff edge=#3b2a1eff border=0 hover=#e8963fff press=#b8681cff
 style selected color=#ffcf8eff hover=#ffcf8eff press=#dca24fff
-style dimmed color=#fde3bdff hover=#fde3bdff press=#dca24fff
-style focus color=#00000000 edge=#ac5c15ff border=2
 style lanemark style=selected border=0
 style paper color=#fffcf6ff edge=#3b2a1eff border=1 hover=#ffcf8eff
 style chrome color=#00000000 edge=#3b2a1eff border=0 hover=#00000000 press=#00000000 glow=#d9822bff
@@ -35,7 +26,7 @@ style exportchosen color=#ac5c15ff
 style ring color=#d9822b2e edge=#00000000 border=0
 style board style=box border=2
 style slab style=place border=2 edge=#8a6d55ff hover=#f0e8d7ff press=#f0e8d7ff
-style loose style=place border=3 edge=#ac5c15ff color=#f6c98aff hover=#f6c98aff press=#f6c98aff wash=#fff2dc8c
+style loose style=place border=2 edge=#8a6d55ff color=#f6c98aff hover=#f6c98aff press=#f6c98aff wash=#fff2dc8c
 style quiet style=place color=#b9b0a4ff border=2 edge=#8a6d55ff hover=#b9b0a4ff press=#b9b0a4ff
 style slabink style=ink
 style palette style=place color=#f9f2e3ff edge=#c9a97aff border=1
@@ -53,7 +44,6 @@ style keyblack color=#8a6d5529 hover=#e7e4deff press=#f8f7f5ff border=0
 style keywhiteout color=#8a6d553d hover=#eee8e0ff press=#faf8f6ff border=0
 style keyblackout color=#8a6d5561 hover=#e7dfd6ff press=#f8f5f3ff border=0
 style keytonic color=#d9822b4d hover=#f7e7d5ff press=#fdf8f2ff border=0
-style plus color=#00000000 edge=#ac5c15ff border=0 hover=#d9822b22 press=#d9822b44
 style gridbeat color=#8a6d551f border=0
 style gridbar color=#8a6d5547 border=0
 style notch color=#8a6d55e6 border=0
@@ -72,59 +62,34 @@ style rangeprogram color=#7b4f2e38 border=0
 style header style=box border=0
 style gridfine color=#8a6d551f border=0
 style gridcoarse color=#8a6d5547 border=0
-style carryaudio color=#ca2305ff edge=#ca2305ff
-style carrynotes color=#3fab51ff edge=#3fab51ff
-style carrylogic color=#ceb484ff edge=#ceb484ff
-style carrycontrol color=#2b89e2ff edge=#2b89e2ff
-style carryprogram color=#9c6d46ff edge=#9c6d46ff
-style carrydata color=#41b5cbff edge=#41b5cbff
+style carryaudio color=#c0392bff edge=#c0392bff
+style carrynotes color=#2f9e44ff edge=#2f9e44ff
+style carrylogic color=#c9a35fff edge=#c9a35fff
+style carrycontrol color=#1c7ed6ff edge=#1c7ed6ff
+style carryprogram color=#b07a4eff edge=#b07a4eff
+style carrydata color=#1098adff edge=#1098adff
 
 style dormant edge=#8a6d55ff
 
 
-style cableaudio color=#a57270ff border=0
-style cablenotes color=#89be9cff border=0
-style cablelogic color=#e5d4abff border=0
-style cablecontrol color=#76a5d1ff border=0
-style cableprogram color=#ab896eff border=0
-style cabledata color=#8bcfdaff border=0
+style cableaudio color=#d79e9dff border=0
+style cablenotes color=#95cca9ff border=0
+style cablelogic color=#e2cfa4ff border=0
+style cablecontrol color=#8dbdeaff border=0
+style cableprogram color=#c9ab93ff border=0
+style cabledata color=#85cad5ff border=0
 style washaudio color=#f1d4d1ff border=0
 style washnotes color=#d1ead6ff border=0
 style washlogic color=#f3e8cfff border=0
 style washcontrol color=#cde3f6ff border=0
 style washprogram color=#eaddd0ff border=0
 style washdata color=#cae8edff border=0
-style overridden color=#2a1d1480 border=0
-style plateaudio color=#c34938ff hover=#cc6556ff press=#d47b70ff wash=#ffffff54 border=0
-style gripaudio color=#ffffff66 hover=#ffffffaa press=#ffffffd1 border=0
-style waveclip color=#f1d4d1ff edge=#c0392bff border=1
-style wave color=#a8352bff border=0
-style waveover color=#4d3a00ff border=0
-style wavezero color=#d79e9dff border=0
-style wavefade style=grip color=#c0392be6 hover=#c0392bff press=#a8352bff
-style stretched style=waveclip color=#e8b89cff
-style shade color=#6b1d164d border=0
-style onset color=#6b3f12ff border=0
-style found color=#2a7f3aff border=0
+style plateaudio color=#c3483cff hover=#cc6459ff press=#d47b73ff wash=#ffffff54 border=0
 style platenotes color=#2a7f3aff hover=#4a9258ff press=#64a26fff wash=#ffffff54 border=0
-style gripnotes color=#ffffff66 hover=#ffffffa2 press=#ffffffc9 border=0
-style note0 color=#aec8a6ff edge=#328441ff hover=#bad0b3ff press=#c4d7beff wash=#ac5c1554 border=1
-style note1 color=#91b88eff edge=#277636ff hover=#a2c39fff press=#afcbadff wash=#ac5c1554 border=1
-style note2 color=#74a877ff edge=#236b30ff hover=#89b58bff press=#9ac09cff wash=#ac5c1554 border=1
-style note3 color=#57985fff edge=#1e5f2bff hover=#70a877ff press=#85b48aff wash=#ac5c1554 border=1
-style ghost color=#2d8b4040 border=0
-style staffhead0 color=#257234ff
-style staffhead1 color=#1e5d2aff
-style staffhead2 color=#164820ff
-style staffhead3 color=#0e3316ff
-style platelogic color=#c8a45fff hover=#d1b175ff press=#d8bd8aff wash=#ffffff54 border=0
-style griplogic color=#3b2a1e66 hover=#3b2a1ea7 press=#3b2a1ec5 border=0
+style platelogic color=#c9a35fff hover=#d2b075ff press=#d9bc8aff wash=#ffffff54 border=0
 style platecontrol color=#2c87d9ff hover=#4c99dfff press=#67a9e4ff wash=#ffffff54 border=0
-style gripcontrol color=#ffffff66 hover=#ffffffce press=#fffffffe border=0
 style plateprogram color=#7b4f2eff hover=#8f6445ff press=#a0785cff wash=#ffffff54 border=0
-style gripprogram color=#ffffff66 hover=#ffffff7e press=#ffffff9c border=0
 style platedata color=#219fb3ff hover=#42aebeff press=#5fbac8ff wash=#ffffff54 border=0
-style gripdata color=#3b2a1e66 hover=#3b2a1eb9 press=#3b2a1ee2 border=0
 style trace00 color=#ce3030ff
 style trace01 color=#cc5e5eff
 style trace02 color=#ca8484ff
@@ -151,25 +116,16 @@ style trace52 color=#ca84caff
 style trace53 color=#c8a1c8ff
 
 style boxlabel color=#f7f9fbff
-style fadeline style=boxlabel border=2
-style waveline style=ink border=2
 
 style pair color=#00000000 edge=#8a6d55ff border=1 hover=#00000000 press=#00000000
 style pairlit color=#3b2a1e17 edge=#3b2a1eff border=1 hover=#3b2a1e17 press=#3b2a1e17
 style seamline color=#d9822b99 border=0
-style staffpaper style=board color=#fffcf6ff
-style staffline color=#9a8a7aff border=0
-style staffstem color=#257234ff border=0
 style seamcross color=#00000000 edge=#d9822bff border=0 hover=#d9822b22 press=#d9822b44
-style hit style=clear hover=#f0e8d7ff press=#f0e8d7ff
-style staffchosen color=#ac5c15ff
-style staffloose color=#cf8010ff
 style nodeinstrument style=slab color=#f4d6a7ff hover=#f4d6a7ff press=#f4d6a7ff
 style nodeeffect style=slab color=#e6d3bdff hover=#e6d3bdff press=#e6d3bdff
 style nodeshaper style=slab color=#efe0c0ff hover=#efe0c0ff press=#efe0c0ff
 style nodecontroller style=slab color=#dfe3d0ff hover=#dfe3d0ff press=#dfe3d0ff
 style nodeplugin style=slab color=#e9dfd2ff hover=#e9dfd2ff press=#e9dfd2ff
-style nodemissing style=slab color=#cbc9c4ff hover=#cbc9c4ff press=#cbc9c4ff
 style noderoot style=slab color=#d9c6a8ff hover=#d9c6a8ff press=#d9c6a8ff
 style noderecord style=slab color=#f0c9b8ff hover=#f0c9b8ff press=#f0c9b8ff
 style nodeclock style=slab color=#e3d2c8ff hover=#e3d2c8ff press=#e3d2c8ff

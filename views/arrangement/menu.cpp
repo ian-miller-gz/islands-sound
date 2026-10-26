@@ -5,20 +5,31 @@
 #include "../../history.hpp"
 #include "../../timeline.hpp"
 #include "arrangement.internal.hpp"
-#include "arrangement.opened.hpp"
 
 namespace {
 using namespace SOUND;
 
-constexpr STRING::Hot WHOSE = "arrangement";
+constexpr STRING::Hot LIFTS = "Delete";
+constexpr STRING::Hot JOINS = "Append";
+constexpr Whole JOIN = 1;
 constexpr STRING::Hot TRACKED = "Track";
 constexpr STRING::Hot BUSSED = "Bus";
 constexpr Whole BUS = 1;
 
 struct Subject {
-  Whole track = NONE, box = NONE;
+  Whole track = NONE, lane = 0, placement = NONE;
+  Vector<Whole> pieces;
 };
 Subject about;
+
+auto pieces(const VIEWS::ARRANGEMENT::Box &box) -> Vector<Whole> {
+  const Vector<VIEWS::ARRANGEMENT::Box> &laid = VIEWS::ARRANGEMENT::boxes();
+  Vector<Whole> rows;
+  for (const Whole row : VIEWS::ARRANGEMENT::chosen())
+    if (laid[row].track == box.track && laid[row].lane == box.lane)
+      rows.push_back(laid[row].placement);
+  return rows;
+}
 
 auto aboard(GUI::Handle page, const GUI::NGA::Ask &ask) -> GUI::Position {
   const String id = VIEWS::ARRANGEMENT::board();
@@ -34,8 +45,11 @@ auto aboard(GUI::Handle page, const GUI::NGA::Ask &ask) -> GUI::Position {
 void took(Whole row) {
   const ::Subject held = ::about;
   ::about = {};
-  if (held.box == NONE) return void(COMMANDS::bussed(held.track, row == ::BUS));
-  VIEWS::ARRANGEMENT::BOX::take(held.box, row);
+  if (held.placement == NONE)
+    return void(COMMANDS::bussed(held.track, row == ::BUS));
+  if (row == ::JOIN)
+    return void(COMMANDS::joined(held.track, held.lane, held.pieces));
+  VIEWS::ARRANGEMENT::lift(held.track, held.lane, held.placement);
 }
 
 }  // namespace
@@ -80,7 +94,7 @@ auto SOUND::VIEWS::ARRANGEMENT::lifted(const Vector<Whole> &rows) -> Flag {
 void SOUND::VIEWS::ARRANGEMENT::menu() {
   const GUI::Handle page = VIEWS::document();
   if (::about.track != NONE) {
-    const Whole row = VIEWS::MENU::taken(::WHOSE);
+    const Whole row = VIEWS::MENU::taken("arrangement");
     if (row != NONE) return ::took(row);
     if (!VIEWS::MENU::standing()) ::about = {};
   }
@@ -89,12 +103,15 @@ void SOUND::VIEWS::ARRANGEMENT::menu() {
   const GUI::Position at = ::aboard(page, ask);
   const Whole box = boxed(at.x, at.y);
   if (box != NONE) {
-    ::about = {boxes()[box].track, box};
-    return VIEWS::MENU::raise(BOX::labels(box, at.x), ask.x, ask.y, ::WHOSE);
+    const Box &held = boxes()[box];
+    ::about = {held.track, held.lane, held.placement, ::pieces(held)};
+    Vector<String> rows = {String(::LIFTS)};
+    if (::about.pieces.size() >= 2) rows.push_back(String(::JOINS));
+    return VIEWS::MENU::raise(rows, ask.x, ask.y, "arrangement");
   }
   const Whole track = ribboned(at.y);
   if (track == NONE) return;
   ::about = {.track = track};
   VIEWS::MENU::raise(
-    {String(::TRACKED), String(::BUSSED)}, ask.x, ask.y, ::WHOSE);
+    {String(::TRACKED), String(::BUSSED)}, ask.x, ask.y, "arrangement");
 }

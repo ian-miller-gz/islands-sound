@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include "session.store.internal.hpp"
-#include "session.store.span.hpp"
 
 using namespace SOUND;
 
@@ -10,6 +9,12 @@ auto standing(Edit &edit) -> ARRANGEMENT::TRACK::Lane * {
   if (!edit.lanes.empty()) return &edit.lanes.back().row;
   if (edit.rows.empty() || edit.rows.back().row.lanes.empty()) return nullptr;
   return &edit.rows.back().row.lanes.back();
+}
+
+auto clipped(std::istringstream &line) -> ARRANGEMENT::TRACK::LANE::Clip {
+  ARRANGEMENT::TRACK::LANE::Clip span;
+  line >> span.stock >> span.at >> span.from >> span.frames;
+  return span;
 }
 
 auto opened(const String &tag, std::istringstream &line, Edit &edit) -> Flag {
@@ -57,12 +62,10 @@ auto hung(const String &tag, std::istringstream &line, Edit &edit) -> Flag {
   if (row == nullptr) return true;
   if (tag == "tm")
     row->map = SESSION::rest(line);
-  else if (tag == "pt")
-    SESSION::tune(line, *row);
   else if (tag == "tp")
-    row->clips.push_back(SESSION::spanned(line));
+    row->clips.push_back(::clipped(line));
   else
-    row->outtakes.push_back(SESSION::spanned(line));
+    row->outtakes.push_back(::clipped(line));
   return true;
 }
 
@@ -73,7 +76,7 @@ auto SOUND::SESSION::rowed(
   if (::opened(tag, line, edit)) return true;
   if (
     tag != "tb" && tag != "tk" && tag != "tl" && tag != "tm" && tag != "tp" &&
-    tag != "to" && tag != "pt")
+    tag != "to")
     return false;
   return ::hung(tag, line, edit);
 }

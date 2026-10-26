@@ -1,6 +1,4 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include <threads.hpp>
-
 #include "graph.internal.hpp"
 #include "../kind.hpp"
 
@@ -8,10 +6,8 @@ namespace {
 using namespace SOUND;
 
 Graph wiring;
-Vector<GRAPH::Stand *> seated;
+Vector<GRAPH::Stand> halves;
 Whole counted = 0;
-THREADS::Shared<Whole> mirrored{0};
-thread_local Flag touched = false;
 
 auto ported(const Vector<AUDIO::PLUGIN::Port> &declared) -> Vector<Port> {
   Vector<Port> ports;
@@ -27,35 +23,17 @@ auto ported(const Vector<AUDIO::PLUGIN::Port> &declared) -> Vector<Port> {
 
 auto SOUND::GRAPH::added(const Node &node, const Stand &stand) -> String {
   ::wiring.nodes.push_back(node);
-  ::seated.push_back(&GRAPH::slot(stand));
+  ::halves.push_back(stand);
   stir();
   return node.name;
 }
 
-auto SOUND::GRAPH::standing() -> Graph & {
-  ::touched = true;
-  return ::wiring;
-}
-auto SOUND::GRAPH::stand(Whole at) -> Stand & {
-  ::touched = true;
-  return *::seated[at];
-}
-auto SOUND::GRAPH::GET::seated() -> const Vector<Stand *> & { return ::seated; }
-void SOUND::GRAPH::retire(Whole at) {
-  retire(*::seated[at]);
-  ::seated.erase(::seated.begin() + static_cast<Integer>(at));
-}
-auto SOUND::GRAPH::held() -> const Graph & {
-  ::touched = true;
-  return ::wiring;
-}
+auto SOUND::GRAPH::standing() -> Graph & { return ::wiring; }
+auto SOUND::GRAPH::stands() -> Vector<Stand> & { return ::halves; }
+auto SOUND::GRAPH::held() -> const Graph & { return ::wiring; }
 auto SOUND::GRAPH::counted() -> Whole { return ::counted; }
-auto SOUND::GRAPH::SIGNAL::counted() -> Whole { return ::mirrored.load(); }
-void SOUND::GRAPH::SIGNAL::clean() { ::touched = false; }
-auto SOUND::GRAPH::SIGNAL::touched() -> Flag { return ::touched; }
 void SOUND::GRAPH::stir() {
   ++::counted;
-  ::mirrored.store(::counted);
   reckon();
   owe();
 }
@@ -89,11 +67,49 @@ auto SOUND::GRAPH::root(const Vector<Whole> &kinds, const String &name)
   return node;
 }
 
+auto SOUND::GRAPH::grow(const String &root, Whole kind) -> Whole {
+  if (!rooted(root)) return NONE;
+  const Whole node = at(root);
+  Vector<Port> &outs = ::wiring.nodes[node].outs;
+  outs.push_back({.kind = kind, .name = KIND::spoken(kind)});
+  for (Tape &tape : ::halves[node].tapes) tape.runs.push_back({});
+  const String taking = recorder(root);
+  if (!taking.empty())
+    ::wiring.nodes[at(taking)].ins.push_back(mirrored(outs.back()));
+  return outs.size() - 1;
+}
+
+auto SOUND::GRAPH::rooted(const String &node) -> Flag {
+  const Whole stood = at(node);
+  return stood != NONE && ::wiring.nodes[stood].seat == Node::ROOT;
+}
+
+auto SOUND::GRAPH::offered(const String &node) -> const PLUGIN::Offer * {
+  const Whole stood = at(node);
+  return stood != NONE ? ::halves[stood].offer : nullptr;
+}
+
+auto SOUND::GRAPH::instance(const String &node) -> void * {
+  const Whole stood = at(node);
+  return stood != NONE ? ::halves[stood].instance : nullptr;
+}
+
+void SOUND::GRAPH::rest() {
+  for (Stand &stand : ::halves) {
+    if (stand.offer == nullptr) continue;
+    if (stand.instance != nullptr)
+      stand.offer->surface->destroy(stand.instance);
+    stand.instance = stand.offer->surface->create(RATE, CHANNELS);
+  }
+  rebind();
+}
+
 void SOUND::GRAPH::close() {
   unprobed();
-  for (Stand *stand : ::seated) retire(*stand);
-  reap();
-  ::seated.clear();
+  for (const Stand &stand : ::halves)
+    if (stand.instance != nullptr)
+      stand.offer->surface->destroy(stand.instance);
+  ::halves.clear();
   ::wiring = {};
   stir();
 }

@@ -7,7 +7,6 @@
 
 #include "../../boards.hpp"
 #include "arrangement.internal.hpp"
-#include "sketch.fades.hpp"
 
 namespace {
 using namespace SOUND;
@@ -22,13 +21,6 @@ Vector<Flag> bedded;
 Whole born = 0;
 
 auto ground(const String &box) -> String { return box + "." + ::GROUND; }
-
-auto cleared() -> Flag {
-  if (!VIEWS::reborn(::born)) return false;
-  ::stood.clear();
-  ::bedded.clear();
-  return true;
-}
 
 void bare(GUI::Handle page, Whole row, const String &bed) {
   if (::stood[row] != 0) BOARDS::sweep(page, bed.c_str(), 0, ::stood[row]);
@@ -79,22 +71,33 @@ void SOUND::VIEWS::ARRANGEMENT::sketch(SHELL::Session &session) {
     session.print(std::format(
       "sketch {} marks {} deepest {:.2f}", row, marks.size(), deepest));
   }
-  fades(session);
 }
 
 void SOUND::VIEWS::ARRANGEMENT::SHED::sketch() {
   const GUI::Handle page = VIEWS::document();
-  if (::cleared()) return;
+  if (VIEWS::reborn(::born)) {
+    ::stood.clear();
+    ::bedded.clear();
+    return;
+  }
   for (Whole row = 0; row < ::stood.size(); ++row)
     ::bare(page, row, ::ground(GUI::SAC::SEAT::named(board().c_str(), row)));
+  ::stood.clear();
+  ::bedded.clear();
 }
 
 void SOUND::VIEWS::ARRANGEMENT::sketch() {
   const GUI::Handle page = VIEWS::document();
-  ::cleared();
+  if (VIEWS::reborn(::born)) {
+    ::stood.clear();
+    ::bedded.clear();
+  }
   const Vector<Box> &laid = boxes();
+  if (::stood.size() > laid.size()) {
+    ::stood.resize(laid.size());
+    ::bedded.resize(laid.size());
+  }
   ::stood.resize(laid.size(), 0);
   ::bedded.resize(laid.size(), false);
   for (Whole row = 0; row < laid.size(); ++row) ::inked(page, row, drawn(row));
-  fades();
 }

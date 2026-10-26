@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include "../../inventory.hpp"
 #include "../../timeline.hpp"
 #include "../lane/lane.face.hpp"
 #include "arranger.internal.hpp"
@@ -20,20 +19,11 @@ auto named(const VIEWS::LANE::Mark &mark) -> String {
   return track.name + ::SEPARATOR + track.lanes[mark.lane].name;
 }
 
-auto scoped(const String &named) -> String {
-  const VIEWS::LANE::Clip *clip = VIEWS::LANE::GET::scoped();
-  const Inventory &pool = INVENTORY::held();
-  if (named.empty() || clip == nullptr || clip->stock >= pool.stocks.size())
-    return named;
-  return named + ::SEPARATOR + pool.stocks[clip->stock].name;
-}
-
 }  // namespace
 
 void SOUND::VIEWS::ARRANGER::label(GUI::Handle page) {
-  const Whole kind = turned();
-  const String text =
-    kind == NONE ? String() : ::scoped(::named(LANE::edited(kind)));
+  const Whole kind = PAGES[turned()].kind;
+  const String text = kind == NONE ? String() : ::named(LANE::edited(kind));
   GUI::set(page, ::LABEL.c_str(), GUI::Visibility{!text.empty()});
   GUI::set(page, ::LABEL.c_str(), GUI::Text{text});
 }

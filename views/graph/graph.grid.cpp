@@ -24,8 +24,8 @@ constexpr Float CROWD = 240.0f;
 constexpr Whole THINNER = 2;
 constexpr Float NOWHERE = 0.0f;
 
-Map<GUI::Handle, Whole> stood;
-Map<GUI::Handle, Whole> born;
+Whole stood = 0;
+Whole born = 0;
 
 auto mark(STRING::Hot way, Whole at) -> String {
   return std::format("{}.{}.{}.{}", VIEWS::WIRED::board(), ::STEM, way, at);
@@ -39,7 +39,7 @@ void lay(
   Flag walked, const Vector<GUI::SAC::LADDER::Mark> &marks, Float cross,
   GUI::Extent size) {
   const GUI::Handle page = VIEWS::document();
-  for (Whole tick = 0; tick < ::stood[page]; ++tick) {
+  for (Whole tick = 0; tick < ::stood; ++tick) {
     const String id = ::mark(walked ? ::DOWN : ::ACROSS, tick);
     const Float place = Float(marks[tick].at);
     GUI::set(
@@ -54,15 +54,15 @@ void lay(
 void build(Whole count) {
   const GUI::Handle page = VIEWS::document();
   const String board = VIEWS::WIRED::board();
-  for (Whole at = count; at < ::stood[page]; ++at) {
+  for (Whole at = count; at < ::stood; ++at) {
     GUI::NODES::remove(page, ::mark(::ACROSS, at).c_str());
     GUI::NODES::remove(page, ::mark(::DOWN, at).c_str());
   }
-  for (Whole at = ::stood[page]; at < count; ++at) {
+  for (Whole at = ::stood; at < count; ++at) {
     BOARDS::place(page, board.c_str(), "panel", ::mark(::ACROSS, at), {}, {});
     BOARDS::place(page, board.c_str(), "panel", ::mark(::DOWN, at), {}, {});
   }
-  ::stood[page] = count;
+  ::stood = count;
 }
 
 }  // namespace
@@ -72,7 +72,7 @@ void SOUND::VIEWS::WIRED::grid() {
   const String board = WIRED::board();
   const GUI::Extent view = WIRED::window();
   const Float scale = GUI::NGA::GET::zoom(page, board.c_str()).value;
-  if (VIEWS::reborn(::born[page])) ::stood[page] = 0;
+  if (VIEWS::reborn(::born)) ::stood = 0;
   if (view.w <= ::NOWHERE || view.h <= ::NOWHERE) {
     ::build(0);
     return;
@@ -85,7 +85,7 @@ void SOUND::VIEWS::WIRED::grid() {
     GUI::SAC::LADDER::dress({wide}, wide * ::THINNER, pan.x, reach);
   const Vector<GUI::SAC::LADDER::Mark> walked =
     GUI::SAC::LADDER::dress({wide}, wide * ::THINNER, pan.y, reach);
-  if (sidled.size() != ::stood[page]) ::build(sidled.size());
+  if (sidled.size() != ::stood) ::build(sidled.size());
   ::lay(::SIDLED, sidled, pan.y, {::HAIR, view.h});
   ::lay(::WALKED, walked, pan.x, {view.w, ::HAIR});
 }

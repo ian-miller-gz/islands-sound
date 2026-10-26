@@ -24,8 +24,7 @@ auto rail(const String &root, Whole out) -> Rail & {
 void opened(
   const String &root, Whole out, Whole before,
   Flag (&pitches)[GRAPH::PITCHES]) {
-  const Whole node = GRAPH::PLAN::at(root);
-  for (const AUDIO::PLUGIN::Event &edge : GRAPH::PLAN::developed(node, out)) {
+  for (const AUDIO::PLUGIN::Event &edge : GRAPH::developed(root, out)) {
     if (edge.offset >= before) break;
     if (edge.index >= GRAPH::PITCHES) continue;
     if (edge.kind == AUDIO::PLUGIN::Event::NOTE_ON) pitches[edge.index] = true;

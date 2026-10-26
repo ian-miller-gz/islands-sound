@@ -16,13 +16,6 @@ auto shaped(const Vector<Row> &rows, Whole row) -> Whole {
   return row < rows.size() ? rows[row].shape : NONE;
 }
 
-template <typename Row>
-auto bent(Vector<Row> &rows, Whole row, Float bend) -> Flag {
-  if (row >= rows.size()) return false;
-  rows[row].bend = bend;
-  return true;
-}
-
 }  // namespace
 
 auto SOUND::INVENTORY::shape(Whole stock, Whole row, Whole shape) -> Flag {
@@ -42,15 +35,4 @@ auto SOUND::INVENTORY::shape(Whole stock, Whole row) -> Whole {
   if (held.kind == KIND::CONTROL) return ::shaped(held.turns, row);
   if (held.kind == KIND::LOGIC) return ::shaped(held.curve.points, row);
   return NONE;
-}
-
-auto SOUND::INVENTORY::bend(Whole stock, Whole row, Float bend) -> Flag {
-  if (stock >= standing().stocks.size()) return false;
-  Stock &held = standing().stocks[stock];
-  const Flag laid = held.kind == KIND::CONTROL ? ::bent(held.turns, row, bend)
-                    : held.kind == KIND::LOGIC
-                      ? ::bent(held.curve.points, row, bend)
-                      : false;
-  if (laid) stir(stock);
-  return laid;
 }

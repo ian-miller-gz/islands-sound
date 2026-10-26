@@ -3,20 +3,20 @@
 
 void SOUND::GRAPH::owe(const String &node) {
   const Whole stood = at(node);
-  if (stood != NONE) ++stand(stood).stirred;
+  if (stood != NONE) ++stands()[stood].stirred;
 }
 
 void SOUND::GRAPH::owe() {
-  for (Whole node = 0; node < held().nodes.size(); ++node)
-    ++stand(node).stirred;
+  for (Stand &stand : stands()) ++stand.stirred;
 }
 
 auto SOUND::GRAPH::owed() -> Vector<String> {
   Vector<String> nodes;
   const Vector<Node> &standing = held().nodes;
-  for (Whole node = 0; node < standing.size(); ++node) {
-    Stand &half = stand(node);
-    if (written(half).stamp != half.stirred)
+  for (Whole node = 0; node < standing.size() && node < stands().size();
+       ++node) {
+    Stand &stand = stands()[node];
+    if (written(stand).stamp != stand.stirred)
       nodes.push_back(standing[node].name);
   }
   return nodes;
@@ -25,6 +25,6 @@ auto SOUND::GRAPH::owed() -> Vector<String> {
 void SOUND::GRAPH::threaded(const String &node) {
   const Whole stood = at(node);
   if (stood == NONE) return;
-  Stand &stand = GRAPH::stand(stood);
+  Stand &stand = stands()[stood];
   written(stand).stamp = stand.stirred;
 }

@@ -24,18 +24,6 @@ auto followed(const Box &mate, const Box &lead, Integer travel) -> Box {
 
 }  // namespace
 
-auto SOUND::VIEWS::ARRANGEMENT::clip(const Box &cut, const Box &was)
-  -> SOUND::ARRANGEMENT::TRACK::LANE::Clip {
-  const Vector<SOUND::ARRANGEMENT::TRACK::LANE::Clip> spans =
-    TIMELINE::spans(was.track, was.lane);
-  SOUND::ARRANGEMENT::TRACK::LANE::Clip span = {.stock = cut.stock};
-  if (was.placement < spans.size()) span = spans[was.placement];
-  span.at = cut.at;
-  span.from = cut.from;
-  span.frames = cut.frames;
-  return span;
-}
-
 auto SOUND::VIEWS::ARRANGEMENT::travelled(
   const Claim &claim, const GUI::SAC::STROKE::Gesture &gesture,
   Flag settle) -> Vector<Carry> {

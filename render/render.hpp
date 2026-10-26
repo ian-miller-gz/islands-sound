@@ -64,6 +64,14 @@ void follow();
 
 void settle();
 
+namespace VOICE {
+
+void claim();
+
+void drop();
+
+}  // namespace VOICE
+
 namespace TAP {
 
 struct Aim {
