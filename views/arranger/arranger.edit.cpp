@@ -19,13 +19,6 @@ constexpr STRING::Hot BARE = "edit refused: lane lacks editor";
 constexpr STRING::Hot ATTENDED = "tracks";
 constexpr Whole SAID = 2;
 
-auto paged(Whole kind) -> Whole {
-  if (kind == NONE) return NONE;
-  for (const ARRANGER::Page &one : ARRANGER::PAGES)
-    if (one.kind == kind) return static_cast<Whole>(&one - ARRANGER::PAGES);
-  return NONE;
-}
-
 auto laned(Whole track, Whole lane) -> const ARRANGEMENT::TRACK::Lane * {
   const Vector<ARRANGEMENT::Track> &tracks = TIMELINE::held().tracks;
   if (track >= tracks.size() || lane >= tracks[track].lanes.size())
@@ -53,19 +46,20 @@ void edit(SHELL::Session &session) {
 }  // namespace
 
 auto SOUND::VIEWS::ARRANGER::editable(Whole kind) -> Flag {
-  return ::paged(kind) != NONE;
+  return LANE::editable(kind);
 }
 
 auto SOUND::VIEWS::ARRANGER::edit(Whole track, Whole lane) -> Flag {
   const ARRANGEMENT::TRACK::Lane *one = ::laned(track, lane);
   if (one == nullptr) return false;
-  const Whole page = ::paged(one->kind);
-  if (page == NONE) return false;
+  if (!LANE::editable(one->kind)) return false;
   LANE::mark(track, lane);
-  turned(page);
+  turned(one->kind);
   return SPLIT::open() ? SPLIT::choose(NAME) : VIEWS::choose(NAME);
 }
 
 auto SOUND::VIEWS::ARRANGER::words() -> Vector<SHELL::Command> {
-  return {{::WORD, ::HELP, ::edit}};
+  Vector<SHELL::Command> said = {{::WORD, ::HELP, ::edit}};
+  for (const SHELL::Command &word : LANE::words()) said.push_back(word);
+  return said;
 }

@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <metrics.hpp>
 
+#include "../control.hpp"
 #include "../history.hpp"
 #include "../inventory.hpp"
 #include "../kind.hpp"
@@ -35,13 +36,17 @@ void fed(const Vector<TIMELINE::Laid> &run) {
 }
 
 void fed(const Vector<TIMELINE::Sent> &run) {
+  const Flag marked = !CONTROL::overrides().empty();
   for (const TIMELINE::Sent &edge : run)
-    GRAPH::develop(edge.root, edge.lane, RENDER::edged(edge, edge.at));
+    if (!marked || !RENDER::overridden(edge))
+      GRAPH::develop(edge.root, edge.lane, RENDER::edged(edge, edge.at));
 }
 
 void fed(const Vector<TIMELINE::Dialled> &run) {
   for (const TIMELINE::Dialled &turn : run)
-    GRAPH::dial(turn.address.node, turn.at, turn.address.parameter, turn.value);
+    if (!CONTROL::overridden(turn.address))
+      GRAPH::dial(
+        turn.address.node, turn.at, turn.address.parameter, turn.value);
 }
 
 }  // namespace

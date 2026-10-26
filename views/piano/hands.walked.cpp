@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include <algorithm>
+
 #include <island/gui/nga.hpp>
 #include <island/gui/seat.hpp>
 
@@ -28,4 +30,22 @@ void SOUND::VIEWS::ROLL::walk(GUI::Handle page) {
     GUI::NGA::set(
       page, GUI::SAC::SEAT::named(board.c_str(), row).c_str(),
       GUI::NGA::Selected{::noted(walked.notes, drawn[row])});
+}
+
+auto SOUND::VIEWS::ROLL::chosen(GUI::Handle page) -> Vector<Whole> {
+  const String board = VIEWS::ROLL::board();
+  const Vector<Pip> &drawn = plates();
+  const Flag afloat = !loose().empty();
+  Vector<Whole> rows;
+  for (const STRING::Cold &id :
+       GUI::NGA::GET::selections(page, board.c_str())) {
+    const Whole row = GUI::SAC::SEAT::row(String(id), board.c_str());
+    if (row == NONE || GUI::SAC::SEAT::named(board.c_str(), row) != id)
+      continue;
+    if (afloat && (row >= drawn.size() || drawn[row].stock != NONE)) continue;
+    rows.push_back(row);
+  }
+  std::sort(rows.begin(), rows.end());
+  rows.erase(std::unique(rows.begin(), rows.end()), rows.end());
+  return rows;
 }

@@ -2,7 +2,7 @@
 #include <algorithm>
 
 #include "../plugin.hpp"
-#include "control.map.hpp"
+#include "control.internal.hpp"
 
 namespace {
 using namespace SOUND;
@@ -10,7 +10,6 @@ using CONTROL::MAP::Binding;
 
 struct Learn {
   Vector<Binding> bindings;
-  Address listen;
   Vector<CONTROL::MAP::Turn> turns;
 };
 Learn learn;
@@ -26,27 +25,18 @@ void unbind(const Address &address) {
 }
 
 void bind(const MIDI::Message &message) {
-  ::unbind(::learn.listen);
+  const Address listen = CONTROL::MAP::listening();
+  ::unbind(listen);
   ::learn.bindings.push_back(
-    {.address = ::learn.listen,
-     .number = message.first,
-     .channel = message.channel});
-  ::learn.listen = {};
+    {.address = listen, .number = message.first, .channel = message.channel});
+  CONTROL::MAP::cancel();
 }
 
 }  // namespace
 
-void SOUND::CONTROL::MAP::arm(const Address &address) {
-  ::learn.listen = address;
-}
-
-void SOUND::CONTROL::MAP::cancel() { ::learn.listen = {}; }
-
-auto SOUND::CONTROL::MAP::listening() -> Address { return ::learn.listen; }
-
 void SOUND::CONTROL::MAP::disarm(const Address &address) {
   ::unbind(address);
-  if (::same(::learn.listen, address)) cancel();
+  if (::same(listening(), address)) cancel();
 }
 
 auto SOUND::CONTROL::MAP::bound(const Address &address) -> Binding {
@@ -59,8 +49,13 @@ auto SOUND::CONTROL::MAP::held() -> const Vector<Binding> & {
   return ::learn.bindings;
 }
 
+auto SOUND::CONTROL::MAP::learned() -> Vector<Binding> & {
+  return ::learn.bindings;
+}
+
 void SOUND::CONTROL::MAP::adopt(const Vector<Binding> &bindings) {
   ::learn = {.bindings = bindings};
+  cancel();
 }
 
 void SOUND::CONTROL::MAP::settle(const Vector<String> &gone) {
@@ -68,12 +63,13 @@ void SOUND::CONTROL::MAP::settle(const Vector<String> &gone) {
     std::erase_if(::learn.bindings, [&](const Binding &binding) {
       return binding.address.node == node;
     });
-    if (::learn.listen.node == node) cancel();
+    if (listening().node == node) cancel();
   }
 }
 
 auto SOUND::CONTROL::MAP::heard(const MIDI::Message &message) -> Flag {
-  if (!::learn.listen.node.empty()) {
+  if (stale()) cancel();
+  if (!listening().node.empty()) {
     ::bind(message);
     return true;
   }

@@ -52,6 +52,7 @@ struct Edit {
   Graph graph;
   Vector<Placement> placements;
   Vector<Placement> gone;
+  Graph parted;
   Vector<Mapping> maps;
   Vector<Change> changes;
   Vector<Row> rows;

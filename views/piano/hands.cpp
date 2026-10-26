@@ -15,19 +15,11 @@ namespace {
 using namespace SOUND;
 namespace HANDS = SOUND::VIEWS::ROLL::HANDS;
 
-constexpr STRING::Hot STEM = "grip";
 constexpr STRING::Hot MOVED = "move";
 constexpr STRING::Hot PULLED = "stretch";
-constexpr STRING::Hot MARKED = "selected";
-constexpr Float WIDE = 10.0f;
-constexpr Float SHARE = 3.0f;
-constexpr Float RAISED = 1.0f;
-constexpr Float ORIGIN = 0.0f;
 
 Vector<VIEWS::ROLL::Pip> following;
 
-Whole stood = 0;
-Whole born = 0;
 Flag pulling = false;
 
 struct Hold {
@@ -39,16 +31,6 @@ Hold holding;
 
 auto plate(Whole row) -> String {
   return GUI::SAC::SEAT::named(VIEWS::ROLL::board().c_str(), row);
-}
-
-auto handle(Whole row) -> String { return ::plate(row) + "." + ::STEM; }
-
-auto gripped(Whole length) -> Float {
-  return std::min(::WIDE, VIEWS::ROLL::wide(length) / ::SHARE);
-}
-
-auto resting(Whole length) -> Float {
-  return VIEWS::ROLL::wide(length) - ::gripped(length);
 }
 
 auto crossing(const VIEWS::ROLL::Pip &pip) -> Integer {
@@ -121,14 +103,14 @@ void fell(
   const Whole landed = HANDS::moved(pip.at, shift.at);
   if (pip.stock == NONE)
     return fallen.push_back(
-      {pip.index, landed, HANDS::raised(pip.pitch, shift.pitch, landed)});
+      {pip.index, landed, HANDS::raised(pip, shift.rows, landed)});
   if (pip.stock >= INVENTORY::held().stocks.size()) return;
   if (pip.index >= INVENTORY::held().stocks[pip.stock].score.notes.size())
     return;
   ::grouped(falls, pip.stock)
     .push_back(
       {pip.index, ::inside(landed, leader ? hold.crossing : ::crossing(pip)),
-       HANDS::raised(pip.pitch, shift.pitch, landed)});
+       HANDS::raised(pip, shift.rows, landed)});
 }
 
 void dropped(GUI::Handle page) {
@@ -195,8 +177,8 @@ void sharing(
 }
 
 auto lengthened(const VIEWS::ROLL::Pip &pip, Float x) -> Whole {
-  const Float grown =
-    Float(pip.length) / Float(VIEWS::ROLL::GRAIN) + x - ::resting(pip.length);
+  const Float grown = Float(pip.length) / Float(VIEWS::ROLL::GRAIN) + x -
+                      HANDS::resting(pip.length);
   return std::max(
     VIEWS::ROLL::bench().snap, HANDS::settled(VIEWS::ROLL::across(grown)));
 }
@@ -254,32 +236,7 @@ void followed(GUI::Handle page, const Vector<VIEWS::ROLL::Pip> &wanted) {
   ::following.clear();
 }
 
-void handles(GUI::Handle page, const Vector<VIEWS::ROLL::Pip> &drawn) {
-  if (VIEWS::reborn(::born)) ::stood = 0;
-  ::stood = std::min<Whole>(::stood, drawn.size());
-  for (; ::stood < drawn.size(); ++::stood)
-    BOARDS::place(
-      page, ::plate(::stood).c_str(), "node", ::handle(::stood), {}, {});
-  for (Whole row = 0; row < drawn.size(); ++row) {
-    const String id = ::handle(row);
-    GUI::set(
-      page, id.c_str(), GUI::Position{::resting(drawn[row].length), ::ORIGIN});
-    GUI::set(
-      page, id.c_str(),
-      GUI::Extent{::gripped(drawn[row].length), VIEWS::ROLL::TALL});
-    GUI::set(page, id.c_str(), GUI::Style{::MARKED});
-    GUI::set(page, id.c_str(), GUI::Depth{::RAISED});
-  }
-}
-
 }  // namespace
-
-void SOUND::VIEWS::ROLL::SHED::hands() {
-  const GUI::Handle page = document();
-  if (VIEWS::reborn(::born)) ::stood = 0;
-  for (Whole row = 0; row < ::stood; ++row) BOARDS::drop(page, ::handle(row));
-  ::stood = 0;
-}
 
 void SOUND::VIEWS::ROLL::hands() {
   const GUI::Handle page = document();
@@ -287,13 +244,13 @@ void SOUND::VIEWS::ROLL::hands() {
   Flag moving = false;
   for (Whole row = 0; row < drawn.size(); ++row) {
     if (drawn[row].index == NONE) continue;
-    if (!GUI::GET::moved(page, ::handle(row).c_str())) continue;
+    if (!GUI::GET::moved(page, HANDS::handle(row).c_str())) continue;
     if (!::pulling) {
       HISTORY::begin();
       ::pulling = true;
     }
     moving = true;
-    const Float x = GUI::GET::position(page, ::handle(row).c_str()).x;
+    const Float x = GUI::GET::position(page, HANDS::handle(row).c_str()).x;
     if (drawn[row].stock == NONE)
       stretched(drawn[row].index, ::lengthened(drawn[row], x));
     else if (drawn[row].stock < INVENTORY::held().stocks.size())
@@ -307,7 +264,7 @@ void SOUND::VIEWS::ROLL::hands() {
   ::dropped(page);
   ::grabbed(page);
   ::erased(page);
-  ::handles(page, drawn);
+  HANDS::grip(page, drawn);
 }
 
 void SOUND::VIEWS::ROLL::follow(const Vector<Pip> &landed) {

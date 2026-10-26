@@ -4,7 +4,9 @@
 #include <island/gui/nga.hpp>
 
 #include "../../kind.hpp"
-#include "signals.internal.hpp"
+#include "../views.internal.hpp"
+#include "signals.overridden.hpp"
+#include "signals.plotted.hpp"
 
 namespace {
 using namespace SOUND;
@@ -25,11 +27,15 @@ void run() {
   VIEWS::SIGNALS::bench();
   VIEWS::SIGNALS::easel();
   VIEWS::SIGNALS::ruler();
+  VIEWS::asked(
+    VIEWS::SIGNALS::strip(), VIEWS::SIGNALS::marks(), VIEWS::SIGNALS::rung(),
+    VIEWS::pulsed, VIEWS::OFFER::SIGNALS);
   VIEWS::SIGNALS::rail();
   VIEWS::SIGNALS::grid();
   VIEWS::SIGNALS::range();
   VIEWS::SIGNALS::head();
   VIEWS::SIGNALS::plates();
+  VIEWS::SIGNALS::restore();
 }
 
 void state(SHELL::Session &session) {
@@ -53,6 +59,8 @@ void state(SHELL::Session &session) {
   VIEWS::SIGNALS::range(session);
   VIEWS::SIGNALS::head(session);
   VIEWS::SIGNALS::plates(session);
+  VIEWS::SIGNALS::plotted(session);
+  VIEWS::SIGNALS::restore(session);
 }
 
 }  // namespace

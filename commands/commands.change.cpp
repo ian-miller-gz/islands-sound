@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <format>
 
+#include "commands.aim.hpp"
 #include "commands.internal.hpp"
 
 namespace SOUND::COMMANDS {
@@ -22,7 +23,9 @@ const Word WORDS[] = {
   {HISTORY::WORD::SCALE, CHANGE::keyed, CHANGE::keyed},
   {HISTORY::WORD::TAG, CHANGE::flagged, CHANGE::flagged},
   {HISTORY::WORD::LOOP, CHANGE::looped, CHANGE::looped},
-  {HISTORY::WORD::ENDS, CHANGE::ended, CHANGE::ended}};
+  {HISTORY::WORD::ENDS, CHANGE::ended, CHANGE::ended},
+  {HISTORY::WORD::DIAL, CHANGE::dialled, CHANGE::dialled},
+  {HISTORY::WORD::AIM, CHANGE::aimed, CHANGE::aimed}};
 
 auto meant(const String &said) -> const Word * {
   for (const Word &one : WORDS)

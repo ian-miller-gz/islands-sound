@@ -5,8 +5,6 @@
 #include <island/midi.hpp>
 
 #include "../../control.hpp"
-#include "../../kind.hpp"
-#include "../../timeline.hpp"
 #include "graph.browse.internal.hpp"
 
 namespace {
@@ -67,19 +65,4 @@ void SOUND::VIEWS::WIRED::BROWSE::surfaced(Vector<Offer> &rows) {
        .among = NOTED,
        .reading = "midi out",
        .device = device.name});
-}
-
-auto SOUND::VIEWS::WIRED::BROWSE::lacked(Whole track) -> Vector<Offer> {
-  Vector<Offer> rows;
-  if (track == NONE) return rows;
-  const Vector<Whole> carried = TIMELINE::kinds(track);
-  const String whose = TIMELINE::held().tracks[track].name;
-  for (Whole kind = KIND::AUDIO; kind <= KIND::DATA; ++kind)
-    if (!carries(carried, kind))
-      rows.push_back(
-        {.name = String(KIND::spoken(kind)),
-         .from = LANES,
-         .among = LANES,
-         .reading = std::format("joins {}", whose)});
-  return rows;
 }

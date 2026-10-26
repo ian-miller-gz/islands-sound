@@ -7,10 +7,9 @@ namespace SOUND::GRAPH {
 namespace GET {
 
 auto voices(const String &node) -> Vector<AUDIO::PLUGIN::Voice>;
-auto voices(const Vector<String> &nodes) -> Vector<AUDIO::PLUGIN::Voice>;
 
 }  // namespace GET
 
-auto percussive(const String &node) -> Flag;
+auto playable(const String &node) -> Flag;
 
 }  // namespace SOUND::GRAPH

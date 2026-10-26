@@ -13,7 +13,10 @@ CONTROL::Live live;
 
 auto SOUND::CONTROL::standing() -> Live & { return ::live; }
 
-void SOUND::CONTROL::drive(Whole track) { ::live.track = track; }
+void SOUND::CONTROL::drive(Whole track) {
+  if (::live.track != track) lift();
+  ::live.track = track;
+}
 
 auto SOUND::CONTROL::driven() -> Whole { return ::live.track; }
 
@@ -25,6 +28,7 @@ void SOUND::CONTROL::settle(const Vector<String> &gone) {
   for (const String &name : gone)
     if (::live.aim == name) ::live.aim.clear();
   MAP::settle(gone);
+  lift();
 }
 
 auto SOUND::CONTROL::read() -> Whole {
@@ -40,7 +44,8 @@ auto SOUND::CONTROL::read() -> Whole {
 }
 
 auto SOUND::CONTROL::read(const MIDI::Message &message) -> Flag {
-  if (message.kind == MIDI::Message::CONTROL) return MAP::heard(message);
+  if (message.kind == MIDI::Message::CONTROL)
+    return MAP::heard(message) || pedal(message);
   if (
     message.kind != MIDI::Message::NOTE_ON &&
     message.kind != MIDI::Message::NOTE_OFF)
@@ -51,6 +56,7 @@ auto SOUND::CONTROL::read(const MIDI::Message &message) -> Flag {
     .offset = 0,
     .index = message.first,
     .value = on ? Float(message.second) / Float(LOUDEST) : 0.0f};
+  if (hold(edge)) return true;
   ::live.arrived.push_back(edge);
   capture(edge);
   return true;
@@ -63,6 +69,7 @@ auto SOUND::CONTROL::arrived() -> const Vector<AUDIO::PLUGIN::Event> & {
 void SOUND::CONTROL::taken() { ::live.arrived.clear(); }
 
 void SOUND::CONTROL::close() {
+  lift();
   listening(false);
   ::live = {};
   values().clear();

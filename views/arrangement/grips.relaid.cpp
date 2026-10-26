@@ -12,17 +12,13 @@ using namespace SOUND;
 using VIEWS::ARRANGEMENT::Box;
 using VIEWS::ARRANGEMENT::Carry;
 
-auto clip(const Box &cut) -> ARRANGEMENT::TRACK::LANE::Clip {
-  return {
-    .stock = cut.stock, .at = cut.at, .from = cut.from, .frames = cut.frames};
-}
-
 auto lifted(const Vector<Carry> &moved) -> Vector<Placement> {
   const Vector<Box> &laid = VIEWS::ARRANGEMENT::boxes();
   Vector<Placement> lifted;
   for (const Carry &carry : moved) {
     const Box &was = laid[carry.row];
-    lifted.push_back({was.track, was.lane, was.placement, ::clip(was)});
+    lifted.push_back(
+      {was.track, was.lane, was.placement, VIEWS::ARRANGEMENT::clip(was, was)});
   }
   std::sort(lifted.begin(), lifted.end(), [](const auto &one, const auto &two) {
     return one.placement < two.placement;
@@ -34,14 +30,22 @@ auto lifted(const Vector<Carry> &moved) -> Vector<Placement> {
   return lifted;
 }
 
-auto placed(const Vector<Carry> &moved) -> Vector<Placement> {
+auto landed(const Vector<Carry> &moved) -> Vector<Placement> {
+  const Vector<Box> &laid = VIEWS::ARRANGEMENT::boxes();
+  Vector<Placement> landing;
+  for (const Carry &carry : moved)
+    landing.push_back(
+      {carry.cut.track, carry.cut.lane, NONE,
+       VIEWS::ARRANGEMENT::clip(carry.cut, laid[carry.row])});
+  return landing;
+}
+
+auto placed(Vector<Placement> landing) -> Vector<Placement> {
   Vector<Placement> placed;
-  for (const Carry &carry : moved) {
-    const Whole index = TIMELINE::place(
-      INVENTORY::held(), carry.cut.track, carry.cut.lane, ::clip(carry.cut));
-    if (index != NONE)
-      placed.push_back(
-        {carry.cut.track, carry.cut.lane, index, ::clip(carry.cut)});
+  for (Placement &one : landing) {
+    one.placement =
+      TIMELINE::place(INVENTORY::held(), one.track, one.lane, one.span);
+    if (one.placement != NONE) placed.push_back(one);
   }
   return placed;
 }
@@ -63,9 +67,10 @@ void SOUND::VIEWS::ARRANGEMENT::relaid(Vector<Carry> moved) {
   });
   HISTORY::begin();
   HISTORY::said(::phrased(moved));
+  const Vector<Placement> landing = ::landed(moved);
   HISTORY::record(
     {.act = MOVED, .verb = Edit::REMOVED, .placements = ::lifted(moved)});
-  const Vector<Placement> placed = ::placed(moved);
+  const Vector<Placement> placed = ::placed(landing);
   HISTORY::record({.act = MOVED, .placements = placed});
   HISTORY::end();
   Vector<Whole> rows;

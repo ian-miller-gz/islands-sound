@@ -3,6 +3,7 @@
 #include "../../history.hpp"
 #include "../../kind.hpp"
 #include "../../session.hpp"
+#include "graph.door.wired.hpp"
 #include "graph.internal.hpp"
 
 namespace {
@@ -30,13 +31,17 @@ auto covered(const String &node) -> Graph {
 }  // namespace
 
 void SOUND::VIEWS::WIRED::take(const String &plugin) {
+  HISTORY::begin();
   const String node = GRAPH::seat(plugin);
+  STRING::Hot said = ::REFUSED;
   if (!node.empty()) {
     SESSION::seated(plugin);
     GRAPH::claim(node, steering());
     HISTORY::record({.act = "seat", .graph = ::covered(node)});
+    said = wired(node);
   }
-  GUI::set(document(), NOTICE, GUI::Text{node.empty() ? ::REFUSED : ""});
+  HISTORY::end();
+  GUI::set(document(), NOTICE, GUI::Text{said});
 }
 
 void SOUND::VIEWS::WIRED::surface(

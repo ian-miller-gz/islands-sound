@@ -7,9 +7,11 @@
 namespace {
 using namespace SOUND;
 
-auto folded(Whole pitch) -> Float {
-  const Whole held = std::min(pitch, VIEWS::ROLL::HIGHEST);
-  return Float(VIEWS::ROLL::HIGHEST - held) / Float(VIEWS::ROLL::HIGHEST + 1);
+constexpr Float ORIGIN = 0.0f;
+
+auto folded(Whole pitch, Whole at) -> Float {
+  const Float lane = VIEWS::ROLL::ROWS::lane(pitch, at);
+  return std::max(lane, ::ORIGIN) / VIEWS::ROLL::ROWS::deep();
 }
 
 }  // namespace
@@ -29,7 +31,7 @@ auto SOUND::VIEWS::ROLL::overview() -> VIEWS::Overview {
   for (const Pip &note : plates()) {
     read.reach = std::max(read.reach, note.at + note.length);
     read.dashes.push_back(
-      {across(note.at), across(note.length), ::folded(note.pitch)});
+      {across(note.at), across(note.length), ::folded(note.pitch, note.at)});
   }
   return read;
 }

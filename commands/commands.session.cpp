@@ -13,6 +13,19 @@
 
 using namespace SOUND;
 
+namespace {
+
+constexpr STRING::Hot SPACE = " ";
+
+auto named(const SHELL::Session &session) -> String {
+  String name;
+  for (Whole word = 1; word < session.arguments.size(); ++word)
+    name += (name.empty() ? "" : ::SPACE) + session.arguments[word];
+  return name;
+}
+
+}  // namespace
+
 void SOUND::COMMANDS::document(SHELL::Session &session) {
   session.print(std::format(
     "session {} {} tracks {} stocks {} nodes {} recents",
@@ -32,7 +45,7 @@ auto SOUND::COMMANDS::save(const String &name) -> String {
 
 void SOUND::COMMANDS::save(SHELL::Session &session) {
   if (session.arguments.size() < 2) return session.print("save <name>");
-  session.print(save(session.arguments[1]));
+  session.print(save(::named(session)));
 }
 
 void SOUND::COMMANDS::husks(SHELL::Session &session) {
@@ -47,4 +60,14 @@ void SOUND::COMMANDS::saved(SHELL::Session &session) {
   const Vector<String> kept = SESSION::names();
   session.print(std::format("sessions {}", kept.size()));
   for (const String &name : kept) session.print(name);
+}
+
+void SOUND::COMMANDS::open(SHELL::Session &session) {
+  if (session.arguments.size() < 2) return session.print("open <name>");
+  const String said = open(::named(session));
+  for (Whole from = 0, at = 0; at <= said.size(); ++at)
+    if (at == said.size() || said[at] == '\n') {
+      session.print(said.substr(from, at - from));
+      from = at + 1;
+    }
 }

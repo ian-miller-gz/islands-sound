@@ -5,7 +5,7 @@
 
 void SOUND::VIEWS::SIGNALS::keyed() {
   const GUI::Handle page = document();
-  const INPUT::KEYS::Event key = GUI::GET::keyed(page);
+  const INPUT::KEYS::Event key = VIEWS::struck();
   if (VIEWS::journaled(key)) return;
   if (key.action != INPUT::KEYS::DELETE) return;
   erase(page, chosen());

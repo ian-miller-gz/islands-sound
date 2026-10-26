@@ -2,6 +2,7 @@
 #pragma once
 #include <island/gui/stroke.hpp>
 
+#include "../../timeline.hpp"
 #include "arrangement.internal.hpp"
 
 namespace SOUND::VIEWS::ARRANGEMENT {
@@ -25,6 +26,9 @@ struct Travel {
 };
 
 auto framed(Float across) -> Whole;
+
+auto clip(const Box &cut, const Box &was)
+  -> SOUND::ARRANGEMENT::TRACK::LANE::Clip;
 
 void relaid(Vector<Carry> moved);
 

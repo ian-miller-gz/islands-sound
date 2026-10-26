@@ -11,6 +11,7 @@ struct Shape {
   Whole width = 0;
   Whole at = 0;
   Whole size = 0;
+  Whole declared = 0;
 };
 
 auto survey(const Vector<Byte> &bytes, Shape &shape) -> Flag;

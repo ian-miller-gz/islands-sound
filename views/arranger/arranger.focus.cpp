@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include "../arrangement/arrangement.face.hpp"
 #include "../lane/lane.face.hpp"
+#include "../views.split.hpp"
 #include "arranger.internal.hpp"
 
 namespace {
 using namespace SOUND;
+using VIEWS::SPLIT::BELOW;
+using VIEWS::SPLIT::UPPER;
 
 struct Head {
   STRING::Hot word = "";
@@ -15,35 +18,26 @@ constexpr Head HEADS[] = {
   {"arrangement", VIEWS::ARRANGEMENT::face},
   {"lane", VIEWS::LANE::face},
   {"piano", VIEWS::LANE::face},
-  {"signals", VIEWS::LANE::face}};
-constexpr STRING::Hot BOARDS[] = {
-  "arrangement.minimap", "arrangement.board", "lane.minimap", "signals.board"};
-constexpr char DOT = '.';
+  {"signals", VIEWS::LANE::face},
+  {"wave", VIEWS::LANE::face}};
 
-const VIEWS::View *held = nullptr;
-
-auto landed(GUI::Handle page) -> String {
-  const String over = GUI::GET::hover(page);
-  if (!over.empty()) return over;
-  for (STRING::Hot board : ::BOARDS)
-    if (!GUI::NGA::GET::pressed(page, board).board.empty()) return board;
-  return {};
-}
-
-auto headed(const String &id) -> String { return id.substr(0, id.find(::DOT)); }
-
-void pressed(GUI::Handle page) {
-  if (!GUI::GET::pressed(page)) return;
-  const String head = ::headed(::landed(page));
-  for (const ::Head &one : ::HEADS)
-    if (head == one.word) ::held = &one.face();
+auto seated(const VIEWS::View &face) -> Whole {
+  return &face == &VIEWS::ARRANGER::lowered() ? BELOW : UPPER;
 }
 
 }  // namespace
 
-void SOUND::VIEWS::ARRANGER::focus(const View &face) { ::held = &face; }
+auto SOUND::VIEWS::ARRANGER::own() -> Flag {
+  for (const ::Head &head : ::HEADS)
+    SPLIT::owned(head.word, NAME, ::seated(head.face()));
+  return true;
+}
+
+void SOUND::VIEWS::ARRANGER::focus(const View &face) {
+  SPLIT::focus(::seated(face));
+}
 
 auto SOUND::VIEWS::ARRANGER::focused() -> const View * {
-  ::pressed(document());
-  return ::held == nullptr ? &LANE::face() : ::held;
+  if (SPLIT::focused() == BELOW) return &lowered();
+  return &raised();
 }

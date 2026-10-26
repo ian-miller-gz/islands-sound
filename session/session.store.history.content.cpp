@@ -2,6 +2,7 @@
 #include <format>
 
 #include "session.store.internal.hpp"
+#include "session.store.trailing.hpp"
 
 using namespace SOUND;
 
@@ -17,13 +18,18 @@ auto noted(const Vector<Noted> &notes) -> String {
   return text;
 }
 
+auto bowed(const Plotted &one) -> String {
+  if (one.point.bend == 0.0f && one.was.bend == 0.0f) return {};
+  return std::format(" {} {}", one.point.bend, one.was.bend);
+}
+
 auto plotted(const Vector<Plotted> &plots) -> String {
   String text;
   for (const Plotted &one : plots)
     text += std::format(
-      "sp {} {} {} {} {} {} {} {} {}\n", one.stock, one.index, one.number,
+      "sp {} {} {} {} {} {} {} {} {}{}\n", one.stock, one.index, one.number,
       one.point.at, one.point.value, one.point.shape, one.was.at, one.was.value,
-      one.was.shape);
+      one.was.shape, ::bowed(one));
   return text;
 }
 
@@ -48,6 +54,8 @@ auto SOUND::SESSION::content(
   line >> one.stock >> one.index >> one.number >> one.point.at >>
     one.point.value >> one.point.shape >> one.was.at >> one.was.value >>
     one.was.shape;
+  SESSION::trailing(line, one.point.bend);
+  SESSION::trailing(line, one.was.bend);
   edit.plots.push_back(one);
   return true;
 }

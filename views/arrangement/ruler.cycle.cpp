@@ -5,6 +5,7 @@
 
 #include "../views.internal.hpp"
 #include "arrangement.internal.hpp"
+#include "ruler.changes.hpp"
 
 namespace {
 using namespace SOUND;
@@ -82,7 +83,9 @@ void SOUND::VIEWS::ARRANGEMENT::cycle(
   ::cells(step, dressed, west, scale);
   VIEWS::handled(strip(), west, scale, ::unplaced);
   VIEWS::flagged(strip(), west, scale, ::down(), ::placed);
-  VIEWS::asked(strip(), dressed, step.span, VIEWS::pulsed);
+  VIEWS::asked(
+    strip(), dressed, step.span, VIEWS::pulsed, VIEWS::OFFER::ARRANGEMENT);
+  changes();
 }
 
 void SOUND::VIEWS::ARRANGEMENT::cycle(SHELL::Session &session) {

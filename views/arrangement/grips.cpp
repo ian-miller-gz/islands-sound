@@ -45,8 +45,7 @@ auto SOUND::VIEWS::ARRANGEMENT::boxed(Float across, Float down) -> Whole {
 auto SOUND::VIEWS::ARRANGEMENT::drawn(Whole row) -> Box {
   const Vector<Box> &laid = boxes();
   if (row >= laid.size()) return {};
-  const GUI::SAC::STROKE::Gesture gesture =
-    GUI::SAC::STROKE::GET::gesture(VIEWS::document());
+  const GUI::SAC::STROKE::Gesture gesture = VIEWS::GET::gesture();
   if (!gesture.standing) return laid[row];
   const Claim claim = claimed(gesture);
   if (claim.row == NONE) return laid[row];

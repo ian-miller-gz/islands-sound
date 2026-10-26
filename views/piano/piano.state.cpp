@@ -5,6 +5,10 @@
 #include <island/gui/seat.hpp>
 
 #include "piano.internal.hpp"
+#include "piano.loudness.hpp"
+#include "piano.paper.hpp"
+#include "piano.pips.hpp"
+#include "piano.staff.hpp"
 
 namespace {
 using namespace SOUND;
@@ -48,13 +52,19 @@ void SOUND::VIEWS::ROLL::state(SHELL::Session &session) {
   doors(session);
   easel(session);
   keys(session);
+  ROWS::rows(session);
+  STAFF::lined(session);
   rail(session);
   dressed(session);
+  tinted(session);
   grid(session);
+  PAPER::state(session);
   head(session);
   ruler(session);
   cycle(session);
   range(session);
   seams(session);
+  loudness(session);
+  ghosts(session);
   ::notes(session);
 }

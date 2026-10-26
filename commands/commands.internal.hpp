@@ -4,6 +4,13 @@
 #include "../commands.hpp"
 #include "../control.hpp"
 #include "../history.hpp"
+#include "commands.held.hpp"
+
+namespace SOUND::HISTORY::WORD {
+
+constexpr STRING::Hot DIAL = "dial";
+
+}  // namespace SOUND::HISTORY::WORD
 
 namespace SOUND::COMMANDS {
 
@@ -39,6 +46,9 @@ auto looped(const Change &change, const String &value) -> Flag;
 auto ended(const Change &change) -> String;
 auto ended(const Change &change, const String &value) -> Flag;
 
+auto dialled(const Change &change) -> String;
+auto dialled(const Change &change, const String &value) -> Flag;
+
 }  // namespace CHANGE
 
 auto stated(const Change &change) -> String;
@@ -46,9 +56,6 @@ auto stated(const Change &change) -> String;
 auto state(const Change &change, const String &value) -> Flag;
 
 auto kept(Change change, const String &said = String()) -> Flag;
-
-auto landing(Whole track, Whole kind) -> Whole;
-void covered(Whole track, Whole lane, Whole opens, Whole closes);
 
 void landed(const CONTROL::Take &take);
 
@@ -59,6 +66,8 @@ auto lined(Whole index, const Edit &edit) -> String;
 void rowed(const Edit &edit, Flag standing);
 
 void rewrote(const Edit &edit, Flag back);
+
+void rewired(SHELL::Session &session, const Edit &edit, Flag back);
 
 auto walked(SHELL::Session &session, Flag back) -> String;
 

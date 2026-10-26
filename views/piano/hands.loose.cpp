@@ -8,7 +8,7 @@
 
 #include "../../inventory.hpp"
 #include "../../score.hpp"
-#include "piano.internal.hpp"
+#include "piano.acts.hpp"
 
 namespace {
 using namespace SOUND;
@@ -83,21 +83,6 @@ auto written(Vector<::Fall> &falls, const VIEWS::ROLL::Fallen &fall) -> Flag {
 
 }  // namespace
 
-auto SOUND::VIEWS::ROLL::chosen(GUI::Handle page) -> Vector<Whole> {
-  const String board = VIEWS::ROLL::board();
-  Vector<Whole> rows;
-  for (const STRING::Cold &id :
-       GUI::NGA::GET::selections(page, board.c_str())) {
-    const Whole row = GUI::SAC::SEAT::row(String(id), board.c_str());
-    if (row == NONE || GUI::SAC::SEAT::named(board.c_str(), row) != id)
-      continue;
-    rows.push_back(row);
-  }
-  std::sort(rows.begin(), rows.end());
-  rows.erase(std::unique(rows.begin(), rows.end()), rows.end());
-  return rows;
-}
-
 void SOUND::VIEWS::ROLL::copy(GUI::Handle page) {
   const Vector<Loose> facts = ::taken(page);
   if (!facts.empty()) ::held = facts;
@@ -167,6 +152,12 @@ auto SOUND::VIEWS::ROLL::land(GUI::Handle page, const Vector<Fallen> &fallen)
 
 void SOUND::VIEWS::ROLL::stretched(Whole slot, Whole length) {
   if (slot < ::afloat.size()) ::afloat[slot].length = length;
+}
+
+void SOUND::VIEWS::ROLL::shifted(Whole slot, Whole at, Whole pitch) {
+  if (slot >= ::afloat.size()) return;
+  ::afloat[slot].at = at;
+  ::afloat[slot].pitch = pitch;
 }
 
 void SOUND::VIEWS::ROLL::discard(const Vector<Whole> &slots) {

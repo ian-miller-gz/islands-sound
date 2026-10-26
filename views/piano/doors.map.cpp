@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <algorithm>
+#include <format>
 
 #include "../../graph.hpp"
 #include "../../kind.hpp"
@@ -13,8 +14,9 @@ using namespace SOUND;
 namespace ROLL = SOUND::VIEWS::ROLL;
 
 constexpr STRING::Hot MAPS = "piano.map";
-constexpr STRING::Hot LACKS = "track lacks percussion";
-constexpr STRING::Hot APART = " ";
+constexpr STRING::Hot LACKS = "track lacks instrument";
+constexpr STRING::Hot MORE = "{} +{}";
+constexpr Whole SHOWN = 1;
 
 auto traced() -> Vector<String> {
   const Whole track = VIEWS::LANE::edited(KIND::NOTES).track;
@@ -45,10 +47,10 @@ void raise(const Vector<String> &nodes) {
   VIEWS::MENU::raise(nodes, ::MAPS, ROLL::MAP, ticks);
 }
 
-auto joined(const Vector<String> &names) -> String {
-  String said;
-  for (const String &name : names) said += (said.empty() ? "" : ::APART) + name;
-  return said;
+auto said(const Vector<String> &names) -> String {
+  if (names.empty()) return ROLL::ABSENT;
+  if (names.size() <= ::SHOWN) return names.front();
+  return std::format(::MORE, names.front(), names.size() - ::SHOWN);
 }
 
 }  // namespace
@@ -61,19 +63,19 @@ auto SOUND::VIEWS::ROLL::GET::mapped() -> Vector<String> {
   return seated;
 }
 
-auto SOUND::VIEWS::ROLL::GET::percussions() -> Vector<String> {
+auto SOUND::VIEWS::ROLL::GET::instruments() -> Vector<String> {
   Vector<String> found;
   for (const String &node : ::traced())
-    if (GRAPH::percussive(node)) found.push_back(node);
+    if (GRAPH::playable(node)) found.push_back(node);
   return found;
 }
 
 void SOUND::VIEWS::ROLL::map() {
   const GUI::Handle page = document();
-  const Vector<String> nodes = GET::percussions();
+  const Vector<String> nodes = GET::instruments();
   const Whole row = MENU::taken(::MAPS);
   if (row < nodes.size()) ::toggle(nodes[row]);
-  GUI::set(page, MAP, GUI::Text{::joined(GET::mapped())});
+  GUI::set(page, MAP, GUI::Text{::said(GET::mapped())});
   if (!GUI::GET::clicked(page, MAP)) return;
   if (nodes.empty())
     GUI::set(page, NOTICE, GUI::Text{::LACKS});

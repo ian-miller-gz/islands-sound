@@ -4,6 +4,13 @@
 
 #include "lane.internal.hpp"
 
+namespace {
+
+constexpr STRING::Hot MAPPED = "minimap";
+constexpr STRING::Hot SLIDING = "slide";
+
+}  // namespace
+
 auto SOUND::VIEWS::LANE::field() -> String {
   return String(faced()->name) + "." + BOARD;
 }
@@ -19,4 +26,12 @@ auto SOUND::VIEWS::LANE::windowed() -> Float {
            GUI::GET::measured(page, id.c_str()),
            GUI::NGA::GET::zoom(page, id.c_str()))
     .w;
+}
+
+auto SOUND::VIEWS::LANE::map() -> String {
+  return String(face().name) + "." + ::MAPPED;
+}
+
+auto SOUND::VIEWS::LANE::slide() -> String {
+  return String(face().name) + "." + ::SLIDING;
 }

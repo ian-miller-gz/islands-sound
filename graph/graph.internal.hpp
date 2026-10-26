@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #pragma once
 #include "graph.hpp"
+#include "graph.plan.hpp"
+#include "graph.retire.hpp"
 #include "graph.vetted.hpp"
 
 namespace SOUND::GRAPH {
@@ -26,7 +28,14 @@ struct Stand {
 };
 
 auto standing() -> Graph &;
-auto stands() -> Vector<Stand> &;
+auto stand(Whole at) -> Stand &;
+
+auto slot(const Stand &stand) -> Stand &;
+
+void retire(Stand &stand);
+void retire(Whole at);
+
+void reap();
 
 auto added(const Node &node, const Stand &stand) -> String;
 

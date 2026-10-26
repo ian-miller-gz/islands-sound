@@ -34,6 +34,16 @@ void refreshed(Vector<Fact> &into, const Vector<Fact> &from) {
   into.insert(into.end(), from.begin(), from.end());
 }
 
+void graphed(Edit &tail, const Edit &fresh) {
+  const Flag parting = tail.verb == Edit::ADDED && fresh.verb == Edit::REMOVED;
+  Graph &into = parting ? tail.parted : tail.graph;
+  ::joined(into.nodes, fresh.graph.nodes);
+  ::joined(into.wires, fresh.graph.wires);
+  ::joined(tail.parted.nodes, fresh.parted.nodes);
+  ::joined(tail.parted.wires, fresh.parted.wires);
+  ::joined(tail.graph.slack, fresh.graph.slack);
+}
+
 }  // namespace
 
 void SOUND::HISTORY::folded(Edit &tail, const Edit &fresh) {
@@ -49,9 +59,7 @@ void SOUND::HISTORY::folded(Edit &tail, const Edit &fresh) {
     fresh.placements);
   ::joined(tail.gone, fresh.gone);
   ::joined(tail.swept, fresh.swept);
-  ::joined(tail.graph.nodes, fresh.graph.nodes);
-  ::joined(tail.graph.wires, fresh.graph.wires);
-  ::joined(tail.graph.slack, fresh.graph.slack);
+  ::graphed(tail, fresh);
   ::joined(tail.rows, fresh.rows);
   ::joined(tail.lanes, fresh.lanes);
   ::joined(tail.maps, fresh.maps);

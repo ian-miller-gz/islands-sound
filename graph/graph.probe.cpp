@@ -15,8 +15,8 @@ Probe probe;
 auto reached(const String &plugin) -> void * {
   const Vector<Node> &nodes = GRAPH::held().nodes;
   for (Whole at = 0; at < nodes.size(); ++at)
-    if (nodes[at].plugin == plugin && GRAPH::stands()[at].instance != nullptr)
-      return GRAPH::stands()[at].instance;
+    if (nodes[at].plugin == plugin && GRAPH::stand(at).instance != nullptr)
+      return GRAPH::stand(at).instance;
   if (::probe.plugin == plugin) return ::probe.instance;
   GRAPH::unprobed();
   const PLUGIN::Offer *row = PLUGIN::found(plugin);

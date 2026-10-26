@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include "signals.internal.hpp"
+#include "signals.overridden.hpp"
 
 void SOUND::VIEWS::SIGNALS::shed() {
   SHED::plates();
@@ -9,4 +9,5 @@ void SOUND::VIEWS::SIGNALS::shed() {
   SHED::rail();
   SHED::range();
   SHED::ruler();
+  SHED::restore();
 }

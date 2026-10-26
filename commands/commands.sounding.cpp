@@ -46,3 +46,8 @@ void SOUND::COMMANDS::sounding(SHELL::Session &session) {
     "sounding node {} parameter {} at {} value {:.3f} from {}", address.node,
     address.parameter, at, sounded.value, sounded.from));
 }
+
+void SOUND::COMMANDS::overrule(const String &node, Whole parameter) {
+  const Address address = {.node = node, .parameter = parameter};
+  if (RENDER::governed(address, ::instant()).stated) CONTROL::overrule(address);
+}

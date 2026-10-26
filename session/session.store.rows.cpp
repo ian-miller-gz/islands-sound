@@ -3,17 +3,10 @@
 #include <sstream>
 
 #include "session.store.internal.hpp"
+#include "session.store.span.hpp"
+#include "session.store.trailing.hpp"
 
 using namespace SOUND;
-
-namespace {
-
-void trailing(std::istringstream &line, Whole &shape) {
-  Whole token = 0;
-  if (line >> token) shape = token;
-}
-
-}  // namespace
 
 void SOUND::SESSION::hung(
   const String &tag, std::istringstream &line, ARRANGEMENT::Track &track) {
@@ -29,10 +22,7 @@ void SOUND::SESSION::hung(
   } else if (tag == "m") {
     if (!track.lanes.empty()) track.lanes.back().map = rest(line);
   } else if (!track.lanes.empty()) {
-    ARRANGEMENT::TRACK::LANE::Clip span;
-    line >> span.stock >> span.at >> span.from >> span.frames;
-    (tag == "o" ? track.lanes.back().outtakes : track.lanes.back().clips)
-      .push_back(span);
+    hung(tag, line, track.lanes.back());
   }
 }
 
@@ -55,12 +45,14 @@ void SOUND::SESSION::hung(
   } else if (tag == "v") {
     Point point;
     line >> point.at >> point.value;
-    ::trailing(line, point.shape);
+    SESSION::trailing(line, point.shape);
+    SESSION::trailing(line, point.bend);
     stock.curve.points.push_back(point);
   } else if (tag == "u") {
     Turn move;
     line >> move.at >> move.number >> move.value;
-    ::trailing(line, move.shape);
+    SESSION::trailing(line, move.shape);
+    SESSION::trailing(line, move.bend);
     stock.turns.push_back(move);
   } else {
     Choice choice;
@@ -85,11 +77,9 @@ auto SOUND::SESSION::written(const Arrangement &tracks) -> String {
       text += std::format("l {} {}\n", lane.kind, lane.name);
       if (!lane.map.empty()) text += std::format("m {}\n", lane.map);
       for (const ARRANGEMENT::TRACK::LANE::Clip &span : lane.clips)
-        text += std::format(
-          "p {} {} {} {}\n", span.stock, span.at, span.from, span.frames);
+        text += std::format("p {}\n", spanned(span)) + tuned(span);
       for (const ARRANGEMENT::TRACK::LANE::Clip &span : lane.outtakes)
-        text += std::format(
-          "o {} {} {} {}\n", span.stock, span.at, span.from, span.frames);
+        text += std::format("o {}\n", spanned(span)) + tuned(span);
     }
   }
   return text;
@@ -108,10 +98,13 @@ auto SOUND::SESSION::written(const Inventory &pool) -> String {
       text += std::format(
         "a {} {}\n", stock.curve.address.parameter, stock.curve.address.node);
     for (const Point &point : stock.curve.points)
-      text += std::format("v {} {} {}\n", point.at, point.value, point.shape);
+      text += std::format(
+        "v {} {} {}{}\n", point.at, point.value, point.shape,
+        SESSION::bent(point.bend));
     for (const Turn &move : stock.turns)
       text += std::format(
-        "u {} {} {} {}\n", move.at, move.number, move.value, move.shape);
+        "u {} {} {} {}{}\n", move.at, move.number, move.value, move.shape,
+        SESSION::bent(move.bend));
     for (const Choice &choice : stock.choices)
       text += std::format("g {} {}\n", choice.at, choice.program);
   }
@@ -153,7 +146,7 @@ void SOUND::SESSION::taken(
       tracks.tracks.push_back(track);
     } else if (
       tag == "b" || tag == "k" || tag == "l" || tag == "m" || tag == "p" ||
-      tag == "o") {
+      tag == "o" || tag == "pt") {
       if (!tracks.tracks.empty()) hung(tag, line, tracks.tracks.back());
     } else {
       husked(held, at, husks);

@@ -4,6 +4,7 @@
 #include <common/fields.hpp>
 #include <island/gui/gui.hpp>
 #include <island/gui/nga.hpp>
+#include "views.keys.hpp"
 
 namespace SOUND::VIEWS {
 
@@ -92,10 +93,10 @@ auto named(const String &node) -> String;
 
 auto device(const String &node) -> String;
 
-auto named(const String &plugin, Whole parameter) -> String;
+auto named(const String &node, Whole parameter) -> String;
 
 auto joined(Whole track, Whole lane, const Vector<Whole> &rows) -> Whole;
-auto parameters(const String &plugin) -> Whole;
+auto parameters(const String &node) -> Whole;
 
 auto split() -> Float;
 
@@ -104,8 +105,6 @@ auto zoom(Float across, Float down) -> Flag;
 auto pan(Float x, Float y) -> Flag;
 
 void wheeled(const GUI::NGA::Wheel &turn);
-
-auto journaled(const INPUT::KEYS::Event &key) -> Flag;
 
 auto reborn(Whole &born) -> Flag;
 

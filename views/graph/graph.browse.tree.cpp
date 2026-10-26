@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <algorithm>
 
-#include "graph.browse.internal.hpp"
+#include "graph.replace.hpp"
 
 namespace {
 using namespace SOUND;
@@ -24,15 +24,6 @@ auto step(const String &path, const String &filing) -> String {
 auto last(const String &path) -> String {
   const Whole at = path.rfind(WITHIN);
   return at == String::npos ? path : path.substr(at + String(WITHIN).size());
-}
-
-auto laned() -> Offer {
-  return {
-    .name = LANES,
-    .from = LANES,
-    .among = LANES,
-    .directory = true,
-    .holds = lacked(VIEWS::WIRED::steered()).size()};
 }
 
 auto held(const String &directory, const Vector<Offer> &plugins) -> Whole {
@@ -61,7 +52,6 @@ auto SOUND::VIEWS::WIRED::BROWSE::directories(
        .among = path,
        .directory = true,
        .holds = ::held(path, plugins)});
-  if (filing.empty()) rows.push_back(::laned());
   return rows;
 }
 
@@ -89,9 +79,10 @@ auto SOUND::VIEWS::WIRED::BROWSE::planted(
 }
 
 void SOUND::VIEWS::WIRED::BROWSE::head(GUI::Handle page, const String &filing) {
-  String said = ::CATALOG;
+  const String lead = titled().empty() ? String(::CATALOG) : titled();
+  String said = lead;
   for (String rest = filing; !rest.empty(); rest = up(rest))
-    said.insert(String(::CATALOG).size(), ::APART + ::last(rest));
+    said.insert(lead.size(), ::APART + ::last(rest));
   GUI::set(page, HEAD, GUI::Text{said});
   GUI::set(page, UP, GUI::Visibility{!filing.empty()});
 }

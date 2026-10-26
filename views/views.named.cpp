@@ -49,10 +49,10 @@ auto SOUND::VIEWS::device(const String &node) -> String {
   return std::format("{} {}-{}", worn, held.lane + 1, held.lane + 2);
 }
 
-auto SOUND::VIEWS::parameters(const String &plugin) -> Whole {
-  return GRAPH::parameters(plugin);
+auto SOUND::VIEWS::parameters(const String &node) -> Whole {
+  return GRAPH::INSTANCE::parameters(node);
 }
 
-auto SOUND::VIEWS::named(const String &plugin, Whole parameter) -> String {
-  return GRAPH::named(plugin, parameter);
+auto SOUND::VIEWS::named(const String &node, Whole parameter) -> String {
+  return GRAPH::INSTANCE::named(node, parameter);
 }

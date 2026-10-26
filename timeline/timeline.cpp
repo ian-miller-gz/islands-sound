@@ -122,7 +122,8 @@ auto SOUND::TIMELINE::root(Whole track, const String &node) -> Flag {
   return true;
 }
 
-auto SOUND::TIMELINE::map(Whole track, Whole lane, const String &plugin) -> Flag {
+auto SOUND::TIMELINE::map(Whole track, Whole lane, const String &plugin)
+  -> Flag {
   ARRANGEMENT::Track *held = ::reached(track);
   if (held == nullptr || lane >= held->lanes.size()) return false;
   held->lanes[lane].map = plugin;
@@ -172,9 +173,7 @@ auto SOUND::TIMELINE::span(
   if (placement >= spans.size() || shaped.frames == 0) return false;
   if (crossed(track, lane, shaped.at, shaped.at + shaped.frames, placement))
     return false;
-  spans[placement].at = shaped.at;
-  spans[placement].from = shaped.from;
-  spans[placement].frames = shaped.frames;
+  spans[placement] = shaped;
   return true;
 }
 

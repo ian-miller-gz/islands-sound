@@ -32,8 +32,21 @@ auto SOUND::GRAPH::grow(const String &root, const Port &port, Whole out)
   ::shifted(root, out);
   ::mirrored(root, port, out);
   outs.insert(outs.begin() + static_cast<Integer>(out), port);
-  for (Tape &tape : stands()[stood].tapes)
+  for (Tape &tape : stand(stood).tapes)
     tape.runs.insert(tape.runs.begin() + static_cast<Integer>(out), {});
   stir();
   return out;
+}
+
+auto SOUND::GRAPH::grow(const String &root, Whole kind) -> Whole {
+  if (!rooted(root)) return NONE;
+  const Whole node = at(root);
+  Vector<Port> &outs = standing().nodes[node].outs;
+  outs.push_back({.kind = kind, .name = KIND::spoken(kind)});
+  for (Tape &tape : stand(node).tapes) tape.runs.push_back({});
+  const String taking = recorder(root);
+  if (!taking.empty())
+    standing().nodes[at(taking)].ins.push_back(mirrored(outs.back()));
+  PLAN::owe();
+  return outs.size() - 1;
 }

@@ -164,6 +164,7 @@ void state(SHELL::Session &session) {
   VIEWS::ARRANGEMENT::cycle(session);
   VIEWS::ARRANGEMENT::minimap(session);
   VIEWS::ARRANGEMENT::bands(session);
+  VIEWS::ARRANGEMENT::names(session);
   VIEWS::ARRANGEMENT::notches(session);
   VIEWS::ARRANGEMENT::outtakes(session);
   VIEWS::ARRANGEMENT::cover(session);

@@ -99,7 +99,7 @@ using Pulsed = Whole (*)(Whole place);
 
 void asked(
   const String &strip, const Vector<GUI::SAC::LADDER::Mark> &dressed,
-  Whole span, Pulsed pulsed);
+  Whole span, Pulsed pulsed, Whole rows);
 
 void column();
 

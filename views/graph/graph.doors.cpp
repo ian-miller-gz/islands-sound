@@ -21,8 +21,8 @@ constexpr Float TALL = 24.0f;
 constexpr Float BAND = 30.0f;
 constexpr Float SQUARE = 24.0f;
 
-Whole stood = 0;
-Whole born = 0;
+Map<GUI::Handle, Whole> stood;
+Map<GUI::Handle, Whole> born;
 
 auto named(Whole at) -> String { return std::format("{}.{}", ::DOOR, at); }
 
@@ -32,15 +32,15 @@ auto wide(const String &word) -> Float {
 
 void build(Whole count) {
   const GUI::Handle page = VIEWS::document();
-  for (Whole at = count; at < ::stood; ++at)
+  for (Whole at = count; at < ::stood[page]; ++at)
     GUI::NODES::remove(page, ::named(at).c_str());
-  for (Whole at = ::stood; at < count; ++at) {
+  for (Whole at = ::stood[page]; at < count; ++at) {
     const String id = ::named(at);
     GUI::NODES::create(page, ::PALETTE, "button", id.c_str());
     GUI::set(page, id.c_str(), GUI::Style{::WORN});
     GUI::set(page, id.c_str(), GUI::Size{::LETTER});
   }
-  ::stood = count;
+  ::stood[page] = count;
 }
 
 }  // namespace
@@ -48,8 +48,8 @@ void build(Whole count) {
 void SOUND::VIEWS::WIRED::doors() {
   const GUI::Handle page = VIEWS::document();
   const Vector<PALETTE::Door> rows = PALETTE::doors();
-  if (VIEWS::reborn(::born)) ::stood = 0;
-  if (rows.size() != ::stood) ::build(rows.size());
+  if (VIEWS::reborn(::born[page])) ::stood[page] = 0;
+  if (rows.size() != ::stood[page]) ::build(rows.size());
   Float across = ::WEST;
   for (Whole at = 0; at < rows.size(); ++at) {
     const String id = ::named(at);

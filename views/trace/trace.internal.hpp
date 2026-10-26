@@ -9,6 +9,7 @@ constexpr STRING::Hot NAME = "trace";
 constexpr STRING::Hot LIST = "tracks";
 constexpr STRING::Hot NODED = "trace.face.nodes";
 constexpr STRING::Hot LANED = "trace.face.lanes";
+constexpr STRING::Hot CLIPPED = "trace.face.clips";
 constexpr STRING::Hot EMPTY = "trace.empty";
 constexpr STRING::Hot KINDED = "trace.kind";
 constexpr STRING::Hot GROW = "trace.grow";
@@ -20,7 +21,23 @@ auto walked() -> Vector<GRAPH::TRACE::Step>;
 void aimed(GUI::Handle page);
 void aimed(SHELL::Session &session);
 
-void laning(Flag on);
+void turned(GUI::Handle page);
+
+void read();
+
+void nodes();
+
+struct Clipped {
+  Whole clip = NONE;
+  String name, place;
+  Float bars = 0.0f;
+  Flag scoped = false;
+};
+
+auto clipped() -> Vector<Clipped>;
+
+void clips();
+void clips(SHELL::Session &session);
 
 auto adding() -> Whole;
 

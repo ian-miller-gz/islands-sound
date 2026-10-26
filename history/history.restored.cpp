@@ -52,7 +52,8 @@ void plotted(Stock &clip, const Vector<Plotted> &rows, Flag back) {
         .at = node.at,
         .number = one.number,
         .value = node.value,
-        .shape = node.shape};
+        .shape = node.shape,
+        .bend = node.bend};
     });
   if (clip.kind == KIND::PROGRAM)
     return ::patched(clip.choices, rows, back, [back](const Plotted &one) {

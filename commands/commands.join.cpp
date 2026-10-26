@@ -145,11 +145,10 @@ auto SOUND::COMMANDS::joined(Whole track, Whole lane, Vector<Whole> rows)
   const Whole stock = ::composed(pieces, held.kind);
   if (stock == NONE) return NONE;
   const ::Piece &first = pieces.front(), &last = pieces.back();
-  const Clip joined = {
-    .stock = stock,
-    .at = first.span.at,
-    .from = 0,
-    .frames = last.span.at + last.span.frames - first.span.at};
+  Clip joined = first.span;
+  joined.stock = stock;
+  joined.from = 0;
+  joined.frames = last.span.at + last.span.frames - first.span.at;
   HISTORY::begin();
   HISTORY::said(std::format("join {} clips", rows.size()));
   ::stripped(track, lane, rows, held.clips);

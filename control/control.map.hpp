@@ -21,7 +21,11 @@ void cancel();
 
 auto listening() -> Address;
 
+auto stale() -> Flag;
+
 void disarm(const Address &address);
+
+void assign(const Address &address, Whole number);
 
 auto bound(const Address &address) -> Binding;
 

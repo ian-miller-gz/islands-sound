@@ -16,7 +16,6 @@ constexpr Whole RUNGS[] = {32, 16, 8, 4, 2, 1};
 constexpr Whole CLIMBED = sizeof(RUNGS) / sizeof(RUNGS[0]) - 1;
 constexpr Float FINEST = 0.0f;
 constexpr Float BEAT = 3.0f;
-
 constexpr Float SHORTEST = 1.0f;
 constexpr Float LONGEST = 16.0f;
 
@@ -29,6 +28,7 @@ constexpr Whole SMOOTH = 0;
 
 Flag stood = false;
 Whole born = 0;
+auto standing() -> Flag { return stood; }
 
 auto rung(Whole index) -> Whole {
   return PULSES * WHOLE / RUNGS[std::min(index, CLIMBED)];
@@ -99,7 +99,7 @@ void dials() {
 }
 
 auto bench() -> Bench {
-  if (!stood) return {rung(Whole(BEAT)), Whole(SHORTEST), FORTE};
+  if (!standing()) return {rung(Whole(BEAT)), Whole(SHORTEST), FORTE};
   const GUI::Handle page = document();
   return {
     .snap = rung(Whole(GUI::GET::value(page, SNAP))),
