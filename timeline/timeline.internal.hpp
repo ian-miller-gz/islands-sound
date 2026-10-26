@@ -8,6 +8,9 @@ auto standing() -> Arrangement &;
 
 auto valued(const Curve &curve, Whole at) -> Float;
 
+void fade(
+  Laid &stretch, const ARRANGEMENT::TRACK::LANE::Clip &span, Whole offset);
+
 auto claimed(const Vector<String> &claims, const String &node) -> Flag;
 
 struct Sending {

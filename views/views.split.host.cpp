@@ -28,5 +28,5 @@ auto SOUND::VIEWS::SPLIT::hosted(Whole row) -> Flag {
 
 auto SOUND::VIEWS::SPLIT::shared() -> Flag {
   const Whole at = lower();
-  return at != NONE && at == chosen();
+  return at != NONE && at == chosen() && hosted(at);
 }

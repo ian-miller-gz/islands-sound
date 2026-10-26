@@ -6,6 +6,7 @@
 
 #include "../../boards.hpp"
 #include "piano.internal.hpp"
+#include "piano.paper.hpp"
 
 namespace {
 using namespace SOUND;
@@ -34,7 +35,7 @@ auto held(const Span &span) -> Float {
   const Float wide =
     (VIEWS::ROLL::across(span.closes) - VIEWS::ROLL::across(span.opens)) * zoom;
   const Float room = std::max(::INSET, wide - ::NAMED - ::INSET);
-  return std::clamp(VIEWS::ROLL::RAILED + ::INSET - opens, ::INSET, room);
+  return std::clamp(VIEWS::ROLL::margin() + ::INSET - opens, ::INSET, room);
 }
 
 void build(GUI::Handle page, Whole count) {
@@ -82,9 +83,10 @@ void SOUND::VIEWS::ROLL::range() {
     GUI::set(page, id.c_str(), GUI::Position{opens, ::NORTH});
     GUI::set(
       page, id.c_str(),
-      GUI::Extent{closes > opens ? closes - opens : 0.0f, DEEP});
+      GUI::Extent{closes > opens ? closes - opens : 0.0f, ROWS::deep()});
     const String name = id + "." + ::LETTERED;
     GUI::set(page, name.c_str(), GUI::Text{lit[span].name});
     GUI::set(page, name.c_str(), GUI::Position{::held(lit[span]), ::PAD});
   }
+  PAPER::range({bed, lit.size(), ::GROUND});
 }

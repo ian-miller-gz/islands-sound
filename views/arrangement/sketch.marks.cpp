@@ -3,6 +3,7 @@
 
 #include "../../control.hpp"
 #include "../../inventory.hpp"
+#include "../../peaks.hpp"
 #include "../../shape.hpp"
 #include "../../timeline.hpp"
 #include "arrangement.internal.hpp"
@@ -65,35 +66,20 @@ auto waved(Float peak) -> Mark {
   return {0, 0, ::MID - deep * ::HALF, deep};
 }
 
-auto marked(const Take &take) -> Vector<Mark> {
+auto marked(Whole stock, const Take &take) -> Vector<Mark> {
   Vector<Mark> marks;
   if (take.lanes.empty() || take.lanes[0].empty()) return marks;
   const Whole frames = take.lanes[0].size();
   const Whole window = frames / ::MOST + 1;
+  const PEAKS::Level &level = PEAKS::GET::level(stock);
   for (Whole at = 0; at < frames; at += window) {
-    Float loudest = 0.0f;
-    for (const Vector<Float> &lane : take.lanes)
-      for (Whole one = at; one < std::min(at + window, lane.size()); ++one)
-        loudest = std::max(loudest, lane[one] < 0.0f ? -lane[one] : lane[one]);
-    Mark mark = ::waved(loudest);
+    const PEAKS::Peak peak = PEAKS::peak(take, level, at, window);
+    Mark mark = ::waved(std::max(-peak.least, peak.most));
     mark.at = at;
     mark.run = window;
     marks.push_back(mark);
   }
   return marks;
-}
-
-Vector<Vector<Mark>> kept;
-Whole stirred = NONE;
-
-auto waves(Whole stock, const Take &take) -> const Vector<Mark> & {
-  if (INVENTORY::counted() != ::stirred) {
-    ::kept.assign(INVENTORY::held().stocks.size(), {});
-    ::stirred = INVENTORY::counted();
-  }
-  if (stock >= ::kept.size()) ::kept.resize(stock + 1);
-  if (::kept[stock].empty()) ::kept[stock] = ::marked(take);
-  return ::kept[stock];
 }
 
 auto along(Whole kept) -> Whole {
@@ -116,8 +102,7 @@ auto shaped(const Vector<Node> &nodes, Float reach) -> Vector<Mark> {
       next < nodes.size() ? nodes[next].value / reach - value : 0.0f;
     for (Whole part = 0; part < parts; ++part) {
       Mark mark = ::banded(
-        value +
-        rise * SHAPE::reading(nodes[one].shape, Float(part) / Float(parts)));
+        value + rise * SHAPE::reading(nodes[one], Float(part) / Float(parts)));
       mark.at = nodes[one].at + run * part / parts;
       mark.run = run * (part + 1) / parts - run * part / parts;
       marks.push_back(mark);
@@ -163,7 +148,7 @@ auto SOUND::VIEWS::ARRANGEMENT::pips(const Box &box) -> Vector<Pip> {
   const Whole carried = INVENTORY::length(stock);
   Vector<Mark> marks;
   if (stock.kind == KIND::AUDIO)
-    marks = ::waves(box.stock, stock.take);
+    marks = ::marked(box.stock, stock.take);
   else if (stock.kind == KIND::LOGIC)
     marks = ::shaped(stock.curve.points, ::WHOLE);
   else if (stock.kind == KIND::CONTROL)

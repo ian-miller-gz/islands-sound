@@ -5,6 +5,7 @@
 #include "../inventory.hpp"
 #include "../kind.hpp"
 #include "../score.hpp"
+#include "../shape.hpp"
 #include "../commands.hpp"
 
 namespace {
@@ -37,10 +38,35 @@ auto stocked(Whole index, const Stock &stock) -> String {
     ::measured(stock));
 }
 
+template <typename Node>
+auto said(const Node &node) -> String {
+  return std::format(
+    "value {:g} shape {} bend {:g}", node.value, SHAPE::spoken(node.shape),
+    node.bend);
+}
+
+void listed(SHELL::Session &session, Whole index, const Stock &stock) {
+  session.print(::stocked(index, stock));
+  for (Whole row = 0; row < stock.turns.size(); ++row)
+    session.print(std::format(
+      "turn {} at {} number {} {}", row, stock.turns[row].at,
+      stock.turns[row].number, ::said(stock.turns[row])));
+  for (Whole row = 0; row < stock.curve.points.size(); ++row)
+    session.print(std::format(
+      "point {} at {} {}", row, stock.curve.points[row].at,
+      ::said(stock.curve.points[row])));
+}
+
 }  // namespace
 
 void SOUND::COMMANDS::stocks(SHELL::Session &session) {
   const Inventory &pool = INVENTORY::held();
+  if (session.arguments.size() > 1) {
+    const Whole index = ::counted(session.arguments[1]);
+    if (index >= pool.stocks.size())
+      return session.print("stocks refused: no such stock");
+    return ::listed(session, index, pool.stocks[index]);
+  }
   session.print(std::format("stocks {}", pool.stocks.size()));
   for (Whole index = 0; index < pool.stocks.size(); ++index)
     session.print(::stocked(index, pool.stocks[index]));

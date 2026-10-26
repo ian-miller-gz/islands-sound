@@ -4,16 +4,11 @@
 #include "../inventory.hpp"
 #include "../kind.hpp"
 #include "../plugin.hpp"
+#include "render.governs.hpp"
 #include "render.internal.hpp"
 
 namespace {
 using namespace SOUND;
-
-auto wired(const String &root, Whole out, const String &node) -> Flag {
-  for (const Wire &wire : GRAPH::held().wires)
-    if (wire.from == root && wire.out == out && wire.to == node) return true;
-  return false;
-}
 
 auto standing(const Vector<Turn> &turns, Whole number, Whole at) -> Flag {
   for (const Turn &move : turns)
@@ -41,6 +36,12 @@ auto turned(
   return found;
 }
 
+auto scaled(const String &node, Whole parameter, Float value) -> Float {
+  AUDIO::PLUGIN::Control described;
+  if (!GRAPH::INSTANCE::described(node, parameter, described)) return value;
+  return PLUGIN::scaled(described, value);
+}
+
 }  // namespace
 
 auto SOUND::RENDER::mapped(Whole track, Whole lane) -> String {
@@ -53,9 +54,12 @@ auto SOUND::RENDER::mapped(Whole track, Whole lane) -> String {
 
 auto SOUND::RENDER::worded(Whole track, Whole lane, Whole number, Float value)
   -> Float {
+  const String node = governs(track, lane);
+  if (!node.empty()) return ::scaled(node, number, value);
   const String plugin = mapped(track, lane);
   AUDIO::PLUGIN::Control described;
-  if (plugin.empty() || !GRAPH::described(plugin, number, described)) return value;
+  if (plugin.empty() || !GRAPH::described(plugin, number, described))
+    return value;
   return PLUGIN::scaled(described, value);
 }
 
@@ -69,12 +73,13 @@ auto SOUND::RENDER::governed(const Address &address, Whole at)
     if (tracks[track].root.empty()) continue;
     for (Whole lane = 0; lane < tracks[track].lanes.size(); ++lane) {
       if (tracks[track].lanes[lane].kind != KIND::CONTROL) continue;
-      if (!::wired(tracks[track].root, lane, address.node)) continue;
+      if (!wired(tracks[track].root, lane, address.node)) continue;
       Float value = 0.0f;
       if (!::turned(tracks[track].lanes[lane], address.parameter, at, value))
         continue;
       return {
-        .stated = true, .value = worded(track, lane, address.parameter, value)};
+        .stated = true,
+        .value = ::scaled(address.node, address.parameter, value)};
     }
   }
   return {};

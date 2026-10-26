@@ -206,9 +206,6 @@ void threaded(const String &node);
 
 auto developed(const String &node, Whole out)
   -> const Vector<AUDIO::PLUGIN::Event> &;
-auto laid(const String &node, Whole out) -> const Vector<Vector<Float>> &;
-
-auto dialled(const String &node) -> const Vector<AUDIO::PLUGIN::Event> &;
 
 auto spare() -> Flag;
 
@@ -242,8 +239,6 @@ void hush(const String &node);
 auto handed(const String &node) -> const Intake &;
 
 void take();
-
-auto taken(const String &node) -> const Intake &;
 
 auto remembered(const String &node, Whole parameter) -> Float;
 

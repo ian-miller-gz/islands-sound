@@ -97,7 +97,7 @@ void SOUND::VIEWS::ROLL::cycle(
   ::cells(step, dressed, west, scale);
   VIEWS::handled(strip(), west, scale, ::unfolded);
   VIEWS::flagged(strip(), west, scale, ::down(), ::folded);
-  VIEWS::asked(strip(), dressed, step.span, ::pulsed);
+  VIEWS::asked(strip(), dressed, step.span, ::pulsed, VIEWS::OFFER::ROLL);
   changes();
 }
 

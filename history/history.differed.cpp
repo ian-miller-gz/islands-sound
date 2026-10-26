@@ -9,15 +9,9 @@ auto same(const Note &one, const Note &other) -> Flag {
          one.length == other.length && one.velocity == other.velocity;
 }
 
-auto same(const Turn &one, const Turn &other) -> Flag {
-  return one.at == other.at && one.number == other.number &&
-         one.value == other.value && one.shape == other.shape;
-}
+auto same(const Turn &one, const Turn &other) -> Flag { return one == other; }
 
-auto same(const Point &one, const Point &other) -> Flag {
-  return one.at == other.at && one.value == other.value &&
-         one.shape == other.shape;
-}
+auto same(const Point &one, const Point &other) -> Flag { return one == other; }
 
 auto same(const Choice &one, const Choice &other) -> Flag {
   return one.at == other.at && one.program == other.program;
@@ -65,7 +59,8 @@ void walked(const Vector<Row> &stood, const Vector<Row> &stands, Lay lay) {
 }
 
 auto plotted(const Turn &node) -> Point {
-  return {.at = node.at, .value = node.value, .shape = node.shape};
+  return {
+    .at = node.at, .value = node.value, .shape = node.shape, .bend = node.bend};
 }
 
 auto plotted(const Point &node) -> Point { return node; }

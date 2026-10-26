@@ -10,6 +10,11 @@ namespace {
 using namespace SOUND;
 using VIEWS::MENU::Act;
 
+constexpr Whole SUMMON = 10;
+constexpr Float GAP = 4.0f;
+constexpr VIEWS::Chord KEYED = {
+  .action = INPUT::KEYS::HOTKEY, .code = ::SUMMON, .shift = true};
+
 struct Raised {
   String list;
   Whole row = NONE;
@@ -23,6 +28,19 @@ auto numbered(const String &rest) -> Whole {
   const auto [stop, fault] = std::from_chars(rest.data(), end, n);
   if (fault != std::errc{} || stop == rest.data()) return NONE;
   return stop == end || *stop == '.' ? n : NONE;
+}
+
+auto under(const String &target, STRING::Hot list) -> Whole {
+  const String head = String(list) + ".";
+  if (!target.starts_with(head)) return NONE;
+  return ::numbered(target.substr(head.size()));
+}
+
+void hang(GUI::Handle page, const Vector<String> &labels, STRING::Hot list) {
+  const String door = VIEWS::MENU::GET::door();
+  const GUI::Position at = GUI::GET::origin(page, door.c_str());
+  const GUI::Extent size = GUI::GET::measured(page, door.c_str());
+  VIEWS::MENU::raise(labels, at.x, at.y + size.h + ::GAP, list);
 }
 
 auto shown(const Vector<Act> &acts, Whole row) -> Vector<Whole> {
@@ -49,23 +67,35 @@ auto took(STRING::Hot list, const Vector<Act> &acts) -> Flag {
 auto SOUND::VIEWS::MENU::asked(GUI::Handle page, STRING::Hot list) -> Whole {
   const GUI::NGA::Ask ask = GUI::NGA::GET::asked(page);
   if (!ask.asked || !ask.board.empty()) return NONE;
-  const String head = String(list) + ".";
-  if (!ask.target.starts_with(head)) return NONE;
-  const Whole n = ::numbered(ask.target.substr(head.size()));
+  const Whole n = ::under(ask.target, list);
   return n == NONE ? NONE : GUI::GET::first(page, list) + n;
+}
+
+auto SOUND::VIEWS::MENU::keyed(GUI::Handle page, STRING::Hot list) -> Whole {
+  const String cell = GUI::GET::editing(page);
+  const Whole n = ::under(cell, list);
+  if (n == NONE || GUI::GET::seated(page)) return NONE;
+  if (!VIEWS::chorded(::KEYED)) return NONE;
+  park(page, cell);
+  return GUI::GET::first(page, list) + n;
 }
 
 auto SOUND::VIEWS::MENU::offer(
   GUI::Handle page, STRING::Hot list, const Vector<Act> &acts) -> Flag {
   if (::took(list, acts)) return true;
-  const Whole row = asked(page, list);
+  const Whole asking = asked(page, list);
+  const Whole row = asking == NONE ? keyed(page, list) : asking;
   if (row == NONE) return false;
   const Vector<Whole> run = ::shown(acts, row);
   if (run.empty()) return false;
-  Vector<String> words;
-  for (const Whole at : run) words.push_back(String(acts[at].word));
+  Vector<String> labels;
+  for (const Whole at : run) labels.push_back(String(acts[at].word));
   const GUI::NGA::Ask ask = GUI::NGA::GET::asked(page);
   ::raised = {.list = list, .row = row, .run = run};
-  raise(words, ask.x, ask.y, list);
+  if (asking == NONE) {
+    ::hang(page, labels, list);
+    return false;
+  }
+  raise(labels, ask.x, ask.y, list);
   return false;
 }

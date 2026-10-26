@@ -4,7 +4,7 @@
 #include <island/gui/nga.hpp>
 
 #include "../../boards.hpp"
-#include "arrangement.internal.hpp"
+#include "lanes.internal.hpp"
 
 namespace {
 using namespace SOUND;
@@ -53,4 +53,5 @@ void SOUND::VIEWS::ARRANGEMENT::names() {
         runs[track].top + (VIEWS::ARRANGEMENT::TITLE - ::LETTER) / 2.0f});
     GUI::set(page, id.c_str(), GUI::Text{runs[track].name});
   }
+  wear();
 }

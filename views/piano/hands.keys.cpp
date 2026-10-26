@@ -4,6 +4,7 @@
 #include <island/input.hpp>
 
 #include "../../inventory.hpp"
+#include "piano.acts.hpp"
 #include "piano.internal.hpp"
 
 #include <algorithm>
@@ -11,9 +12,6 @@
 namespace {
 using namespace SOUND;
 
-constexpr Whole COPY = 'C';
-constexpr Whole PASTE = 'V';
-constexpr Whole CASED = 'a' - 'A';
 constexpr STRING::Hot ERASED = "erase";
 
 void taken(Whole stock) {
@@ -22,10 +20,6 @@ void taken(Whole stock) {
 
 void wrote(Whole stock) {
   HISTORY::wrote(::ERASED, stock, INVENTORY::held().stocks[stock]);
-}
-
-auto folded(Whole code) -> Whole {
-  return code >= 'a' && code <= 'z' ? code - ::CASED : code;
 }
 
 }  // namespace
@@ -49,6 +43,7 @@ auto SOUND::VIEWS::ROLL::pluck(GUI::Handle page, Whole row) -> Flag {
 
 void SOUND::VIEWS::ROLL::plucked(GUI::Handle page) {
   if (!GUI::SAC::CARRY::GET::carried(page).empty()) return;
+  if (!loose().empty()) return dropped(page);
   const String board = VIEWS::ROLL::board();
   const Vector<Pip> &drawn = plates();
   Vector<Pip> chosen;
@@ -78,11 +73,7 @@ void SOUND::VIEWS::ROLL::plucked(GUI::Handle page) {
 
 void SOUND::VIEWS::ROLL::keyed() {
   const GUI::Handle page = VIEWS::document();
-  const INPUT::KEYS::Event key = GUI::GET::keyed(page);
+  const INPUT::KEYS::Event key = VIEWS::struck();
   if (VIEWS::journaled(key)) return;
-  if (key.action == INPUT::KEYS::DELETE) return plucked(page);
-  if (key.action != INPUT::KEYS::TEXT || !key.control) return;
-  const Whole letter = ::folded(key.codepoint);
-  if (letter == ::COPY) return copy(page);
-  if (letter == ::PASTE) paste(page);
+  VIEWS::ROLL::acted(page, key);
 }

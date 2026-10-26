@@ -2,6 +2,7 @@
 #pragma once
 #include "../../control.hpp"
 #include "../views.hpp"
+#include "../rig/rig.hpp"
 
 namespace SOUND::VIEWS::RACK {
 
@@ -35,24 +36,25 @@ auto described(const Row &row) -> AUDIO::PLUGIN::Control;
 
 void moved(const Row &row, Float value);
 
-auto stepped(const AUDIO::PLUGIN::Control &published, Float value) -> Whole;
-auto valued(const AUDIO::PLUGIN::Control &published, Whole step) -> Float;
+void dial(const Row &row, Float value);
+void settle();
 
 auto listed(const Row &row) -> Flag;
-auto listed(const AUDIO::PLUGIN::Control &published) -> Flag;
 
-constexpr STRING::Hot BARRED = "bar";
+using RIG::BOUND;
+using RIG::DIALLED;
+using RIG::NAMED;
+using RIG::STEPPED;
 constexpr STRING::Hot MARKED = "mark";
-constexpr STRING::Hot NAMED = "name";
 constexpr STRING::Hot HEADED = "head";
-constexpr STRING::Hot STEPPED = "steps";
 
 auto column(GUI::Handle page, const Vector<Row> &wanted) -> Float;
 auto cut(GUI::Handle page, const Row &row, Float column) -> String;
 
-void seat(GUI::Handle page, const String &cell, Float column);
+void seat(GUI::Handle page, const String &cell, const Row &row, Float column);
 void title(GUI::Handle page, const String &cell, const Row &row, Float column);
 void show(GUI::Handle page, const String &cell, const Row &row, Float column);
+auto fitted(GUI::Handle page, const String &cell, const Row &row) -> String;
 
 auto centred(const AUDIO::PLUGIN::Control &published) -> Flag;
 
@@ -71,6 +73,8 @@ void raise(GUI::Handle page, const String &cell, const Row &row);
 
 void seated(GUI::Handle page, const String &cell, const Row &row);
 
+auto hung(GUI::Handle page, const String &cell) -> GUI::Position;
+
 auto addressed(const Row &row) -> Address;
 
 auto listening(const Row &row) -> Flag;
@@ -78,10 +82,7 @@ auto listening(const Row &row) -> Flag;
 void bound(GUI::Handle page, const String &cell, const Row &row);
 void bound(SHELL::Session &session);
 
-void cancel();
-
-void keep(FIELDS::Map &face);
-void restore(const FIELDS::Map &face);
+auto cancel(GUI::Handle page) -> Flag;
 
 auto words() -> Vector<SHELL::Command>;
 

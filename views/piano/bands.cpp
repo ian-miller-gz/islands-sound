@@ -19,12 +19,12 @@ constexpr STRING::Hot OUT = "out";
 constexpr STRING::Hot TONIC = "tonic";
 constexpr Whole FIRST = 1;
 constexpr Whole SHARPS[] = {1, 3, 6, 8, 10};
-constexpr Integer BELOW = 1;
 constexpr Float ORIGIN = 0.0f;
 constexpr Float SPARE = 0.5f;
 
 Whole stood = 0;
 Whole born = 0;
+Whole rowed = 0;
 Float reach = ::ORIGIN;
 Vector<Key> worn;
 
@@ -43,7 +43,7 @@ void seat(GUI::Handle page, Whole section, const VIEWS::ROLL::Keyed &laid) {
     const String id = VIEWS::ROLL::sectioned(::STEM, section, pitch);
     BOARDS::place(
       page, VIEWS::ROLL::board().c_str(), "panel", id,
-      {laid.from, VIEWS::ROLL::lane(pitch)},
+      {laid.from, VIEWS::ROLL::ROWS::lane(pitch, laid.key.at)},
       {laid.to - laid.from, VIEWS::ROLL::STEP});
     GUI::set(
       page, id.c_str(),
@@ -64,21 +64,13 @@ void relaid(GUI::Handle page, const Vector<VIEWS::ROLL::Keyed> &sections) {
       ::seat(page, section, sections[section]);
       continue;
     }
-    for (Whole pitch = 0; pitch <= VIEWS::ROLL::HIGHEST; ++pitch) {
-      const String id = VIEWS::ROLL::sectioned(::STEM, section, pitch);
+    for (Whole pitch = 0; pitch <= VIEWS::ROLL::HIGHEST; ++pitch)
       GUI::set(
-        page, id.c_str(),
-        GUI::Position{sections[section].from, VIEWS::ROLL::lane(pitch)});
-      GUI::set(
-        page, id.c_str(),
-        GUI::Extent{
-          sections[section].to - sections[section].from, VIEWS::ROLL::STEP});
-      GUI::set(
-        page, id.c_str(),
+        page, VIEWS::ROLL::sectioned(::STEM, section, pitch).c_str(),
         GUI::Style{VIEWS::ROLL::dressed(pitch, sections[section].key).c_str()});
-    }
   }
   ::stood = sections.size();
+  VIEWS::ROLL::ROWS::banded(page, ::STEM, sections);
 }
 
 }  // namespace
@@ -125,7 +117,7 @@ auto SOUND::VIEWS::ROLL::rekeyed(Vector<Key> &held) -> Flag {
 
 auto SOUND::VIEWS::ROLL::named(Whole pitch) -> String {
   if (pitch % SEMITONES != 0) return String();
-  return std::format("C{}", Integer(pitch / SEMITONES) - ::BELOW);
+  return std::format("C{}", Integer(pitch / SEMITONES) - ROWS::OCTAVE);
 }
 
 void SOUND::VIEWS::ROLL::SHED::keys() {
@@ -153,7 +145,9 @@ void SOUND::VIEWS::ROLL::keys() {
   const Flag grown = grew > ::reach;
   ::reach = grew;
   const Vector<Keyed> sections = keyed(::reach);
+  const Flag rowed = ROWS::moved(::rowed);
   if (::stood == 0 || moved) return ::relaid(page, sections);
+  if (rowed) ROWS::banded(page, ::STEM, sections);
   if (!grown) return;
   const Keyed &last = sections.back();
   for (Whole pitch = 0; pitch <= HIGHEST; ++pitch)

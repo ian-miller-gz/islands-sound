@@ -24,11 +24,11 @@ auto flushed(const Vector<Whole> &flush, Whole at) -> Flag {
 }
 
 void haired(Vector<::Hair> &hairs, Float x, Flag parted, Float scale) {
-  if (!parted) return hairs.push_back({x, ::NORTH, VIEWS::ROLL::DEEP});
+  if (!parted) return hairs.push_back({x, ::NORTH, VIEWS::ROLL::ROWS::deep()});
   const Float mark = VIEWS::ROLL::SEAMS::MARK / scale;
-  const Float top = VIEWS::ROLL::DEEP * ::HALF - mark * ::HALF;
+  const Float top = VIEWS::ROLL::ROWS::deep() * ::HALF - mark * ::HALF;
   hairs.push_back({x, ::NORTH, top});
-  hairs.push_back({x, top + mark, VIEWS::ROLL::DEEP - top - mark});
+  hairs.push_back({x, top + mark, VIEWS::ROLL::ROWS::deep() - top - mark});
 }
 
 auto haired(const Vector<Whole> &flush) -> Vector<::Hair> {

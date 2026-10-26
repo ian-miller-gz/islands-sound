@@ -1,80 +1,81 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include <format>
-
-#include "../../timeline.hpp"
-#include "arranger.internal.hpp"
+#include "../views.internal.hpp"
+#include "../views.lit.hpp"
+#include "../views.split.hpp"
+#include "door.hpp"
 
 namespace {
 using namespace SOUND;
 using namespace SOUND::VIEWS::ARRANGER;
 namespace LANE = SOUND::VIEWS::LANE;
+namespace SPLIT = SOUND::VIEWS::SPLIT;
 
-constexpr Float WIDE = 176.0f;
-constexpr Float FRAME = 12.0f;
-constexpr Whole OFFER = 1;
+constexpr STRING::Hot RESTING = "pair";
+constexpr STRING::Hot HELD = "pairlit";
+constexpr STRING::Hot PLATE = ".set";
 
-const String DOOR = VIEWS::icon(NAME) + ".door";
-const String PANEL = VIEWS::icon(NAME) + ".pages";
-const String ROWS = ::PANEL + ".rows";
+auto create(const String &icon, Whole region) -> Pair {
+  return {icon, icon + SPLIT::DOOR, icon + ::PLATE, region};
+}
 
-void session(const LANE::Mark &) {
-  turned(SESSION);
+auto strip() -> const Pair & { return paired(SPLIT::UPPER); }
+
+auto editing(const LANE::Mark &mark) -> Flag {
+  if (String(VIEWS::standing()) != NAME) return false;
+  return faced() == &LANE::face() && turned() == mark.kind;
+}
+
+void opened(GUI::Handle page) {
+  const String &id = ::strip().door;
+  if (!GUI::GET::clicked(page, id.c_str()) && !SPLIT::struck(id)) return;
+  if (SPLIT::shared()) return ask(SPLIT::UPPER, LANE::face());
+  const LANE::Mark mark = offered();
+  if (::editing(mark)) {
+    turned(NONE);
+    VIEWS::choose(NAME);
+  } else if (mark.lane != NONE)
+    edit(mark.track, mark.lane);
+}
+
+void arrived() {
+  if (!VIEWS::ARRANGEMENT::GET::opened()) return;
+  const LANE::Mark mark = LANE::marked();
+  if (mark.lane != NONE) edit(mark.track, mark.lane);
+}
+
+void returned(GUI::Handle page) {
+  const String &id = ::strip().icon;
+  if (!GUI::GET::clicked(page, id.c_str()) && !SPLIT::struck(id)) return;
+  if (SPLIT::shared()) return ask(SPLIT::UPPER, VIEWS::ARRANGEMENT::face());
+  turned(NONE);
   VIEWS::choose(NAME);
-}
-
-void edit(const LANE::Mark &mark) {
-  VIEWS::ARRANGER::edit(mark.track, mark.lane);
-}
-
-using Take = void (*)(const LANE::Mark &);
-constexpr Take TAKES[] = {::session, ::edit};
-
-auto standing(GUI::Handle page) -> Flag {
-  return GUI::GET::visibility(page, ::PANEL.c_str());
-}
-
-void plate(GUI::Handle page) {
-  const LANE::Mark mark = offered();
-  const Whole count = mark.lane == NONE ? ::OFFER : ::OFFER + 1;
-  const Float step =
-    GUI::GET::pitch(page, ::ROWS.c_str()) + GUI::GET::pad(page, ::ROWS.c_str());
-  GUI::set(
-    page, ::PANEL.c_str(), GUI::Extent{::WIDE, ::FRAME + Float(count) * step});
-  GUI::set(page, ::ROWS.c_str(), GUI::Rows{count});
-  GUI::set(
-    page, std::format("{}.{}", ::ROWS, SESSION).c_str(),
-    GUI::Text{PAGES[SESSION].label});
-  if (count == ::OFFER) return;
-  GUI::set(
-    page, std::format("{}.{}", ::ROWS, ::OFFER).c_str(),
-    GUI::Text{TIMELINE::held().tracks[mark.track].lanes[mark.lane].name});
-}
-
-void spread(GUI::Handle page, Flag on) {
-  GUI::set(page, ::PANEL.c_str(), GUI::Visibility{on});
-  if (!on) return;
-  ::plate(page);
-  const Whole row = PAGES[turned()].kind == NONE ? SESSION : ::OFFER;
-  GUI::set(page, ::ROWS.c_str(), GUI::Cursor{row});
-}
-
-void took(GUI::Handle page) {
-  const Whole row = GUI::GET::cursor(page, ::ROWS.c_str());
-  const LANE::Mark mark = offered();
-  if (row >= std::size(::TAKES) || (row == ::OFFER && mark.lane == NONE))
-    return;
-  ::TAKES[row](mark);
-  ::spread(page, false);
 }
 
 }  // namespace
 
+auto SOUND::VIEWS::ARRANGER::paired(Whole region) -> const Pair & {
+  static const Pair pairs[] = {
+    ::create(VIEWS::icon(NAME), SPLIT::UPPER),
+    ::create(String(SPLIT::BAR) + "." + NAME, SPLIT::BELOW)};
+  return pairs[region];
+}
+
+void SOUND::VIEWS::ARRANGER::light(GUI::Handle page, const Pair &pair) {
+  const STRING::Hot mark = SPLIT::mark(pair.region);
+  const View *face = faced(pair.region);
+  for (const Half &half : HALVES)
+    VIEWS::light(page, pair.*half.id, face == &half.face() ? mark : PLAIN);
+  const String over = String(GUI::GET::hover(page));
+  const Flag rested = over == pair.icon || over == pair.door;
+  GUI::set(page, pair.plate.c_str(), GUI::Style{rested ? ::HELD : ::RESTING});
+}
+
 void SOUND::VIEWS::ARRANGER::door() {
   const GUI::Handle page = document();
-  if (GUI::GET::clicked(page, ::DOOR.c_str()))
-    return ::spread(page, !::standing(page));
-  if (!::standing(page)) return;
-  ::plate(page);
-  if (GUI::GET::activated(page, ::ROWS.c_str())) return ::took(page);
-  if (elsewhere(::DOOR.c_str(), ::PANEL.c_str())) ::spread(page, false);
+  BAND::door(page);
+  ::returned(page);
+  ::opened(page);
+  ::arrived();
+  light(page, paired(SPLIT::BELOW));
+  light(page, ::strip());
 }

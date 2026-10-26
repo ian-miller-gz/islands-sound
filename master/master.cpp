@@ -41,6 +41,26 @@ void gathered(
   }
 }
 
+template <typename Each>
+auto rendered(Whole from, Whole frames, Each each) -> Flag {
+  const Flag stood = RENDER::VOICE::standing();
+  RENDER::VOICE::drop();
+  RENDER::plan();
+  GRAPH::rest();
+  RENDER::forget();
+  Flag whole = true;
+  Whole at = from;
+  for (Whole made = 0; whole && made < frames; made += RENDER::BLOCK) {
+    const Whole span = std::min<Whole>(RENDER::BLOCK, frames - made);
+    const RENDER::Walk walk = RENDER::walk(at, span);
+    whole = RENDER::block(walk, span);
+    if (whole) each(made, span);
+    at = RENDER::after(walk, span);
+  }
+  if (stood) RENDER::VOICE::claim();
+  return whole;
+}
+
 }  // namespace
 
 auto SOUND::MASTER::bounce(
@@ -49,18 +69,10 @@ auto SOUND::MASTER::bounce(
   if (nodes.empty()) return false;
   for (const String &node : nodes)
     if (GRAPH::at(node) == NONE) return false;
-  GRAPH::rest();
-  RENDER::forget();
   lanes.clear();
-  Whole at = from;
-  for (Whole made = 0; made < frames; made += RENDER::BLOCK) {
-    const Whole span = std::min<Whole>(RENDER::BLOCK, frames - made);
-    const RENDER::Walk walk = RENDER::walk(at, span);
-    if (!RENDER::block(walk, span)) return false;
+  return ::rendered(from, frames, [&](Whole made, Whole span) {
     ::gathered(lanes, nodes, made, span);
-    at = RENDER::after(walk, span);
-  }
-  return true;
+  });
 }
 
 auto SOUND::MASTER::bounce(Whole frames, Tally &out) -> Flag {
@@ -69,19 +81,12 @@ auto SOUND::MASTER::bounce(Whole frames, Tally &out) -> Flag {
 
 auto SOUND::MASTER::bounce(Whole from, Whole frames, Tally &out) -> Flag {
   const String clock = GRAPH::clock();
-  GRAPH::rest();
-  RENDER::forget();
   out = {.frames = frames};
   Digest digest = ::SEED;
-  Whole at = from;
-  for (Whole made = 0; made < frames; made += RENDER::BLOCK) {
-    const Whole span = std::min<Whole>(RENDER::BLOCK, frames - made);
-    const RENDER::Walk walk = RENDER::walk(at, span);
-    if (!RENDER::block(walk, span)) return false;
+  const Flag whole = ::rendered(from, frames, [&](Whole, Whole span) {
     out.notes += RENDER::delivered();
     ::fold(digest, RENDER::sounded(clock), span);
-    at = RENDER::after(walk, span);
-  }
+  });
   out.digest = digest;
-  return true;
+  return whole;
 }

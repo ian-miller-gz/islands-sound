@@ -3,7 +3,7 @@
 
 #include "../../inventory.hpp"
 #include "../../shape.hpp"
-#include "signals.internal.hpp"
+#include "signals.plotted.hpp"
 
 namespace {
 using namespace SOUND;
@@ -21,12 +21,12 @@ auto owned(Whole at) -> Whole {
 
 void lay(Integer across, Float value, Whole shape) {
   const Whole at = VIEWS::SIGNALS::stamped(across);
-  if (VIEWS::SIGNALS::aimed(at).stock == NONE) return;
+  const Whole stock = VIEWS::SIGNALS::claimed(at).stock;
+  if (stock == NONE) return;
   const Whole row = ::owned(at);
   if (row == NONE)
     return ::drafting.push_back(
-      {VIEWS::SIGNALS::aimed(at).stock, NONE, at, at + VIEWS::SIGNALS::grain(),
-       value, shape});
+      {stock, NONE, at, at + VIEWS::SIGNALS::grain(), value, shape});
   ::drafting[row].value = value;
   ::drafting[row].shape = shape;
 }

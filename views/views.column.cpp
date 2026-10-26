@@ -45,8 +45,7 @@ void SOUND::VIEWS::column() {
   const Float bar = GUI::GET::extent(page, BAR).h;
   const Float low =
     GUI::GET::position(page, ::UPPER).y + ::least(page, ::ROSTER) + bar + ::RIM;
-  const STRING::Hot list =
-    VIEWS::TRACE::laning() ? VIEWS::TRACE::LANES : VIEWS::TRACE::ROWS;
+  const STRING::Hot list = VIEWS::TRACE::GET::list();
   const Float high =
     deep - GUI::GET::position(page, ::LOWER).y - ::least(page, list);
   if (high < low) return;

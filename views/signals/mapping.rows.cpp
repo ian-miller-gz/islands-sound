@@ -18,7 +18,7 @@ constexpr STRING::Hot GREY = "muted";
 constexpr STRING::Hot BARE = "no params";
 
 auto publishing(const String &name) -> VIEWS::SIGNALS::Offer {
-  return {.name = name, .words = VIEWS::parameters(name)};
+  return {.name = name, .words = GRAPH::parameters(name)};
 }
 
 auto landing(const String &root, Whole lane) -> Vector<String> {
@@ -59,7 +59,8 @@ auto SOUND::VIEWS::SIGNALS::reached() -> Vector<Offer> {
 
 auto SOUND::VIEWS::SIGNALS::offered() -> Vector<Offer> {
   Vector<Offer> rows;
-  for (const String &plugin : GRAPH::offers()) rows.push_back(::publishing(plugin));
+  for (const String &plugin : GRAPH::offers())
+    rows.push_back(::publishing(plugin));
   std::sort(rows.begin(), rows.end(), [](const Offer &one, const Offer &two) {
     return one.name < two.name;
   });

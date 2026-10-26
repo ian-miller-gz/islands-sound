@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <format>
 
-#include <island/input.hpp>
-
 #include "../commands.hpp"
 #include "../timeline.hpp"
 #include "views.internal.hpp"
@@ -105,8 +103,6 @@ void SOUND::VIEWS::exporting() {
   ::toggled(page);
   ::listed(page);
   ::taken(page);
-  if (
-    GUI::GET::clicked(page, ::CANCEL) ||
-    INPUT::GET::pressed(INPUT::KEYS::ESCAPE) || VIEWS::elsewhere(::DOOR, ::ASK))
+  if (GUI::GET::clicked(page, ::CANCEL) || VIEWS::elsewhere(::DOOR, ::ASK))
     ::raised(page, false);
 }

@@ -5,7 +5,9 @@
 #include <island/gui/nga.hpp>
 #include <island/gui/stroke.hpp>
 
+#include "piano.acts.hpp"
 #include "piano.internal.hpp"
+#include "piano.paper.hpp"
 
 namespace {
 using namespace SOUND;
@@ -31,13 +33,13 @@ void stroked(Flag standing) {
 
 auto railed() -> Float {
   const Float scale = VIEWS::ROLL::scaled();
-  return scale > ::STILL ? VIEWS::ROLL::RAILED / scale : VIEWS::ROLL::RAILED;
+  const Float margin = VIEWS::ROLL::margin();
+  return scale > ::STILL ? margin / scale : margin;
 }
 
 void stated(GUI::Handle page) {
   const String board = VIEWS::ROLL::board();
-  GUI::SAC::STROKE::draw(
-    page,
+  VIEWS::draw(
     ::drawing
       ? GUI::SAC::STROKE::
           Mode{board.c_str(), ::MODE, {VIEWS::ROLL::across(VIEWS::ROLL::grained()), VIEWS::ROLL::STEP}, GUI::SAC::STROKE::Mode::BOARD}
@@ -47,10 +49,11 @@ void stated(GUI::Handle page) {
 }
 
 void tools(GUI::Handle page) {
-  if (GUI::GET::clicked(page, ::DRAW)) ::drawing = true;
-  if (GUI::GET::clicked(page, ::PICK)) ::drawing = false;
-  GUI::set(page, ::DRAW, GUI::Style{::drawing ? ::MARKED : ::PLAIN});
-  GUI::set(page, ::PICK, GUI::Style{::drawing ? ::PLAIN : ::MARKED});
+  if (GUI::GET::clicked(page, ::DRAW)) VIEWS::ROLL::drawn(true);
+  if (GUI::GET::clicked(page, ::PICK)) VIEWS::ROLL::drawn(false);
+  const Flag pencil = VIEWS::ROLL::drawn();
+  GUI::set(page, ::DRAW, GUI::Style{pencil ? ::MARKED : ::PLAIN});
+  GUI::set(page, ::PICK, GUI::Style{pencil ? ::PLAIN : ::MARKED});
 }
 
 auto fielded(GUI::Handle page, const GUI::SAC::STROKE::Gesture &gesture)
@@ -67,8 +70,7 @@ void SOUND::VIEWS::ROLL::easel() {
   ::tools(page);
   ::stated(page);
   if (!::drawing) return ::stroked(false);
-  const GUI::SAC::STROKE::Gesture gesture =
-    GUI::SAC::STROKE::GET::gesture(page);
+  const GUI::SAC::STROKE::Gesture gesture = VIEWS::GET::gesture();
   if (!gesture.standing && !gesture.closed) return ::stroked(false);
   if (!::fielded(page, gesture)) return ::stroked(false);
   if (gesture.opened) {
@@ -80,6 +82,10 @@ void SOUND::VIEWS::ROLL::easel() {
   if (!rubbed) painted(page, GUI::SAC::STROKE::GET::laid(page));
   if (gesture.closed) ::stroked(false);
 }
+
+void SOUND::VIEWS::ROLL::drawn(Flag pencil) { ::drawing = pencil; }
+
+auto SOUND::VIEWS::ROLL::drawn() -> Flag { return ::drawing; }
 
 void SOUND::VIEWS::ROLL::easel(SHELL::Session &session) {
   const STRING::Cold mode = GUI::SAC::STROKE::GET::mode(document());

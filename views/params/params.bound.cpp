@@ -3,11 +3,12 @@
 
 #include "../../control.hpp"
 #include "params.internal.hpp"
+#include "params.kept.hpp"
+#include "params.map.hpp"
 
 namespace {
 using namespace SOUND;
 
-constexpr STRING::Hot BOUND = "bound";
 constexpr STRING::Hot CC = "cc";
 constexpr STRING::Hot MUTED = "muted";
 constexpr STRING::Hot LISTENING = "listening";
@@ -28,7 +29,7 @@ auto SOUND::VIEWS::RACK::listening(const Row &row) -> Flag {
 
 void SOUND::VIEWS::RACK::bound(
   GUI::Handle page, const String &cell, const Row &row) {
-  const String id = cell + "." + ::BOUND;
+  const String id = cell + "." + BOUND;
   const Whole number = CONTROL::MAP::bound(addressed(row)).number;
   const Flag listened = listening(row);
   GUI::set(page, id.c_str(), GUI::Visibility{listened || number != NONE});
@@ -44,13 +45,19 @@ void SOUND::VIEWS::RACK::bound(SHELL::Session &session) {
     session.print(std::format(
       "bound {} {} cc {} channel {}", binding.address.node,
       binding.address.parameter, binding.number, binding.channel));
+  skipped(session);
   const Address listen = CONTROL::MAP::listening();
   if (!listen.node.empty())
     session.print(
       std::format("listening {} {}", listen.node, listen.parameter));
+  mapped(session);
 }
 
-void SOUND::VIEWS::RACK::cancel() {
-  if (CONTROL::MAP::listening().node.empty()) return;
-  if (VIEWS::elsewhere(::NOWHERE, ::MENU)) CONTROL::MAP::cancel();
+auto SOUND::VIEWS::RACK::cancel(GUI::Handle page) -> Flag {
+  if (CONTROL::MAP::listening().node.empty()) return false;
+  const Flag spent = VIEWS::escaped();
+  const Flag away =
+    VIEWS::elsewhere(::NOWHERE, ::MENU) && VIEWS::elsewhere(::NOWHERE, MAPPED);
+  if (spent || CONTROL::MAP::stale() || away) CONTROL::MAP::cancel();
+  return spent;
 }

@@ -17,15 +17,15 @@ void SOUND::VIEWS::RACK::mark(
   GUI::Handle page, const String &cell,
   const AUDIO::PLUGIN::Control &published) {
   const String id = cell + "." + MARKED;
-  const String barred = cell + "." + BARRED;
+  const String dial = cell + "." + DIALLED;
   const Flag centre =
     centred(published) &&
-    GUI::GET::dial(page, barred.c_str()).graphic == GUI::Dial::BAR;
-  const GUI::Extent bar = GUI::GET::measured(page, barred.c_str());
+    GUI::GET::dial(page, dial.c_str()).graphic == GUI::Dial::BAR;
+  const GUI::Extent bar = GUI::GET::measured(page, dial.c_str());
   GUI::set(page, id.c_str(), GUI::Visibility{centre});
   GUI::set(
     page, id.c_str(),
-    centre ? GUI::Seat{.beside = barred, .side = GUI::BELOW, .air = -bar.h}
+    centre ? GUI::Seat{.beside = dial, .side = GUI::BELOW, .air = -bar.h}
            : GUI::Seat{});
   GUI::set(
     page, id.c_str(),

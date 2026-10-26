@@ -22,23 +22,25 @@ auto SOUND::VIEWS::KEPT::number(
   return std::holds_alternative<Float>(found->second);
 }
 
-void SOUND::VIEWS::KEPT::board(FIELDS::Map &face, const View &unit) {
+void SOUND::VIEWS::KEPT::board(
+  FIELDS::Map &face, const View &unit, const String &head) {
   const GUI::Handle page = VIEWS::sheet();
   const String id = String(unit.name) + "." + VIEWS::BOARD;
   const GUI::NGA::Zoom scale = GUI::NGA::GET::zoom(page, id.c_str());
   const GUI::NGA::Pan pan = GUI::NGA::GET::pan(page, id.c_str());
   if (scale.value <= 0.0f) return;
-  const String stem = String(unit.name) + ".";
+  const String stem = head + unit.name + ".";
   face[stem + ::ZOOMED] = scale.value;
   face[stem + ::ZOOMED + "." + ::DOWN] = scale.down;
   face[stem + ::PANNED + "." + ::X] = pan.x;
   face[stem + ::PANNED + "." + ::Y] = pan.y;
 }
 
-void SOUND::VIEWS::KEPT::boarded(const FIELDS::Map &face, const View &unit) {
+void SOUND::VIEWS::KEPT::boarded(
+  const FIELDS::Map &face, const View &unit, const String &head) {
   const GUI::Handle page = VIEWS::sheet();
   const String id = String(unit.name) + "." + VIEWS::BOARD;
-  const String stem = String(unit.name) + ".";
+  const String stem = head + unit.name + ".";
   GUI::NGA::Zoom scale = GUI::NGA::GET::zoom(page, id.c_str());
   GUI::NGA::Pan pan = GUI::NGA::GET::pan(page, id.c_str());
   const Flag scaled = VIEWS::KEPT::number(face, stem + ::ZOOMED, scale.value);

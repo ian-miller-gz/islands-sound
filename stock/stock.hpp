@@ -14,6 +14,7 @@ struct Address {
 struct Value {
   Address address;
   Float value = 0.0f;
+  Flag overridden = false;
 };
 
 struct Take {
@@ -25,6 +26,8 @@ struct Point {
   Whole at = 0;
   Float value = 0.0f;
   Whole shape = SHAPE::LINE;
+  Float bend = 0.0f;
+  auto operator==(const Point &) const -> bool = default;
 };
 
 struct Curve {
@@ -37,6 +40,8 @@ struct Turn {
   Whole number = 0;
   Float value = 0.0f;
   Whole shape = SHAPE::HOLD;
+  Float bend = 0.0f;
+  auto operator==(const Turn &) const -> bool = default;
 };
 
 struct Choice {

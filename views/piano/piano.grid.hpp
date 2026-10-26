@@ -12,4 +12,6 @@ auto lit() -> Whole;
 
 auto hair() -> Float;
 
+auto named(Whole at) -> String;
+
 }  // namespace SOUND::VIEWS::ROLL::GRID

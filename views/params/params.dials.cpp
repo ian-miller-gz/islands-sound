@@ -1,34 +1,15 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include <format>
-
+#include "../../commands.hpp"
 #include "../../control.hpp"
 #include "../../graph.hpp"
 #include "../../render.hpp"
 #include "../../timeline.hpp"
 #include "../../transport.hpp"
 #include "params.internal.hpp"
+#include "params.overruled.hpp"
 
 namespace {
 using namespace SOUND;
-
-constexpr STRING::Hot PATTERN = "rig.bar";
-
-auto graphic(GUI::Handle page, const AUDIO::PLUGIN::Control &published)
-  -> GUI::Dial::Graphic {
-  if (VIEWS::RACK::listed(published)) return GUI::Dial::NONE;
-  if (published.steps == 1) return GUI::Dial::BAR;
-  return GUI::GET::dial(page, ::PATTERN).graphic;
-}
-
-auto dressed(GUI::Handle page, const AUDIO::PLUGIN::Control &published)
-  -> GUI::Dial {
-  return {
-    .least = published.least,
-    .most = published.most,
-    .resting = published.resting,
-    .steps = published.steps,
-    .graphic = ::graphic(page, published)};
-}
 
 auto instant() -> Whole {
   const TRANSPORT::Marker marker = TRANSPORT::marker();
@@ -48,8 +29,8 @@ auto SOUND::VIEWS::RACK::described(const Row &row) -> AUDIO::PLUGIN::Control {
 }
 
 void SOUND::VIEWS::RACK::moved(const Row &row, Float value) {
-  GRAPH::hand(row.node, row.parameter, value);
-  CONTROL::turn({.node = row.node, .parameter = row.parameter}, value);
+  COMMANDS::dialled(row.node, row.parameter, value);
+  COMMANDS::overrule(row.node, row.parameter);
 }
 
 auto SOUND::VIEWS::RACK::held(const Row &row) -> Float {
@@ -62,36 +43,31 @@ auto SOUND::VIEWS::RACK::held(const Row &row) -> Float {
     .value;
 }
 
-namespace {
-auto worded(const AUDIO::PLUGIN::Control &published, Float value) -> String {
-  if (published.steps == 0 || published.labels.size() != published.steps + 1)
-    return std::format("{:g}{}", value, published.unit);
-  return published.labels[VIEWS::RACK::stepped(published, value)];
-}
-}  // namespace
-
 auto SOUND::VIEWS::RACK::shown(const Row &row) -> String {
   const AUDIO::PLUGIN::Plug &surface = *GRAPH::offered(row.node)->surface;
   void *instance = GRAPH::instance(row.node);
   const Float value = held(row);
   const Float adopted = GRAPH::remembered(row.node, row.parameter);
-  if (value != adopted) return ::worded(described(row), value);
-  return surface.reading == nullptr ? String()
-                                    : surface.reading(instance, row.parameter);
+  const String reading = surface.reading == nullptr
+                           ? String()
+                           : surface.reading(instance, row.parameter);
+  return value == adopted ? reading
+                          : RIG::worded(described(row), value, reading);
 }
 
 void SOUND::VIEWS::RACK::turn(
   GUI::Handle page, const String &cell, const Row &row) {
   if (head(row)) return;
-  const String barred = cell + "." + BARRED;
+  const String dial = cell + "." + DIALLED;
   const AUDIO::PLUGIN::Control published = described(row);
-  GUI::set(page, barred.c_str(), ::dressed(page, published));
+  GUI::set(page, dial.c_str(), RIG::dressed(page, published));
   mark(page, cell, published);
   bound(page, cell, row);
+  overruled(page, cell, row);
   typed(page, cell, row);
-  if (GUI::GET::dialled(page, barred.c_str()))
-    return moved(row, GUI::GET::value(page, barred.c_str()));
-  GUI::set(page, barred.c_str(), GUI::Value{held(row)});
-  if (String(GUI::GET::editing(page)) != barred)
-    GUI::set(page, barred.c_str(), GUI::Text{shown(row)});
+  if (GUI::GET::dialled(page, dial.c_str()))
+    return RACK::dial(row, GUI::GET::value(page, dial.c_str()));
+  GUI::set(page, dial.c_str(), GUI::Value{held(row)});
+  if (String(GUI::GET::editing(page)) != dial || !GUI::GET::seated(page))
+    GUI::set(page, dial.c_str(), GUI::Text{fitted(page, cell, row)});
 }

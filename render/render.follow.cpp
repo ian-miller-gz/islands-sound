@@ -47,6 +47,8 @@ void SOUND::RENDER::settle() {
 }
 
 void SOUND::RENDER::follow() {
+  GRAPH::reap(GRAPH::PLAN::adopted());
+  if (shifted()) threaded() = NONE;
   const TRANSPORT::Marker marker = TRANSPORT::marker();
   if (!marker.playing || moved() == threaded()) return;
   if (!GRAPH::spare()) return;

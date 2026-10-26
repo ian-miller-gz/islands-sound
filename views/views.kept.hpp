@@ -12,8 +12,9 @@ auto text(const FIELDS::Map &face, const String &key, String &value) -> Flag;
 
 auto join(const String &stem, Whole n, const String &leaf = {}) -> String;
 
-void board(FIELDS::Map &face, const View &unit);
+void board(FIELDS::Map &face, const View &unit, const String &head = {});
 
-void boarded(const FIELDS::Map &face, const View &unit);
+void boarded(
+  const FIELDS::Map &face, const View &unit, const String &head = {});
 
 }  // namespace SOUND::VIEWS::KEPT

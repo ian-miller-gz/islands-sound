@@ -6,23 +6,26 @@ namespace {
 using namespace SOUND;
 
 constexpr STRING::Hot ATTENDED = "tracks";
+constexpr Whole OFFERED[] = {
+  KIND::NOTES, KIND::AUDIO, KIND::CONTROL, KIND::PROGRAM};
 
-}  // namespace
-
-auto SOUND::VIEWS::ARRANGER::paged(Whole kind) -> Whole {
-  for (Whole page = 0; page < COUNT; ++page)
-    if (kind != NONE && PAGES[page].kind == kind) return page;
+auto first(const ARRANGEMENT::Track &track, Whole kind) -> Whole {
+  for (Whole lane = 0; lane < track.lanes.size(); ++lane)
+    if (track.lanes[lane].kind == kind) return lane;
   return NONE;
 }
 
+}  // namespace
+
 auto SOUND::VIEWS::ARRANGER::offered() -> LANE::Mark {
   const LANE::Mark mark = LANE::marked();
-  if (paged(mark.kind) != NONE) return mark;
+  if (LANE::editable(mark.kind)) return mark;
   const Vector<ARRANGEMENT::Track> &tracks = TIMELINE::held().tracks;
   const Whole track = VIEWS::cursor(::ATTENDED);
   if (track >= tracks.size()) return {};
-  const Vector<ARRANGEMENT::TRACK::Lane> &lanes = tracks[track].lanes;
-  for (Whole lane = 0; lane < lanes.size(); ++lane)
-    if (paged(lanes[lane].kind) != NONE) return {track, lane, lanes[lane].kind};
+  for (const Whole kind : ::OFFERED) {
+    const Whole lane = ::first(tracks[track], kind);
+    if (lane != NONE && LANE::editable(kind)) return {track, lane, kind};
+  }
   return {};
 }

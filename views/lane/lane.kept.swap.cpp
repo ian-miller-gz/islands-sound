@@ -61,6 +61,13 @@ void SOUND::VIEWS::LANE::record() {
 
 void SOUND::VIEWS::LANE::forget() { ::held = {}; }
 
+auto SOUND::VIEWS::LANE::held() -> Face * { return ::found(); }
+
+auto SOUND::VIEWS::LANE::GET::seen() -> Flag {
+  const Face *one = ::found();
+  return one != nullptr && one->zoom.value > UNSEEN;
+}
+
 void SOUND::VIEWS::LANE::swap(Whole kind) {
   record();
   const Mark mark = edited(kind);

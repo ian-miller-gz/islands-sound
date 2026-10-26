@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include "../control.hpp"
 #include "../history.hpp"
 #include "../inventory.hpp"
 #include "../kind.hpp"
@@ -24,7 +25,14 @@ void owing(const Touched &touched) {
 
 }  // namespace
 
+auto SOUND::RENDER::shifted() -> Flag {
+  const Vector<String> nodes = CONTROL::shifted();
+  for (const String &node : nodes) GRAPH::owe(node);
+  return !nodes.empty();
+}
+
 auto SOUND::RENDER::claims() -> Vector<String> {
+  shifted();
   ::owing(HISTORY::touched());
   ::owing(INVENTORY::touched());
   HISTORY::settled();

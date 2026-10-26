@@ -7,8 +7,9 @@
 namespace {
 using namespace SOUND;
 
-auto between(Float opens, Float closes, Whole shape, Float part) -> Float {
-  return opens + (closes - opens) * SHAPE::reading(shape, part);
+template <typename Node>
+auto between(const Node &one, const Node &two, Float part) -> Float {
+  return one.value + (two.value - one.value) * SHAPE::reading(one, part);
 }
 
 auto travelled(Whole opens, Whole closes, Whole at) -> Float {
@@ -48,8 +49,7 @@ auto SOUND::TIMELINE::valued(const Curve &curve, Whole at) -> Float {
   if (after == points.size()) return points.back().value;
   const Point &one = points[after - 1];
   const Point &two = points[after];
-  return ::between(
-    one.value, two.value, one.shape, ::travelled(one.at, two.at, at));
+  return ::between(one, two, ::travelled(one.at, two.at, at));
 }
 
 auto SOUND::TIMELINE::valued(const Vector<Turn> &turns, Whole number, Whole at)
@@ -70,8 +70,7 @@ auto SOUND::TIMELINE::valued(const Vector<Turn> &turns, Whole number, Whole at)
 
 auto SOUND::TIMELINE::valued(const Turn &one, const Turn &two, Whole at)
   -> Float {
-  return ::between(
-    one.value, two.value, one.shape, ::travelled(one.at, two.at, at));
+  return ::between(one, two, ::travelled(one.at, two.at, at));
 }
 
 auto SOUND::TIMELINE::dial(

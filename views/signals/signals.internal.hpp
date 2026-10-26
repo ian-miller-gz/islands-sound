@@ -69,6 +69,7 @@ struct Point {
   Whole stock = NONE, index = NONE, at = 0, until = 0;
   Float value = 0.0f;
   Whole shape = SHAPE::HOLD;
+  Float bend = 0.0f;
   Float low = 0.0f, high = 0.0f;
 };
 
@@ -182,11 +183,11 @@ void pager();
 void pager(SHELL::Session &session);
 
 auto named() -> String;
+auto governs() -> String;
 
 auto unit() -> String;
 
 auto spoken(Float value) -> String;
-
 auto delivered(Float value) -> Float;
 
 auto laned() -> Whole;

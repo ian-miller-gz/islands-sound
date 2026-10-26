@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include <island/input.hpp>
 #include "views.internal.hpp"
 
 auto SOUND::VIEWS::elsewhere(STRING::Hot door, STRING::Hot panel) -> Flag {
   const GUI::Handle page = document();
-  if (INPUT::GET::pressed(INPUT::KEYS::ESCAPE)) return true;
+  if (VIEWS::escaped()) return true;
   if (!GUI::GET::pressed(page)) return false;
   const String own(door);
   for (const GUI::Event &event : GUI::GET::events(page)) {

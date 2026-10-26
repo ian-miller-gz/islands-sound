@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #pragma once
-#include <iterator>
+#include <span>
 
 #include "../../kind.hpp"
 #include "../../score.hpp"
@@ -11,31 +11,17 @@
 namespace SOUND::VIEWS::ARRANGER {
 
 constexpr STRING::Hot NAME = "arranger";
-inline constexpr Whole SESSION = 0;
-
-struct Page {
-  STRING::Hot word = "";
-  STRING::Hot label = "";
-  Whole kind = NONE;
-};
-
-inline constexpr Page PAGES[] = {
-  {"session", "Arrangement"},
-  {"notes", "Notes", KIND::NOTES},
-  {"control", "Control", KIND::CONTROL},
-  {"program", "Program", KIND::PROGRAM}};
-inline constexpr Whole COUNT = std::size(PAGES);
 
 auto turned() -> Whole;
-auto turned(Whole page) -> Flag;
+auto turned(Whole kind) -> Flag;
+
+auto spoken() -> STRING::Hot;
 
 auto faced() -> const View *;
 
 void label(GUI::Handle page);
 
 void door();
-
-auto paged(Whole kind) -> Whole;
 
 auto offered() -> LANE::Mark;
 
@@ -48,7 +34,29 @@ void shed();
 auto below(GUI::Handle page) -> Flag;
 void below(SHELL::Session &session);
 
+auto lowered() -> const View &;
+auto raised() -> const View &;
+void lower(const View &face);
+
+auto faced(Whole region) -> const View *;
+void ask(Whole region, const View &face);
+
+auto own() -> Flag;
 void focus(const View &face);
 auto focused() -> const View *;
 
 }  // namespace SOUND::VIEWS::ARRANGER
+
+namespace SOUND::VIEWS::ARRANGER::TOOLS {
+
+void seat(GUI::Handle page);
+
+void restore(std::span<const GUI::Position> kept);
+
+}  // namespace SOUND::VIEWS::ARRANGER::TOOLS
+
+namespace SOUND::VIEWS::ARRANGER::TOOLS::GET {
+
+auto places() -> std::span<const GUI::Position>;
+
+}  // namespace SOUND::VIEWS::ARRANGER::TOOLS::GET

@@ -8,6 +8,8 @@
 #include "../../boards.hpp"
 #include "../../transport.hpp"
 #include "piano.grid.hpp"
+#include "piano.paper.hpp"
+#include "piano.staff.hpp"
 
 namespace {
 using namespace SOUND;
@@ -21,10 +23,6 @@ constexpr Whole COARSER = 2;
 
 VIEWS::Pool pool;
 
-auto mark(Whole at) -> String {
-  return std::format("{}.{}.{}", VIEWS::ROLL::board(), ::STEM, at);
-}
-
 auto dress(Flag opens) -> String {
   return String(::STEM) + (opens ? ::BARRED : ::BEATEN);
 }
@@ -37,11 +35,11 @@ auto place(Integer at) -> Float {
 void build(Whole count) {
   const GUI::Handle page = VIEWS::document();
   for (Whole at = count; at < ::pool.stood; ++at)
-    BOARDS::drop(page, ::mark(at));
+    BOARDS::drop(page, VIEWS::ROLL::GRID::named(at));
   for (Whole at = ::pool.stood; at < count; ++at)
     BOARDS::place(
-      page, VIEWS::ROLL::board().c_str(), "panel", ::mark(at), {},
-      {::HAIR, VIEWS::ROLL::DEEP});
+      page, VIEWS::ROLL::board().c_str(), "panel", VIEWS::ROLL::GRID::named(at),
+      {}, {::HAIR, VIEWS::ROLL::STAFF::spanned().h});
   VIEWS::built(::pool, count);
 }
 
@@ -58,16 +56,20 @@ void SOUND::VIEWS::ROLL::grid() {
   VIEWS::reborn(::pool);
   const Whole seats = VIEWS::sized(::pool, marks.size(), window().w);
   if (seats != ::pool.stood) ::build(seats);
-  VIEWS::light(::pool, ::mark, marks.size());
+  VIEWS::light(::pool, GRID::named, marks.size());
   const Float scale = scaled();
+  const GUI::Extent extent = STAFF::spanned();
+  const Flag laid = papered();
   for (Whole at = 0; at < marks.size(); ++at) {
-    const String id = ::mark(at);
+    const String id = GRID::named(at);
     const GUI::SAC::PLAYHEAD::Mark drawn =
       GUI::SAC::PLAYHEAD::blade(::place(marks[at].at), scale, ::HAIR);
-    GUI::set(page, id.c_str(), GUI::Position{drawn.at, 0.0f});
-    GUI::set(page, id.c_str(), GUI::Extent{drawn.wide, VIEWS::ROLL::DEEP});
+    GUI::set(page, id.c_str(), GUI::Position{drawn.at, extent.w});
+    if (laid && marks[at].opens) continue;
+    GUI::set(page, id.c_str(), GUI::Extent{drawn.wide, extent.h});
     GUI::set(page, id.c_str(), GUI::Style{::dress(marks[at].opens).c_str()});
   }
+  PAPER::grid(marks);
 }
 
 auto SOUND::VIEWS::ROLL::GRID::span() -> Whole {
@@ -90,5 +92,9 @@ auto SOUND::VIEWS::ROLL::GRID::lit() -> Whole { return ::pool.lit; }
 auto SOUND::VIEWS::ROLL::GRID::hair() -> Float {
   return ::pool.stood == 0
            ? 0.0f
-           : GUI::GET::measured(VIEWS::document(), ::mark(0).c_str()).w;
+           : GUI::GET::measured(VIEWS::document(), named(0).c_str()).w;
+}
+
+auto SOUND::VIEWS::ROLL::GRID::named(Whole at) -> String {
+  return std::format("{}.{}.{}", board(), ::STEM, at);
 }

@@ -4,7 +4,7 @@
 #include <island/gui/seat.hpp>
 
 #include "../../inventory.hpp"
-#include "signals.internal.hpp"
+#include "signals.bend.hpp"
 
 namespace {
 using namespace SOUND;
@@ -78,6 +78,7 @@ void SOUND::VIEWS::SIGNALS::hands() {
   ::dropped(page);
   ::grabbed(page);
   ::erased(page);
+  bend();
 }
 
 void SOUND::VIEWS::SIGNALS::steadied(Vector<Point> &wanted) {

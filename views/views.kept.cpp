@@ -31,6 +31,14 @@ void seated(const FIELDS::Map &face, const String &grip) {
   if (across || down) GUI::set(page, grip.c_str(), at);
 }
 
+void marked(const FIELDS::Map &face, const VIEWS::View &unit) {
+  const String rows = String(unit.name) + "." + VIEWS::ROWS;
+  Whole cursor = 0;
+  const Flag kept = VIEWS::KEPT::number(face, rows + "." + ::MARKED, cursor);
+  if (kept && cursor < GUI::GET::rows(VIEWS::sheet(), rows.c_str()))
+    GUI::set(VIEWS::sheet(), rows.c_str(), GUI::Cursor{cursor});
+}
+
 }  // namespace
 
 auto SOUND::VIEWS::kept() -> FIELDS::Map {
@@ -58,13 +66,9 @@ void SOUND::VIEWS::keep(const FIELDS::Map &face) {
     if (const String *name = std::get_if<String>(&viewed->second))
       choose(*name);
   SPLIT::restore(face);
+  for (const View &unit : roster()) ::marked(face, unit);
   for (const View &unit : roster()) {
     if (::boarded(unit)) VIEWS::KEPT::boarded(face, unit);
-    const String rows = String(unit.name) + "." + ROWS;
-    const auto marked = face.find(rows + "." + ::MARKED);
-    if (marked != face.end())
-      if (const Whole *cursor = std::get_if<Whole>(&marked->second))
-        GUI::set(sheet(), rows.c_str(), GUI::Cursor{*cursor});
     if (unit.restore != nullptr) unit.restore(face);
   }
   for (const String &grip : ::grips()) ::seated(face, grip);

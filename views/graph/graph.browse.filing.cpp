@@ -49,3 +49,7 @@ auto SOUND::VIEWS::WIRED::among(const String &plugin) -> String {
     if (row.name == plugin) return BROWSE::filed(row);
   return {};
 }
+
+auto SOUND::VIEWS::WIRED::BROWSE::devised(const String &directory) -> Flag {
+  return directory == SOURCES || directory == SINKS || directory == NOTED;
+}

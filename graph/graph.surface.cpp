@@ -19,7 +19,8 @@ auto SOUND::GRAPH::surfaced(const Node &node) -> Flag {
   return node.seat == Node::PLUGIN && (!node.device.empty() || node.clock);
 }
 
-auto SOUND::GRAPH::surface(const String &plugin, const String &device) -> String {
+auto SOUND::GRAPH::surface(const String &plugin, const String &device)
+  -> String {
   return surface(plugin, device, plugin);
 }
 
@@ -57,13 +58,12 @@ auto SOUND::GRAPH::clock(const String &device, const String &name) -> String {
 
 void SOUND::GRAPH::rebind() {
   const Vector<Node> &nodes = held().nodes;
-  Vector<Stand> &halves = stands();
-  for (Whole row = 0; row < nodes.size() && row < halves.size(); ++row) {
+  for (Whole row = 0; row < nodes.size(); ++row) {
     if (nodes[row].clock || nodes[row].device.empty()) continue;
-    if (halves[row].instance == nullptr) continue;
-    const PLUGIN::Offer *offer = halves[row].offer;
+    if (stand(row).instance == nullptr) continue;
+    const PLUGIN::Offer *offer = stand(row).offer;
     if (offer != nullptr && offer->bind != nullptr)
-      offer->bind(halves[row].instance, nodes[row].device, nodes[row].lane);
+      offer->bind(stand(row).instance, nodes[row].device, nodes[row].lane);
   }
 }
 
@@ -74,7 +74,7 @@ auto SOUND::GRAPH::lane(const String &node, Whole lane) -> Flag {
   if (held.device.empty() && !held.clock) return false;
   held.lane = lane;
   if (held.clock) return true;
-  Stand &stand = stands()[stood];
+  Stand &stand = GRAPH::stand(stood);
   if (stand.offer == nullptr || stand.offer->bind == nullptr) return false;
   if (stand.instance != nullptr) stand.offer->surface->destroy(stand.instance);
   stand.instance = stand.offer->surface->create(RATE, CHANNELS);

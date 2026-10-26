@@ -29,7 +29,7 @@ auto pulse() -> Whole {
 void seat(GUI::Handle page, const String &id) {
   BOARDS::place(
     page, VIEWS::ROLL::board().c_str(), "panel", id, {},
-    {::HAIR, VIEWS::ROLL::DEEP});
+    {::HAIR, VIEWS::ROLL::ROWS::deep()});
   GUI::set(page, id.c_str(), GUI::Style{::MARKED});
   GUI::set(page, id.c_str(), GUI::Depth{::RAISED});
   ::stood = true;
@@ -63,7 +63,7 @@ void SOUND::VIEWS::ROLL::head() {
   const GUI::SAC::PLAYHEAD::Mark mark =
     GUI::SAC::PLAYHEAD::blade(across(::pulse()), scale, ::HAIR);
   GUI::set(page, id.c_str(), GUI::Position{mark.at, ::NORTH});
-  GUI::set(page, id.c_str(), GUI::Extent{mark.wide, VIEWS::ROLL::DEEP});
+  GUI::set(page, id.c_str(), GUI::Extent{mark.wide, VIEWS::ROLL::ROWS::deep()});
 }
 
 void SOUND::VIEWS::ROLL::head(SHELL::Session &session) {

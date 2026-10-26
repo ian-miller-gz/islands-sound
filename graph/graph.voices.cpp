@@ -14,21 +14,10 @@ auto SOUND::GRAPH::GET::voices(const String &node)
   return offer->surface->voices(seated);
 }
 
-auto SOUND::GRAPH::GET::voices(const Vector<String> &nodes)
-  -> Vector<AUDIO::PLUGIN::Voice> {
-  Vector<AUDIO::PLUGIN::Voice> merged;
-  for (const String &node : nodes)
-    for (const AUDIO::PLUGIN::Voice &voice : voices(node))
-      if (std::ranges::none_of(merged, [&](const AUDIO::PLUGIN::Voice &one) {
-            return one.note == voice.note;
-          }))
-        merged.push_back(voice);
-  return merged;
-}
-
-auto SOUND::GRAPH::percussive(const String &node) -> Flag {
-  const PLUGIN::Offer *offer = offered(node);
-  if (offer == nullptr) return false;
-  return String{offer->type} == PLUGIN::PERCUSSION ||
-         !GET::voices(node).empty();
+auto SOUND::GRAPH::playable(const String &node) -> Flag {
+  const Whole seat = at(node);
+  if (seat == NONE) return false;
+  const String &plugin = held().nodes[seat].plugin;
+  return std::ranges::contains(takes(plugin), Whole{KIND::NOTES}) &&
+         std::ranges::contains(gives(plugin), Whole{KIND::AUDIO});
 }

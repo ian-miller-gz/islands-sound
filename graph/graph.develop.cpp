@@ -6,15 +6,14 @@ using namespace SOUND;
 
 auto reached(const String &node, Whole out) -> GRAPH::Run * {
   if (!GRAPH::rooted(node)) return nullptr;
-  Vector<GRAPH::Run> &runs =
-    GRAPH::written(GRAPH::stands()[GRAPH::at(node)]).runs;
+  Vector<GRAPH::Run> &runs = GRAPH::written(GRAPH::stand(GRAPH::at(node))).runs;
   return out < runs.size() ? &runs[out] : nullptr;
 }
 
 auto consumed(const String &node, Whole out) -> const GRAPH::Run * {
   if (!GRAPH::rooted(node)) return nullptr;
   const Vector<GRAPH::Run> &runs =
-    GRAPH::walked(GRAPH::stands()[GRAPH::at(node)]).runs;
+    GRAPH::walked(GRAPH::stand(GRAPH::at(node))).runs;
   return out < runs.size() ? &runs[out] : nullptr;
 }
 
@@ -78,17 +77,17 @@ auto SOUND::GRAPH::developed(const String &node, Whole out)
   return run == nullptr ? nothing : run->developed;
 }
 
-auto SOUND::GRAPH::laid(const String &node, Whole out)
-  -> const Vector<Vector<Float>> & {
-  static const Vector<Vector<Float>> nothing;
-  const Run *run = ::consumed(node, out);
-  return run == nullptr ? nothing : run->laid;
-}
-
 void SOUND::GRAPH::clear(const String &node) {
   const Whole stood = at(node);
   if (stood == NONE) return;
-  Tape &tape = written(stands()[stood]);
+  Tape &tape = written(stand(stood));
   for (Run &run : tape.runs) run = {};
   tape.dialled.clear();
+}
+
+auto SOUND::GRAPH::hand(const String &node, const AUDIO::PLUGIN::Event &edge)
+  -> Flag {
+  if (!rooted(node)) return false;
+  const Whole out = worn(node, KIND::NOTES);
+  return out != NONE && hand(node, out, edge);
 }

@@ -5,6 +5,7 @@
 
 namespace {
 using namespace SOUND;
+namespace ROLL = SOUND::VIEWS::ROLL;
 namespace EASEL = SOUND::VIEWS::ROLL::EASEL;
 using EASEL::Cell;
 
@@ -13,31 +14,33 @@ constexpr STRING::Hot ADRIFT = "track lacks notes lane";
 Cell last;
 Flag written = false;
 
-void paint(GUI::Handle page, const Cell &fell) {
-  const Whole span = VIEWS::ROLL::grained();
-  const Whole at = Whole(fell.at) * span;
-  const Cell cell = {
-    fell.at, Integer(VIEWS::ROLL::degreed(Whole(fell.pitch), at))};
-  const VIEWS::ROLL::Aim aim = VIEWS::ROLL::claimed(at);
-  if (aim.stock == NONE) return EASEL::said(page, ::ADRIFT);
-  const Whole into = VIEWS::ROLL::inside(aim, at);
-  Score score = INVENTORY::held().stocks[aim.stock].score;
-  const Flag corner = ::written && ::last.at == cell.at;
-  if (corner && ::last.pitch == cell.pitch) return;
-  if (EASEL::held(score, cell, into, span) != NONE) return;
-  if (corner) {
-    const Whole old = EASEL::held(score, ::last, into, span);
-    if (old != NONE) SCORE::erase(score, old);
-  }
-  SCORE::write(
-    score, {.pitch = Whole(cell.pitch),
-            .at = into,
-            .length = span,
-            .velocity = VIEWS::ROLL::bench().loud / VIEWS::ROLL::FULL});
+void ledgered(const ROLL::Aim &aim, const Score &score) {
   HISTORY::take(aim.stock, INVENTORY::held().stocks[aim.stock]);
   INVENTORY::score(aim.stock, score);
   HISTORY::wrote(
     EASEL::PAINTED, aim.stock, INVENTORY::held().stocks[aim.stock]);
+}
+
+void paint(GUI::Handle page, const Cell &fell) {
+  if (Whole(fell.pitch) == NONE) return;
+  const Whole span = ROLL::grained();
+  const Whole at = Whole(fell.at) * span;
+  const Cell cell = {fell.at, Integer(ROLL::degreed(Whole(fell.pitch), at))};
+  const ROLL::Aim aim = ROLL::claimed(at);
+  if (aim.stock == NONE) return EASEL::said(page, ::ADRIFT);
+  const Whole into = ROLL::inside(aim, at);
+  Score score = INVENTORY::held().stocks[aim.stock].score;
+  const Flag corner = ::written && ::last.at == cell.at;
+  if (corner && ::last.pitch == cell.pitch) return;
+  if (EASEL::held(score, cell, into, span) != NONE) return;
+  const Whole old = corner ? EASEL::held(score, ::last, into, span) : NONE;
+  if (old != NONE) SCORE::erase(score, old);
+  SCORE::write(
+    score, {.pitch = Whole(cell.pitch),
+            .at = into,
+            .length = span,
+            .velocity = ROLL::bench().loud / ROLL::FULL});
+  ::ledgered(aim, score);
   ::last = cell;
   ::written = true;
   EASEL::said(page, "");
@@ -51,9 +54,8 @@ void SOUND::VIEWS::ROLL::EASEL::said(GUI::Handle page, STRING::Hot text) {
 
 auto SOUND::VIEWS::ROLL::EASEL::celled(const GUI::SAC::STROKE::Cell &cell)
   -> Cell {
-  const Integer top = Integer(HIGHEST);
-  if (cell.down <= 0) return {cell.across, top};
-  return {cell.across, cell.down < top ? top - cell.down : 0};
+  const Whole at = cell.across > 0 ? Whole(cell.across) * grained() : 0;
+  return {cell.across, Integer(ROWS::pitch(Float(cell.down) * STEP, at))};
 }
 
 auto SOUND::VIEWS::ROLL::EASEL::held(
