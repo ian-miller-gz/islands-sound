@@ -8,9 +8,12 @@ using namespace SOUND;
 using VIEWS::ARRANGEMENT::Box;
 using VIEWS::ARRANGEMENT::Carry;
 
-auto handed(const GUI::SAC::STROKE::Gesture &gesture) -> Integer {
-  return Integer(VIEWS::ARRANGEMENT::framed(gesture.to.at.x)) -
-         Integer(VIEWS::ARRANGEMENT::framed(gesture.from.at.x));
+auto clamped(
+  const Vector<Box> &laid, const Vector<Whole> &group, Integer travel)
+  -> Integer {
+  for (const Whole row : group)
+    travel = std::max(travel, -Integer(laid[row].at));
+  return travel;
 }
 
 auto followed(const Box &mate, const Box &lead, Integer travel) -> Box {
@@ -42,11 +45,8 @@ auto SOUND::VIEWS::ARRANGEMENT::travelled(
   const Vector<Box> &laid = boxes();
   const Box lead = landing(claim, gesture, settle);
   const Vector<Whole> group = mates(claim.row);
-  const Travel room = roomed(
-    group, lead, Integer(lead.at) - Integer(laid[claim.row].at),
-    ::handed(gesture));
-  if (!room.stood) return {};
-  const Integer travel = room.by;
+  const Integer travel = ::clamped(
+    laid, group, Integer(lead.at) - Integer(laid[claim.row].at));
   Vector<Carry> moved;
   for (const Whole row : group)
     moved.push_back({row, ::followed(laid[row], lead, travel)});

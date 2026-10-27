@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <algorithm>
-#include <cstdlib>
 
 #include "../../timeline.hpp"
 #include "grips.internal.hpp"
@@ -24,52 +23,22 @@ auto strangers(const Box &cut, const Vector<Whole> &group) -> Vector<Clip> {
   return others;
 }
 
-auto crossed(const Box &member, Integer travel, const Vector<Clip> &others)
-  -> Flag {
-  if (travel < 0 && Whole(-travel) > member.at) return true;
-  const Whole opens = Whole(Integer(member.at) + travel);
-  const Whole closes = opens + member.frames;
+auto crossed(const Box &cut, const Vector<Clip> &others) -> Flag {
+  const Whole closes = cut.at + cut.frames;
   return std::any_of(others.begin(), others.end(), [&](const Clip &one) {
-    return one.at < closes && opens < one.at + one.frames;
+    return one.at < closes && cut.at < one.at + one.frames;
   });
-}
-
-auto flush(const Box &member, const Clip &other, Integer hand, Flag beyond)
-  -> Integer {
-  const Flag east = (hand >= 0) != beyond;
-  return east ? Integer(other.at) - Integer(member.at + member.frames)
-              : Integer(other.at + other.frames) - Integer(member.at);
-}
-
-auto nearer(Integer hand) {
-  return [hand](Integer one, Integer two) {
-    return std::abs(one - hand) < std::abs(two - hand);
-  };
 }
 
 }  // namespace
 
-auto SOUND::VIEWS::ARRANGEMENT::roomed(
-  const Vector<Whole> &group, const Box &lead, Integer asked,
-  Integer hand) -> Travel {
-  const Vector<Box> &laid = boxes();
-  const Vector<Clip> others = ::strangers(lead, group);
-  const auto clear = [&](Integer travel) {
-    return std::none_of(group.begin(), group.end(), [&](Whole row) {
-      return ::crossed(laid[row], travel, others);
-    });
-  };
-  if (clear(asked)) return {true, asked};
-  for (const Flag beyond : {false, true}) {
-    Vector<Integer> travels;
-    for (const Whole row : group)
-      for (const Clip &other : others)
-        travels.push_back(::flush(laid[row], other, hand, beyond));
-    std::sort(travels.begin(), travels.end(), ::nearer(hand));
-    for (const Integer travel : travels)
-      if (clear(travel)) return {true, travel};
-  }
-  return {};
+auto SOUND::VIEWS::ARRANGEMENT::crowded(const Vector<Carry> &carried)
+  -> Flag {
+  Vector<Whole> group;
+  for (const Carry &carry : carried) group.push_back(carry.row);
+  return std::any_of(carried.begin(), carried.end(), [&](const Carry &carry) {
+    return ::crossed(carry.cut, ::strangers(carry.cut, group));
+  });
 }
 
 auto SOUND::VIEWS::ARRANGEMENT::walled(const Claim &claim, Whole landed)

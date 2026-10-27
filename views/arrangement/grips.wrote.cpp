@@ -61,7 +61,7 @@ void SOUND::VIEWS::ARRANGEMENT::grips() {
   if (carried.empty()) return HISTORY::end();
   const Box was = boxes()[claim.row];
   const Box &now = carried.front().cut;
-  if (now.track == was.track && now.lane == was.lane)
+  if (now.track == was.track && now.lane == was.lane && !crowded(carried))
     ::spanned(carried);
   else
     relaid(carried);
