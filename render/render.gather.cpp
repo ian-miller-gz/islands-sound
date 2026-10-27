@@ -143,7 +143,7 @@ void SOUND::RENDER::gather(Whole node, const Pass &pass) {
   ::apart(wave.ins, kept(held), pass.frames);
   wave.events.clear();
   if (held.seat == Node::ROOT) rooted(node, pass);
-  if (held.quiet) return;
+  if (held.quiet && held.seat == Node::ROOT) return;
   ::own(wave, node, pass);
   ::wired(wave, held, pass);
   std::stable_sort(wave.events.begin(), wave.events.end(), ::sooner);
