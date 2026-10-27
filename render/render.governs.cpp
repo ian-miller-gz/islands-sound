@@ -14,11 +14,12 @@ auto SOUND::RENDER::wired(const String &root, Whole out, const String &node)
 auto SOUND::RENDER::governs(Whole track, Whole lane) -> String {
   const String plugin = mapped(track, lane);
   if (plugin.empty()) return {};
-  if (GRAPH::at(plugin) != NONE) return plugin;
   const String &root = TIMELINE::held().tracks[track].root;
+  const Flag named = GRAPH::at(plugin) != NONE;
+  if (named && wired(root, lane, plugin)) return plugin;
   for (const Node &node : GRAPH::held().nodes)
     if (node.plugin == plugin && wired(root, lane, node.name)) return node.name;
-  return {};
+  return named ? plugin : String();
 }
 
 auto SOUND::RENDER::overridden(const TIMELINE::Sent &edge) -> Flag {
