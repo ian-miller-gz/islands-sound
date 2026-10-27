@@ -70,7 +70,9 @@ void SOUND::VIEWS::ROLL::HANDS::grip(
   for (Whole row = 0; row < drawn.size(); ++row) {
     const Worn now = {
       tonal, resting(drawn[row].length), ::gripped(drawn[row].length)};
-    if (now == ::worn[row]) continue;
+    const String id = HANDS::handle(row);
+    const Flag strayed = GUI::GET::position(page, id.c_str()).y != ::ORIGIN;
+    if (now == ::worn[row] && !strayed) continue;
     ::wear(page, row, now);
     ::worn[row] = now;
   }
