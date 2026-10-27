@@ -11,7 +11,7 @@ style handlelit color=#f0a35aff border=0
 style region color=#241a14ff edge=#a08468ff border=1 hover=#241a14ff press=#241a14ff
 style bare color=#00000000 border=0 hover=#00000000 press=#00000000
 style entry color=#00000000 edge=#f3e9d8ff border=0 hover=#43352bff press=#a1652aff
-style knob style=entry edge=#c9b59aff press=#f0a35aff track=#806c57ff
+style knob style=entry color=#33261dff edge=#c9b59aff press=#f0a35aff track=#806c57ff
 style hearing style=knob edge=#f0a35aff press=#f0a35aff
 style overruled style=knob press=#c9b59aff
 style call color=#d9822bff edge=#2a1f18ff border=0 hover=#e8963fff press=#f0a35aff
