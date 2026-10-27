@@ -24,10 +24,10 @@ struct Seats {
   Whole stood = 0;
 };
 
-Seats tempos{"tempo", "", CHANGES::DIALLED, [](Whole at) {
+Seats tempos{"tempo", "dial", CHANGES::DIALLED, [](Whole at) {
                return COMMANDS::paced(at);
              }};
-Seats metres{"metre", "", CHANGES::TYPED, [](Whole at) {
+Seats metres{"metre", "field", CHANGES::TYPED, [](Whole at) {
                return COMMANDS::metred(at);
              }};
 Whole born = 0;
