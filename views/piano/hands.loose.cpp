@@ -89,9 +89,10 @@ void SOUND::VIEWS::ROLL::copy(GUI::Handle page) {
   ::afloat.clear();
 }
 
-void SOUND::VIEWS::ROLL::paste(GUI::Handle) {
+void SOUND::VIEWS::ROLL::paste(GUI::Handle page) {
   if (::held.empty()) return;
   ::afloat = ::held;
+  centred(page, ::afloat);
   Vector<Pip> marks;
   for (Whole slot = 0; slot < ::afloat.size(); ++slot)
     marks.push_back(::pipped(slot));

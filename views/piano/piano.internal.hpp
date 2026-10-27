@@ -176,6 +176,7 @@ void walk(GUI::Handle page);
 
 void copy(GUI::Handle page);
 void paste(GUI::Handle page);
+void centred(GUI::Handle page, Vector<Loose> &notes);
 
 void grasped(GUI::Handle page);
 

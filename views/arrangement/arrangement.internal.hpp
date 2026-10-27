@@ -57,6 +57,12 @@ constexpr auto across(Whole frames) -> Float {
 
 auto window() -> Float;
 
+struct Seen {
+  Whole opens = 0, closes = 0;
+};
+
+auto seen() -> Seen;
+
 auto least() -> GUI::Extent;
 
 auto deep() -> Float;
