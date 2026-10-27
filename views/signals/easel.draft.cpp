@@ -19,9 +19,21 @@ auto owned(Whole at) -> Whole {
   return NONE;
 }
 
+auto claimed(Whole at) -> Whole {
+  const Whole stood = VIEWS::SIGNALS::aimed(at).stock;
+  if (stood != NONE) return stood;
+  if (!::drafting.empty()) {
+    const VIEWS::SIGNALS::Aim first =
+      VIEWS::SIGNALS::aimed(::drafting.front().at);
+    if (VIEWS::SIGNALS::extended(first, at))
+      return VIEWS::SIGNALS::aimed(at).stock;
+  }
+  return VIEWS::SIGNALS::claimed(at).stock;
+}
+
 void lay(Integer across, Float value, Whole shape) {
   const Whole at = VIEWS::SIGNALS::stamped(across);
-  const Whole stock = VIEWS::SIGNALS::claimed(at).stock;
+  const Whole stock = ::claimed(at);
   if (stock == NONE) return;
   const Whole row = ::owned(at);
   if (row == NONE)

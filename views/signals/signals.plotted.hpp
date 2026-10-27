@@ -17,6 +17,8 @@ void plotted(SHELL::Session &session);
 
 auto claimed(Whole at) -> Aim;
 
+auto extended(const Aim &aim, Whole at) -> Flag;
+
 namespace CURVE {
 
 auto row(const Stock &stock, Whole index) -> Row;
