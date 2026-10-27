@@ -13,6 +13,7 @@ namespace ROLL = SOUND::VIEWS::ROLL;
 constexpr Float FULL = ROLL::SPACE * ROLL::STAFF::SCALE;
 constexpr Float MIDDLE = ROLL::HALF * ROLL::SPACE;
 constexpr Float STILL = 0.0f;
+constexpr Whole SIXTEENTH = PULSES / 4;
 
 auto zoomed() -> GUI::NGA::Zoom {
   return GUI::NGA::GET::zoom(VIEWS::document(), ROLL::board().c_str());
@@ -34,7 +35,7 @@ auto gap(const Vector<ROLL::Pip> &pips) -> Whole {
 
 auto SOUND::VIEWS::ROLL::HEADS::side(const Vector<Pip> &pips) -> Float {
   const Whole nearest = ::gap(pips);
-  if (nearest == NONE) return ::FULL;
+  if (nearest == NONE || nearest >= ::SIXTEENTH) return ::FULL;
   return std::clamp(across(nearest) * ::zoomed().value, LEAST, ::FULL);
 }
 

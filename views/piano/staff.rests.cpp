@@ -3,6 +3,7 @@
 
 #include "../../boards.hpp"
 #include "piano.beams.hpp"
+#include "piano.notation.hpp"
 
 namespace {
 using namespace SOUND;
@@ -68,7 +69,9 @@ void SOUND::VIEWS::ROLL::STAFF::rested(Flag moved) {
   const Flag fresh = VIEWS::reborn(::pool);
   const Scale scale = scaled();
   if (!::rescaled(scale) && !fresh && !moved) return;
-  ::kept = rested(GET::stems());
+  ::kept = ROLL::GET::presentation() == ROLL::PRESENTATION::GRID
+             ? Vector<Rest>{}
+             : rested(GET::stems());
   ::build(VIEWS::sized(::pool, ::kept.size(), window().w));
   VIEWS::light(::pool, ::named, ::kept.size());
   for (Whole at = 0; at < ::kept.size(); ++at) ::seat(at, ::kept[at], scale);
