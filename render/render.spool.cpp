@@ -8,6 +8,7 @@
 #include "../kind.hpp"
 #include "../plugin.hpp"
 #include "../transport.hpp"
+#include "render.governs.hpp"
 #include "render.internal.hpp"
 
 namespace {

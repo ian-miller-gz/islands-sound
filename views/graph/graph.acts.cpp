@@ -52,8 +52,8 @@ Whole marked = NONE;
 void followed(GUI::Handle page) {
   const String deck = VIEWS::WIRED::board();
   const Whole row = GUI::SAC::SEAT::selected(page, deck.c_str());
-  if (row == ::marked) return;
-  ::marked = row;
+  if (row == marked) return;
+  marked = row;
   const String node = standing(row);
   if (!node.empty() && GRAPH::offered(node) != nullptr) CONTROL::aim(node);
 }
