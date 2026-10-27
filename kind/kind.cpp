@@ -6,7 +6,7 @@
 
 namespace {
 
-constexpr STRING::Hot NAMES[] = {"audio",   "", "control",
+constexpr STRING::Hot NAMES[] = {"audio",   "notes", "control",
                                  "program", "logic", "data"};
 
 }  // namespace
