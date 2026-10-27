@@ -113,7 +113,7 @@ void arms(const Vector<VIEWS::ARRANGEMENT::Stand> &stands) {
         VIEWS::ARRANGEMENT::GUTTER - ::CARET * 2.0f -
           VIEWS::ARRANGEMENT::INSET * 2.0f,
         ::seated(row)});
-    GUI::set(page, id.c_str(), GUI::Visibility{stands[row].hears});
+    GUI::set(page, id.c_str(), GUI::Visibility{true});
     GUI::set(
       page, id.c_str(),
       GUI::Style{::arming(stands[row].track) ? ::MARKED : ::PLAIN});
