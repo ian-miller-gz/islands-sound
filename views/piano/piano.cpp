@@ -34,6 +34,7 @@ void tools() {
   VIEWS::ROLL::range();
   VIEWS::ROLL::STAFF::clef();
   VIEWS::ROLL::seams();
+  VIEWS::ROLL::ends();
   VIEWS::ROLL::head();
 }
 

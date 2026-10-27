@@ -157,6 +157,8 @@ style waveline style=ink border=2
 style pair color=#00000000 edge=#8a6d55ff border=1 hover=#00000000 press=#00000000
 style pairlit color=#f3e9d81f edge=#f3e9d8ff border=1 hover=#f3e9d81f press=#f3e9d81f
 style seamline color=#f0a35a99 border=0
+style endline color=#f4eee155 border=1
+style endhead color=#f4eee133 edge=#00000000 border=0 hover=#f0a35aaa press=#f0a35aff
 style staffpaper style=board color=#1f1712ff
 style staffline color=#7a6b5aff border=0
 style staffstem color=#3c954eff border=0

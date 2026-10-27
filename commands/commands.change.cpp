@@ -25,6 +25,7 @@ const Word WORDS[] = {
   {HISTORY::WORD::LOOP, CHANGE::looped, CHANGE::looped},
   {HISTORY::WORD::ENDS, CHANGE::ended, CHANGE::ended},
   {HISTORY::WORD::DIAL, CHANGE::dialled, CHANGE::dialled},
+  {HISTORY::WORD::LENGTH, CHANGE::lengthened, CHANGE::lengthened},
   {HISTORY::WORD::AIM, CHANGE::aimed, CHANGE::aimed}};
 
 auto meant(const String &said) -> const Word * {

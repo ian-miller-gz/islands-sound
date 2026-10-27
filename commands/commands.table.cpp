@@ -44,6 +44,7 @@ const Vector<SHELL::Command> rows = {
    COMMANDS::restore},
   {"stocks", "", COMMANDS::stocks},
   {"stock", "", COMMANDS::stock},
+  {"length", "states a stock's length", COMMANDS::length},
   {"author", "", COMMANDS::author},
   {"move", "",
    COMMANDS::move},

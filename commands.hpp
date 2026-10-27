@@ -130,6 +130,8 @@ auto homed(const String &node, const String &page, Float across, Float down)
   -> Flag;
 
 auto dialled(const String &node, Whole parameter, Float value) -> Flag;
+
+auto lengthened(Whole stock, Whole length) -> Flag;
 void overrule(const String &node, Whole parameter);
 
 auto paced(Whole at, Float tempo) -> Flag;
@@ -151,6 +153,7 @@ auto ended(Whole from, Whole to) -> Flag;
 
 void stocks(SHELL::Session &session);
 void stock(SHELL::Session &session);
+void length(SHELL::Session &session);
 void take(SHELL::Session &session);
 
 void author(SHELL::Session &session);

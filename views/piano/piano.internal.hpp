@@ -124,6 +124,8 @@ auto laned(Whole track) -> Whole;
 void seams();
 void seams(SHELL::Session &session);
 
+void ends();
+
 namespace SEAMS {
 constexpr Float MARK = 32.0f;
 void built(
@@ -255,6 +257,7 @@ void ruler();
 void cycle();
 void changes();
 void seams();
+void ends();
 
 }  // namespace SHED
 

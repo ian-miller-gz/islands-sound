@@ -24,7 +24,9 @@ auto ended(const Vector<Note> &notes) -> Whole {
   return last;
 }
 
-auto carried(const Stock &stock) -> Whole {
+}  // namespace
+
+auto SOUND::INVENTORY::carried(const Stock &stock) -> Whole {
   if (stock.kind == KIND::AUDIO)
     return stock.take.lanes.empty() ? 0 : stock.take.lanes[0].size();
   if (stock.kind == KIND::LOGIC) return ::ended(stock.curve.points);
@@ -33,10 +35,8 @@ auto carried(const Stock &stock) -> Whole {
   return ::ended(stock.score.notes);
 }
 
-}  // namespace
-
 auto SOUND::INVENTORY::length(const Stock &stock) -> Whole {
-  return std::max(stock.length, ::carried(stock));
+  return std::max(stock.length, carried(stock));
 }
 
 auto SOUND::INVENTORY::length(Whole stock, Whole length) -> Flag {

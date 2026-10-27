@@ -129,6 +129,8 @@ auto seen() -> Span;
 void range();
 void range(SHELL::Session &session);
 
+void ends();
+
 void bench();
 void bench(SHELL::Session &session);
 
@@ -253,6 +255,7 @@ void head();
 void rail();
 void range();
 void ruler();
+void ends();
 
 }  // namespace SHED
 
