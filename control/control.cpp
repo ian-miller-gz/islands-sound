@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include <algorithm>
+
 #include "control.internal.hpp"
 #include "control.map.hpp"
 
@@ -33,6 +35,9 @@ void SOUND::CONTROL::settle(const Vector<String> &gone) {
   for (const String &name : gone)
     if (::live.aim == name) ::live.aim.clear();
   MAP::settle(gone);
+  std::erase_if(rests(), [&gone](const Value &rest) {
+    return std::ranges::find(gone, rest.address.node) != gone.end();
+  });
   lift();
 }
 
@@ -78,5 +83,6 @@ void SOUND::CONTROL::close() {
   listening(false);
   ::live = {};
   values().clear();
+  rests().clear();
   MAP::adopt({});
 }

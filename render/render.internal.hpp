@@ -67,6 +67,10 @@ auto shifted() -> Flag;
 
 auto overridden(const TIMELINE::Sent &edge) -> Flag;
 
+void rested(const Vector<String> &claims);
+
+void rest();
+
 auto threaded() -> Whole &;
 
 auto moved() -> Whole;

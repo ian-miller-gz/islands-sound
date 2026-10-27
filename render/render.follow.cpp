@@ -7,6 +7,8 @@ using namespace SOUND;
 
 constexpr Whole SLACK = 4 * RENDER::BLOCK;
 
+Whole located = 0;
+
 auto opened(const String &root, Whole out, Whole at) -> Vector<Whole> {
   Vector<Whole> pitches;
   for (const AUDIO::PLUGIN::Event &edge : GRAPH::developed(root, out)) {
@@ -44,12 +46,17 @@ void SOUND::RENDER::settle() {
           node.name, out, {AUDIO::PLUGIN::Event::NOTE_OFF, 0, pitch, 0});
     }
   }
+  rest();
 }
 
 void SOUND::RENDER::follow() {
   GRAPH::reap(GRAPH::PLAN::adopted());
   if (shifted()) threaded() = NONE;
   const TRANSPORT::Marker marker = TRANSPORT::marker();
+  if (marker.locates != ::located) {
+    ::located = marker.locates;
+    rest();
+  }
   if (!marker.playing || moved() == threaded()) return;
   if (!GRAPH::spare()) return;
   threaded() = moved();

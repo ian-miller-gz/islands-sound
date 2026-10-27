@@ -29,6 +29,8 @@ auto standing() -> Live &;
 
 auto values() -> Vector<Value> &;
 
+auto rests() -> Vector<Value> &;
+
 auto same(const Address &one, const Address &two) -> Flag;
 
 auto reached(const Live &live) -> Whole;

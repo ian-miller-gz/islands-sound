@@ -93,6 +93,7 @@ auto SOUND::RENDER::threading() -> Flag {
   ::fed(TIMELINE::lay(pool, 0, frames, owed));
   ::fed(sent(pool, 0, frames, owed));
   ::fed(TIMELINE::dial(pool, 0, frames, RENDER::BLOCK, owed));
+  rested(owed);
   GRAPH::sort(owed);
   for (const String &node : owed) GRAPH::threaded(node);
   return true;

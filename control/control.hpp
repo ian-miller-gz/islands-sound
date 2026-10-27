@@ -89,6 +89,8 @@ void turn(const Address &address, Float value);
 
 auto held() -> const Vector<Value> &;
 
+auto resting(const Address &address, Float memory) -> Float;
+
 void adopt(const Vector<Value> &values);
 
 constexpr STRING::Hot ARC = "arc";
