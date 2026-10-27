@@ -31,6 +31,7 @@ auto seat(const CONTROL::Take &take) -> Whole {
     std::format("take-{}", INVENTORY::held().stocks.size()), KIND::NOTES);
   if (stock == NONE) return NONE;
   INVENTORY::score(stock, ::written(take));
+  INVENTORY::length(stock, SCORE::pulsed(take.frames, take.tempo));
   COMMANDS::covered(track, lane, take.at, take.at + take.frames);
   return TIMELINE::place(
     INVENTORY::held(), track, lane,
@@ -61,6 +62,7 @@ void turn(const CONTROL::Take &take) {
       std::format("take-{}", INVENTORY::held().stocks.size()), KIND::LOGIC);
     if (stock == NONE) continue;
     INVENTORY::aim(stock, first.address);
+    INVENTORY::length(stock, take.frames);
     for (const CONTROL::Turned &move : take.turned)
       if (::same(move.address, first.address))
         INVENTORY::plot(stock, {.at = move.at, .value = move.value});

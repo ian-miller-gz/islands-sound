@@ -16,6 +16,8 @@ void settled();
 
 auto length(const Stock &stock) -> Whole;
 
+auto length(Whole stock, Whole length) -> Flag;
+
 void adopt(const Inventory &pool);
 
 auto refuses(Whole kind) -> STRING::Hot;

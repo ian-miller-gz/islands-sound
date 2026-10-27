@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <algorithm>
 
-#include "inventory.doors.hpp"
+#include "inventory.internal.hpp"
 
 namespace {
 using namespace SOUND;
@@ -24,13 +24,25 @@ auto ended(const Vector<Note> &notes) -> Whole {
   return last;
 }
 
-}  // namespace
-
-auto SOUND::INVENTORY::length(const Stock &stock) -> Whole {
+auto carried(const Stock &stock) -> Whole {
   if (stock.kind == KIND::AUDIO)
     return stock.take.lanes.empty() ? 0 : stock.take.lanes[0].size();
   if (stock.kind == KIND::LOGIC) return ::ended(stock.curve.points);
   if (stock.kind == KIND::CONTROL) return ::ended(stock.turns);
   if (stock.kind == KIND::PROGRAM) return ::ended(stock.choices);
   return ::ended(stock.score.notes);
+}
+
+}  // namespace
+
+auto SOUND::INVENTORY::length(const Stock &stock) -> Whole {
+  return std::max(stock.length, ::carried(stock));
+}
+
+auto SOUND::INVENTORY::length(Whole stock, Whole length) -> Flag {
+  Inventory &pool = standing();
+  if (stock >= pool.stocks.size()) return false;
+  pool.stocks[stock].length = length;
+  stir(stock);
+  return true;
 }

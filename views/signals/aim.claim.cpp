@@ -41,6 +41,7 @@ auto SOUND::VIEWS::SIGNALS::claimed(Whole at) -> Aim {
     kind);
   if (stock == NONE) return {};
   INVENTORY::aim(stock, address);
+  INVENTORY::length(stock, closes - opens);
   TIMELINE::place(
     INVENTORY::held(), track, lane,
     {.stock = stock, .at = opens, .from = 0, .frames = closes - opens});

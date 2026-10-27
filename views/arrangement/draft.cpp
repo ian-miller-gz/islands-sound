@@ -7,7 +7,9 @@
 
 #include "../../inventory.hpp"
 #include "../../kind.hpp"
+#include "../../score.hpp"
 #include "../../timeline.hpp"
+#include "../../transport.hpp"
 #include "arrangement.internal.hpp"
 
 namespace {
@@ -53,6 +55,12 @@ auto seated(const GUI::SAC::STROKE::Gesture &gesture)
   return seat;
 }
 
+auto stated(Whole kind, Whole opens, Whole closes) -> Whole {
+  if (kind != KIND::NOTES) return closes - opens;
+  const Vector<Tempo> &tempos = TRANSPORT::held().tempos;
+  return SCORE::pulsed(closes, tempos) - SCORE::pulsed(opens, tempos);
+}
+
 void landed(
   const GUI::SAC::LADDER::Rung &step,
   const GUI::SAC::STROKE::Gesture &gesture) {
@@ -68,6 +76,7 @@ void landed(
     std::format("{}{}", KIND::spoken(kind), INVENTORY::held().stocks.size()),
     kind);
   if (stock == NONE) return;
+  INVENTORY::length(stock, ::stated(kind, run.opens, run.closes));
   TIMELINE::place(
     INVENTORY::held(), seat.track, seat.lane,
     {.stock = stock,

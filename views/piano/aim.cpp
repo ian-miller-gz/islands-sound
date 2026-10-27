@@ -78,6 +78,8 @@ auto SOUND::VIEWS::ROLL::claimed(Whole track, Whole pulse) -> Aim {
       "{}{}", KIND::spoken(KIND::NOTES), INVENTORY::held().stocks.size()),
     KIND::NOTES);
   if (stock == NONE) return {};
+  INVENTORY::length(
+    stock, SCORE::pulsed(closes, tempos) - SCORE::pulsed(opens, tempos));
   TIMELINE::place(
     INVENTORY::held(), track, lane,
     {.stock = stock, .at = opens, .from = 0, .frames = closes - opens});
