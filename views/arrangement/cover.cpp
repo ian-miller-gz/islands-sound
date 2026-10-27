@@ -31,6 +31,8 @@ auto id(const Landing &fall) -> String {
 auto laned(Whole track, Whole kind) -> Whole {
   const Vector<ARRANGEMENT::TRACK::Lane> &lanes =
     TIMELINE::held().tracks[track].lanes;
+  const Whole armed = CONTROL::laned();
+  if (armed < lanes.size() && lanes[armed].kind == kind) return armed;
   for (Whole lane = 0; lane < lanes.size(); ++lane)
     if (lanes[lane].kind == kind) return lane;
   return NONE;

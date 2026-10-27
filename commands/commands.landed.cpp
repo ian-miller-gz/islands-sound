@@ -77,6 +77,8 @@ void turn(const CONTROL::Take &take) {
 auto SOUND::COMMANDS::landing(Whole track, Whole kind) -> Whole {
   const Vector<ARRANGEMENT::TRACK::Lane> &lanes =
     TIMELINE::held().tracks[track].lanes;
+  const Whole armed = CONTROL::laned();
+  if (armed < lanes.size() && lanes[armed].kind == kind) return armed;
   for (Whole at = 0; at < lanes.size(); ++at)
     if (lanes[at].kind == kind) return at;
   return laned(track, kind);

@@ -6,7 +6,7 @@
 namespace SOUND::CONTROL {
 
 struct Live {
-  Whole track = NONE;
+  Whole track = NONE, lane = NONE;
   String aim;
   Vector<AUDIO::PLUGIN::Event> arrived;
   Whole position = 0;

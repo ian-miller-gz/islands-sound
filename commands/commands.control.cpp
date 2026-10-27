@@ -45,7 +45,13 @@ void SOUND::COMMANDS::drive(SHELL::Session &session) {
     const Whole track = ::counted(session.arguments[1]);
     if (track >= TIMELINE::held().tracks.size())
       return session.print("drive refused: no such track");
-    CONTROL::drive(track);
+    const Whole lanes = TIMELINE::held().tracks[track].lanes.size();
+    const Whole lane = session.arguments.size() > 2
+                         ? ::counted(session.arguments[2])
+                         : NONE;
+    if (lane != NONE && lane >= lanes)
+      return session.print("drive refused: no such lane");
+    CONTROL::drive(track, lane);
   }
   tend();
   session.print(::stated());

@@ -53,7 +53,9 @@ struct Reel {
 };
 
 void drive(Whole track);
+void drive(Whole track, Whole lane);
 auto driven() -> Whole;
+auto laned() -> Whole;
 
 void aim(const String &node);
 auto aimed() -> String;

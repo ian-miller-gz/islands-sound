@@ -13,12 +13,17 @@ CONTROL::Live live;
 
 auto SOUND::CONTROL::standing() -> Live & { return ::live; }
 
-void SOUND::CONTROL::drive(Whole track) {
+void SOUND::CONTROL::drive(Whole track) { drive(track, NONE); }
+
+void SOUND::CONTROL::drive(Whole track, Whole lane) {
   if (::live.track != track) lift();
   ::live.track = track;
+  ::live.lane = lane;
 }
 
 auto SOUND::CONTROL::driven() -> Whole { return ::live.track; }
+
+auto SOUND::CONTROL::laned() -> Whole { return ::live.lane; }
 
 void SOUND::CONTROL::aim(const String &node) { ::live.aim = node; }
 

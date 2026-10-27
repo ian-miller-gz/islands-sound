@@ -51,13 +51,20 @@ void settle(const Vector<VIEWS::ARRANGEMENT::Stand> &stands) {
   ::folded = kept;
 }
 
-auto arming(Whole track) -> Flag {
-  return CONTROL::reel().armed && CONTROL::driven() == track;
+auto driving(Whole track, Whole lane) -> Flag {
+  return CONTROL::reel().armed && CONTROL::driven() == track &&
+         CONTROL::laned() == lane;
 }
 
-void arm(Whole track) {
-  if (::arming(track)) return CONTROL::arm(false);
-  CONTROL::drive(track);
+auto arming(Whole track, Whole lane) -> Flag {
+  const Whole armed = CONTROL::laned();
+  return CONTROL::reel().armed && CONTROL::driven() == track &&
+         (armed == NONE || armed == lane);
+}
+
+void arm(Whole track, Whole lane) {
+  if (::driving(track, lane)) return CONTROL::arm(false);
+  CONTROL::drive(track, lane);
   CONTROL::arm(true);
 }
 
@@ -116,7 +123,8 @@ void arms(const Vector<VIEWS::ARRANGEMENT::Stand> &stands) {
     GUI::set(page, id.c_str(), GUI::Visibility{true});
     GUI::set(
       page, id.c_str(),
-      GUI::Style{::arming(stands[row].track) ? ::MARKED : ::PLAIN});
+      GUI::Style{
+        ::arming(stands[row].track, stands[row].lane) ? ::MARKED : ::PLAIN});
   }
 }
 
@@ -134,7 +142,8 @@ void SOUND::VIEWS::ARRANGEMENT::doors() {
   for (const Stand &stand : ::stood) {
     if (GUI::GET::clicked(page, ::caret(stand.id).c_str()))
       ::fold(stand.name, stand.standing);
-    if (GUI::GET::clicked(page, ::armer(stand.id).c_str())) ::arm(stand.track);
+    if (GUI::GET::clicked(page, ::armer(stand.id).c_str()))
+      ::arm(stand.track, stand.lane);
   }
 }
 
