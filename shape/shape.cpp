@@ -8,7 +8,7 @@
 
 namespace {
 
-constexpr STRING::Hot NAMES[] = {"hold", "", "rise", "fall", "ease"};
+constexpr STRING::Hot NAMES[] = {"hold", "line", "rise", "fall", "ease"};
 
 constexpr Float BEND = 4.0f * std::numbers::ln2_v<Float>;
 

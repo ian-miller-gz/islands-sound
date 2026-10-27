@@ -8,7 +8,7 @@ namespace {
 using namespace SOUND;
 namespace STAFF = SOUND::VIEWS::ROLL::STAFF;
 
-constexpr STRING::Hot WAYS[] = {"up", ""};
+constexpr STRING::Hot WAYS[] = {"up", "down"};
 
 void stems(SHELL::Session &session) {
   session.print(std::format(

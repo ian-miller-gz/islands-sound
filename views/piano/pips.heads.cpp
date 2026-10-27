@@ -11,7 +11,7 @@ namespace HEADS = SOUND::VIEWS::ROLL::HEADS;
 
 constexpr Integer PAIRED = 2;
 
-constexpr STRING::Hot INKS[] = {"staffhead", "", "staffloose"};
+constexpr STRING::Hot INKS[] = {"staffhead", "staffchosen", "staffloose"};
 
 auto inked(const HEADS::Worn &now) -> String {
   if (now.ink != HEADS::RESTING) return ::INKS[now.ink];

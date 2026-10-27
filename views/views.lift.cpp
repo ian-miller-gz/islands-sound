@@ -8,7 +8,7 @@ constexpr STRING::Hot CHROMED = "shell";
 constexpr Float MARGIN = 40.0f;
 constexpr Float AIR = 4.0f;
 
-constexpr STRING::Hot SEATS[] = {"views", "", "column", "main"};
+constexpr STRING::Hot SEATS[] = {"views", "deck", "column", "main"};
 
 Vector<Float> authored;
 Float applied = 0.0f;

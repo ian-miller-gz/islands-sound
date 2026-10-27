@@ -9,7 +9,7 @@ namespace {
 using namespace SOUND;
 namespace ROLL = SOUND::VIEWS::ROLL;
 
-constexpr STRING::Hot GROUNDS[] = {"board", ""};
+constexpr STRING::Hot GROUNDS[] = {"board", "staffpaper"};
 
 Whole worn = NONE, born = 0;
 
