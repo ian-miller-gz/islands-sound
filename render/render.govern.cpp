@@ -73,7 +73,10 @@ auto SOUND::RENDER::governed(const Address &address, Whole at)
     if (tracks[track].root.empty()) continue;
     for (Whole lane = 0; lane < tracks[track].lanes.size(); ++lane) {
       if (tracks[track].lanes[lane].kind != KIND::CONTROL) continue;
-      if (!wired(tracks[track].root, lane, address.node)) continue;
+      if (
+        governs(track, lane) != address.node &&
+        !wired(tracks[track].root, lane, address.node))
+        continue;
       Float value = 0.0f;
       if (!::turned(tracks[track].lanes[lane], address.parameter, at, value))
         continue;

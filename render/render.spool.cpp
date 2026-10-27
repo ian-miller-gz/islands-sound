@@ -35,11 +35,20 @@ void fed(const Vector<TIMELINE::Laid> &run) {
     GRAPH::develop(stretch.root, stretch.lane, stretch.at, stretch.lanes);
 }
 
+void aimed(const TIMELINE::Sent &edge) {
+  const AUDIO::PLUGIN::Event event = RENDER::edged(edge, edge.at);
+  const String node =
+    edge.kind == KIND::CONTROL ? RENDER::governs(edge.track, edge.lane) : "";
+  if (node.empty())
+    GRAPH::develop(edge.root, edge.lane, event);
+  else
+    GRAPH::dial(node, edge.at, edge.number, event.value);
+}
+
 void fed(const Vector<TIMELINE::Sent> &run) {
   const Flag marked = !CONTROL::overrides().empty();
   for (const TIMELINE::Sent &edge : run)
-    if (!marked || !RENDER::overridden(edge))
-      GRAPH::develop(edge.root, edge.lane, RENDER::edged(edge, edge.at));
+    if (!marked || !RENDER::overridden(edge)) ::aimed(edge);
 }
 
 void fed(const Vector<TIMELINE::Dialled> &run) {

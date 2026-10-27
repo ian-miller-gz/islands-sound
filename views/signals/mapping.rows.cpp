@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <format>
 
+#include "../../control.hpp"
 #include "../../graph.hpp"
 #include "../../timeline.hpp"
 #include "signals.internal.hpp"
@@ -21,20 +22,25 @@ auto publishing(const String &name) -> VIEWS::SIGNALS::Offer {
   return {.name = name, .words = GRAPH::parameters(name)};
 }
 
+auto targeting(const String &node) -> VIEWS::SIGNALS::Offer {
+  return {.name = node, .words = VIEWS::parameters(node)};
+}
+
 auto landing(const String &root, Whole lane) -> Vector<String> {
-  Vector<String> plugins;
-  if (root.empty()) return plugins;
+  Vector<String> nodes;
+  if (root.empty()) return nodes;
   for (const Wire &wire : GRAPH::held().wires) {
     if (wire.from != root || wire.out != lane) continue;
     const Whole stood = GRAPH::at(wire.to);
-    if (stood == NONE) continue;
-    const String &plugin = GRAPH::held().nodes[stood].plugin;
-    if (plugin.empty()) continue;
-    if (std::find(plugins.begin(), plugins.end(), plugin) == plugins.end())
-      plugins.push_back(plugin);
+    if (stood == NONE || GRAPH::held().nodes[stood].plugin.empty()) continue;
+    if (std::find(nodes.begin(), nodes.end(), wire.to) == nodes.end())
+      nodes.push_back(wire.to);
   }
-  std::sort(plugins.begin(), plugins.end());
-  return plugins;
+  std::sort(nodes.begin(), nodes.end());
+  const String aim = CONTROL::aimed();
+  const auto found = std::find(nodes.begin(), nodes.end(), aim);
+  if (found != nodes.end()) std::rotate(nodes.begin(), found, found + 1);
+  return nodes;
 }
 
 auto spoken(const VIEWS::SIGNALS::Offer &offer) -> String {
@@ -50,9 +56,9 @@ auto SOUND::VIEWS::SIGNALS::reached() -> Vector<Offer> {
   const Whole track = attended();
   const Whole lane = laned();
   if (track != NONE && lane != NONE)
-    for (const String &plugin :
+    for (const String &node :
          ::landing(TIMELINE::held().tracks[track].root, lane))
-      rows.push_back(::publishing(plugin));
+      rows.push_back(::targeting(node));
   rows.push_back({.name = String(::FURTHER)});
   return rows;
 }
