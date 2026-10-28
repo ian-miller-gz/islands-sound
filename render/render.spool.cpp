@@ -61,21 +61,6 @@ void fed(const Vector<TIMELINE::Dialled> &run) {
 
 }  // namespace
 
-auto SOUND::RENDER::edged(const TIMELINE::Sent &edge, Whole at)
-  -> AUDIO::PLUGIN::Event {
-  if (edge.kind == KIND::CONTROL)
-    return {
-      AUDIO::PLUGIN::Event::CONTROLLER, at, edge.number,
-      worded(edge.track, edge.lane, edge.number, edge.value)};
-  return {AUDIO::PLUGIN::Event::PROGRAM, at, edge.number, 0};
-}
-
-auto SOUND::RENDER::walk(Whole start, Whole frames) -> Walk {
-  const Span cycle =
-    TRANSPORT::held().looping ? TRANSPORT::cycled(start) : Span{};
-  return walk(start, frames, cycle);
-}
-
 auto SOUND::RENDER::threaded() -> Whole & { return ::stamp; }
 
 auto SOUND::RENDER::moved() -> Whole {

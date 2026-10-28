@@ -1,16 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <algorithm>
-#include <format>
 
-#include <island/gui/ladder.hpp>
-#include <island/gui/stroke.hpp>
-
-#include "../../inventory.hpp"
-#include "../../kind.hpp"
-#include "../../score.hpp"
 #include "../../timeline.hpp"
-#include "../../transport.hpp"
-#include "arrangement.internal.hpp"
+#include "draft.internal.hpp"
 
 namespace {
 using namespace SOUND;
@@ -20,72 +12,36 @@ constexpr STRING::Hot PICKED = "pick";
 constexpr Float DEEP = 1.0f;
 constexpr Float ORIGIN = 0.0f;
 
-struct Run {
-  Whole opens = 0, closes = 0;
-};
+}  // namespace
 
-auto pulled(const GUI::SAC::STROKE::Gesture &gesture, Whole step, Flag settle)
-  -> ::Run {
+auto SOUND::VIEWS::ARRANGEMENT::DRAFT::pulled(
+  const GUI::SAC::STROKE::Gesture &gesture, Whole step, Flag settle) -> Run {
   const Float west =
     std::max(::ORIGIN, std::min(gesture.from.at.x, gesture.to.at.x));
   const Float east =
     std::max(::ORIGIN, std::max(gesture.from.at.x, gesture.to.at.x));
-  const Float grain = Float(VIEWS::ARRANGEMENT::GRAIN);
+  const Float grain = Float(GRAIN);
   const Whole opens = Whole(west * grain);
   const Whole closes = Whole(east * grain);
   if (step == 0 || !settle) return {opens, closes};
   return {opens / step * step, (closes + step - 1) / step * step};
 }
 
-auto pencilled(const GUI::SAC::STROKE::Gesture &gesture) -> Flag {
-  return !VIEWS::ARRANGEMENT::gutter(gesture.from.at.x) &&
-         !VIEWS::ARRANGEMENT::shelved(gesture.from.at.y) &&
-         VIEWS::ARRANGEMENT::boxed(gesture.from.at.x, gesture.from.at.y) ==
-           NONE;
+auto SOUND::VIEWS::ARRANGEMENT::DRAFT::pencilled(
+  const GUI::SAC::STROKE::Gesture &gesture) -> Flag {
+  return !gutter(gesture.from.at.x) && !shelved(gesture.from.at.y) &&
+         boxed(gesture.from.at.x, gesture.from.at.y) == NONE;
 }
 
-auto seated(const GUI::SAC::STROKE::Gesture &gesture)
-  -> VIEWS::ARRANGEMENT::Row {
-  const VIEWS::ARRANGEMENT::Row seat =
-    VIEWS::ARRANGEMENT::row(gesture.from.at.y);
-  const Vector<ARRANGEMENT::Track> &tracks = TIMELINE::held().tracks;
+auto SOUND::VIEWS::ARRANGEMENT::DRAFT::seated(
+  const GUI::SAC::STROKE::Gesture &gesture) -> Row {
+  const Row seat = row(gesture.from.at.y);
+  const Vector<SOUND::ARRANGEMENT::Track> &tracks = TIMELINE::held().tracks;
   if (
     seat.track >= tracks.size() || seat.lane >= tracks[seat.track].lanes.size())
     return {};
   return seat;
 }
-
-auto stated(Whole kind, Whole opens, Whole closes) -> Whole {
-  if (kind != KIND::NOTES) return closes - opens;
-  const Vector<Tempo> &tempos = TRANSPORT::held().tempos;
-  return SCORE::pulsed(closes, tempos) - SCORE::pulsed(opens, tempos);
-}
-
-void landed(
-  const GUI::SAC::LADDER::Rung &step,
-  const GUI::SAC::STROKE::Gesture &gesture) {
-  const VIEWS::ARRANGEMENT::Row seat = ::seated(gesture);
-  if (!gesture.dragged || seat.track == NONE) return;
-  const ::Run run = ::pulled(gesture, step.span, VIEWS::ARRANGEMENT::snapped());
-  if (
-    run.closes <= run.opens ||
-    TIMELINE::crossed(seat.track, seat.lane, run.opens, run.closes, NONE))
-    return;
-  const Whole kind = TIMELINE::held().tracks[seat.track].lanes[seat.lane].kind;
-  const Whole stock = INVENTORY::add(
-    std::format("{}{}", KIND::spoken(kind), INVENTORY::held().stocks.size()),
-    kind);
-  if (stock == NONE) return;
-  INVENTORY::length(stock, ::stated(kind, run.opens, run.closes));
-  TIMELINE::place(
-    INVENTORY::held(), seat.track, seat.lane,
-    {.stock = stock,
-     .at = run.opens,
-     .from = 0,
-     .frames = run.closes - run.opens});
-}
-
-}  // namespace
 
 void SOUND::VIEWS::ARRANGEMENT::draft() {
   const GUI::SAC::LADDER::Rung step = rung();
@@ -95,17 +51,17 @@ void SOUND::VIEWS::ARRANGEMENT::draft() {
      drawing(gesture) ? ::MODE : ::PICKED,
      {across(step.span), ::DEEP},
      GUI::SAC::STROKE::Mode::BOARD});
-  if (gesture.closed && drawing(gesture) && ::pencilled(gesture))
-    ::landed(step, gesture);
+  if (gesture.closed && drawing(gesture) && DRAFT::pencilled(gesture))
+    DRAFT::landed(step, gesture);
 }
 
 auto SOUND::VIEWS::ARRANGEMENT::drafting() -> Draft {
   const GUI::SAC::STROKE::Gesture gesture = VIEWS::GET::gesture();
-  if (!gesture.standing || !drawing(gesture) || !::pencilled(gesture))
+  if (!gesture.standing || !drawing(gesture) || !DRAFT::pencilled(gesture))
     return {};
-  const Row seat = ::seated(gesture);
+  const Row seat = DRAFT::seated(gesture);
   if (seat.track == NONE) return {};
-  const ::Run run = ::pulled(gesture, rung().span, false);
+  const DRAFT::Run run = DRAFT::pulled(gesture, rung().span, false);
   return {seat.track, seat.lane,
           seat.band,  TIMELINE::held().tracks[seat.track].lanes[seat.lane].kind,
           run.opens,  run.closes > run.opens ? run.closes - run.opens : 0};
