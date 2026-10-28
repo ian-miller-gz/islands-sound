@@ -24,6 +24,11 @@ auto notation() -> Whole;
 
 auto presentation() -> Whole;
 
+// Drawn as a staff: percussion under either presentation, or a tonal
+// lane under the staff one (the pitched staff, order 394l2).
+auto staffed() -> Flag;
+auto pitched() -> Flag;
+
 auto mapped() -> Vector<String>;
 
 auto instruments() -> Vector<String>;

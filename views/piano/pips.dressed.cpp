@@ -17,9 +17,9 @@ Vector<Whole> tiers;
 
 auto loosely(const VIEWS::ROLL::Pip &pip) -> Flag { return pip.stock == NONE; }
 
-auto styled(Whole notation, Flag loose, Whole tier) -> String {
-  const STRING::Hot stem = ::STYLES[notation][loose];
-  if (notation != VIEWS::ROLL::TONAL || loose) return stem;
+auto styled(Whole staffed, Flag loose, Whole tier) -> String {
+  const STRING::Hot stem = ::STYLES[staffed][loose];
+  if (staffed != 0 || loose) return stem;
   return VIEWS::ROLL::tinted(stem, tier);
 }
 
@@ -28,7 +28,7 @@ auto styled(Whole notation, Flag loose, Whole tier) -> String {
 void SOUND::VIEWS::ROLL::dressed(
   GUI::Handle page, const Vector<Pip> &wanted, const Vector<Pip> &shown) {
   const String stem = board();
-  const Whole notation = GET::notation();
+  const Whole notation = GET::staffed() ? 1 : 0;
   const Flag again = notation != ::worn;
   ::worn = notation;
   ::tiers.resize(wanted.size(), NONE);

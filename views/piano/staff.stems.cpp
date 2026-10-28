@@ -20,6 +20,8 @@ struct Hit {
   auto operator==(const Hit &) const -> Bool = default;
 };
 
+constexpr Integer MIDDLE = 4;  // the treble's middle line: above it, down
+
 Vector<Hit> kept;
 Vector<STAFF::Stem> stood;
 Whole way = NONE;
@@ -31,12 +33,14 @@ auto before(const Hit &one, const Hit &two) -> Flag {
 
 auto hits() -> Vector<Hit> {
   Vector<Hit> found;
-  if (ROLL::GET::notation() != ROLL::PERCUSSION) return found;
+  if (!ROLL::GET::staffed()) return found;
+  const Flag pitched = ROLL::GET::pitched();
   for (const ROLL::Pip &pip : ROLL::plates()) {
     const Integer place = STAFF::placed(pip.pitch);
     const ROLL::Drum *drum = ROLL::GET::drum(pip.pitch);
-    if (place != STAFF::NOWHERE)
-      found.push_back({pip.at, place, drum != nullptr && drum->foot});
+    if (place == STAFF::NOWHERE) continue;
+    const Flag foot = pitched ? place < ::MIDDLE : drum != nullptr && drum->foot;
+    found.push_back({pip.at, place, foot});
   }
   std::ranges::sort(found, ::before);
   return found;

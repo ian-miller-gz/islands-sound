@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include <iterator>
+
 #include "piano.internal.hpp"
 #include "piano.notation.hpp"
 #include "piano.staff.hpp"
@@ -11,10 +13,14 @@ namespace STAFF = SOUND::VIEWS::ROLL::STAFF;
 constexpr Float ORIGIN = 0.0f;
 
 auto centre(Integer place) -> Float {
-  return (Float(place - STAFF::TOP) + ROLL::HALF) * ROLL::STEP;
+  return (Float(place - STAFF::top()) + ROLL::HALF) * ROLL::STEP;
 }
 
-auto tonal() -> GUI::Extent { return {::ORIGIN, ROLL::ROWS::deep()}; }
+auto tonal() -> GUI::Extent {
+  if (!ROLL::GET::pitched()) return {::ORIGIN, ROLL::ROWS::deep()};
+  const Float top = ::centre(STAFF::LINES[0]);
+  return {top, ::centre(std::rbegin(STAFF::LINES)[0]) - top};
+}
 
 auto percussion() -> GUI::Extent {
   const Vector<Integer> rules = STAFF::GET::rules();

@@ -36,7 +36,7 @@ void lay(GUI::Handle page, const String &id, const VIEWS::ROLL::Box &box) {
 void placed(
   GUI::Handle page, const Vector<VIEWS::ROLL::Pip> &wanted, Whole kept) {
   const String board = VIEWS::ROLL::board();
-  const Flag struck = VIEWS::ROLL::GET::notation() == VIEWS::ROLL::PERCUSSION;
+  const Flag struck = VIEWS::ROLL::GET::staffed();
   const Flag carrying = !GUI::SAC::CARRY::GET::carried(page).empty();
   if (VIEWS::reborn(::born) || (::carried && !carrying)) ::laid.clear();
   ::carried = carrying;
@@ -69,7 +69,7 @@ void SOUND::VIEWS::ROLL::gathered(
 }
 
 auto SOUND::VIEWS::ROLL::boxed(const Pip &pip) -> Box {
-  return ::boxed(pip, GET::notation() == PERCUSSION);
+  return ::boxed(pip, GET::staffed());
 }
 
 auto SOUND::VIEWS::ROLL::pips() -> Vector<Pip> {

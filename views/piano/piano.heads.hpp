@@ -7,6 +7,7 @@
 namespace SOUND::VIEWS::ROLL {
 
 constexpr STRING::Hot PLAIN = "\U0001D158";
+constexpr STRING::Hot HOLLOW = "\U0001D157";  // the half note's head and longer
 constexpr STRING::Hot CROSS = "\U0001D143";
 constexpr STRING::Hot DIAMOND = "\U0001D1BA";
 

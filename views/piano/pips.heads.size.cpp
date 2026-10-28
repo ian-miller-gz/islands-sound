@@ -54,6 +54,17 @@ void SOUND::VIEWS::ROLL::HEADS::sized(
   GUI::set(
     page, id.c_str(), GUI::Extent{HEAD.size.w * wide, HEAD.size.h * tall});
   GUI::set(page, id.c_str(), GUI::Size{HEAD.letter * wide});
+  const String sign = named(row, SIGN);
+  if (GUI::GET::visibility(page, sign.c_str())) {
+    GUI::set(
+      page, sign.c_str(),
+      GUI::Position{
+        ::MIDDLE - (::MIDDLE - SIGN.at.x) * wide + aside,
+        ::MIDDLE - (::MIDDLE - SIGN.at.y) * tall});
+    GUI::set(
+      page, sign.c_str(), GUI::Extent{SIGN.size.w * wide, SIGN.size.h * tall});
+    GUI::set(page, sign.c_str(), GUI::Size{SIGN.letter * wide});
+  }
   if (GUI::GET::visibility(page, named(row, LEDGER).c_str()))
     ruled(page, row, wide, aside);
 }

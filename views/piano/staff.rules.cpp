@@ -28,7 +28,7 @@ Whole born = 0;
 Float reach = ::ORIGIN;
 
 auto centre(Integer place) -> Float {
-  return (Float(place - STAFF::TOP) + ROLL::HALF) * ROLL::STEP;
+  return (Float(place - STAFF::top()) + ROLL::HALF) * ROLL::STEP;
 }
 
 void strike(GUI::Handle page, Whole count) {

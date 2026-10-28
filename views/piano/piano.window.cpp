@@ -27,12 +27,12 @@ auto SOUND::VIEWS::ROLL::window() -> GUI::Extent {
 auto SOUND::VIEWS::ROLL::least() -> GUI::Extent {
   const GUI::Extent seen = GUI::GET::measured(document(), board().c_str());
   const Float wide = GUI::SAC::WINDOW::least(seen.w, across(REACH));
-  if (GET::notation() == PERCUSSION) return {wide, STAFF::SCALE};
+  if (GET::staffed()) return {wide, STAFF::SCALE};
   return {wide, GUI::SAC::WINDOW::least(seen.h, ROWS::deep())};
 }
 
 auto SOUND::VIEWS::ROLL::most() -> GUI::Extent {
-  if (GET::notation() == PERCUSSION) return {.h = STAFF::SCALE};
+  if (GET::staffed()) return {.h = STAFF::SCALE};
   return {};
 }
 

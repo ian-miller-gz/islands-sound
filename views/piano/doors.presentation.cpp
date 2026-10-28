@@ -25,9 +25,15 @@ void raise() {
   VIEWS::MENU::raise(rows, ::WHOSE, ::DOOR, ticks);
 }
 
-auto struck() -> Flag { return ROLL::GET::notation() == ROLL::PERCUSSION; }
-
 }  // namespace
+
+auto SOUND::VIEWS::ROLL::GET::pitched() -> Flag {
+  return notation() == TONAL && presentation() == PRESENTATION::STAFF;
+}
+
+auto SOUND::VIEWS::ROLL::GET::staffed() -> Flag {
+  return notation() == PERCUSSION || pitched();
+}
 
 void SOUND::VIEWS::ROLL::present() {
   const GUI::Handle page = document();
@@ -36,10 +42,10 @@ void SOUND::VIEWS::ROLL::present() {
   if (GUI::GET::clicked(page, ::DOOR)) ::raise();
   const String word = PRESENTATIONS[GET::presentation()];
   GUI::set(page, ::DOOR, GUI::Text{word});
-  GUI::set(page, ::DOOR, GUI::Visibility{::struck()});
+  GUI::set(page, ::DOOR, GUI::Visibility{true});  // both notations present
 }
 
 void SOUND::VIEWS::ROLL::present(SHELL::Session &session) {
-  if (!::struck()) return;
+  if (!GET::staffed()) return;
   session.print(std::format(::LINE, PRESENTATIONS[GET::presentation()]));
 }

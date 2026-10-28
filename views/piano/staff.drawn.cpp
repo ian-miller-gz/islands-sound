@@ -18,10 +18,10 @@ Whole worn = NONE, born = 0;
 void SOUND::VIEWS::ROLL::STAFF::drawn() {
   const GUI::Handle page = document();
   if (VIEWS::reborn(::born)) ::worn = NONE;
-  const Whole notation = ROLL::GET::notation();
-  if (std::exchange(::worn, notation) != notation)
-    GUI::set(page, board().c_str(), GUI::Style{::GROUNDS[notation]});
-  ruled(notation == PERCUSSION ? GET::rules() : Vector<Integer>{});
+  const Whole staffed = ROLL::GET::staffed() ? 1 : 0;
+  if (std::exchange(::worn, staffed) != staffed)
+    GUI::set(page, board().c_str(), GUI::Style{::GROUNDS[staffed]});
+  ruled(staffed ? GET::rules() : Vector<Integer>{});
 }
 
 void SOUND::VIEWS::ROLL::STAFF::SHED::drawn() { ruled({}); }

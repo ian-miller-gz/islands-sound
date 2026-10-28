@@ -24,8 +24,7 @@ auto shown(GUI::Handle page, const String &id, Float pan) -> Flag {
 }  // namespace
 
 auto SOUND::VIEWS::ROLL::papered() -> Flag {
-  return GET::notation() == PERCUSSION &&
-         GET::presentation() == PRESENTATION::STAFF;
+  return GET::staffed() && GET::presentation() == PRESENTATION::STAFF;
 }
 
 void SOUND::VIEWS::ROLL::PAPER::grid(

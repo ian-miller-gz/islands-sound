@@ -22,11 +22,14 @@ auto inked(const VIEWS::ROLL::Pip &pip, const Vector<Whole> &chosen, Whole row)
                                                  : HEADS::RESTING;
 }
 
+constexpr Whole HALF_NOTE = 2 * PULSES;
+
 auto facts(
   const VIEWS::ROLL::Pip &pip, const Vector<Whole> &chosen, Whole row,
   Whole notation, Float side, Flag flipped) -> HEADS::Worn {
-  if (notation == VIEWS::ROLL::TONAL)
+  if (!VIEWS::ROLL::GET::staffed())
     return {NONE, NONE, notation, NONE, NONE, VIEWS::ROLL::STAFF::NOWHERE};
+  const Flag pitched = VIEWS::ROLL::GET::pitched();
   return {
     pip.pitch,
     ::inked(pip, chosen, row),
@@ -35,7 +38,10 @@ auto facts(
     HEADS::banded(pip),
     VIEWS::ROLL::STAFF::placed(pip.pitch),
     side,
-    flipped};
+    flipped,
+    pitched ? VIEWS::ROLL::STAFF::accidental(pip.pitch) : NONE,
+    pitched && pip.length >= ::HALF_NOTE,
+    pitched};
 }
 
 auto rezoomed(GUI::Handle page) -> Flag {
@@ -52,11 +58,11 @@ void SOUND::VIEWS::ROLL::HEADS::seat(
   GUI::Handle page, const Vector<Pip> &wanted) {
   if (VIEWS::reborn(::born)) ::worn.clear();
   const Whole notation = GET::notation();
-  if (notation == TONAL && ::worn.empty()) return;
+  if (!GET::staffed() && ::worn.empty()) return;
   if (::worn.size() > wanted.size()) ::worn.resize(wanted.size());
   const Vector<Whole> rows = chosen(page);
   const Float edge = side(wanted);
-  const Flag again = ::rezoomed(page) && notation != TONAL;
+  const Flag again = ::rezoomed(page) && GET::staffed();
   const Vector<Flag> flips = flipped(wanted);
   for (Whole row = 0; row < wanted.size(); ++row) {
     if (row == ::worn.size()) {

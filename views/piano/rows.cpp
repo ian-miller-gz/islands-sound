@@ -60,15 +60,15 @@ void build() {
 }  // namespace
 
 auto SOUND::VIEWS::ROLL::ROWS::lane(Whole pitch, Whole at) -> Float {
-  return ::LADDERS[GET::notation()].lane(pitch, at);
+  return ::LADDERS[GET::staffed()].lane(pitch, at);
 }
 
 auto SOUND::VIEWS::ROLL::ROWS::pitch(Float y, Whole at) -> Whole {
-  return ::LADDERS[GET::notation()].pitch(y, at);
+  return ::LADDERS[GET::staffed()].pitch(y, at);
 }
 
 auto SOUND::VIEWS::ROLL::ROWS::deep() -> Float {
-  return ::LADDERS[GET::notation()].deep();
+  return ::LADDERS[GET::staffed()].deep();
 }
 
 auto SOUND::VIEWS::ROLL::ROWS::folded() -> Flag { return ::kept.folded; }

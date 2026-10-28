@@ -6,6 +6,8 @@
 
 #include "../../boards.hpp"
 #include "../../transport.hpp"
+#include "piano.beams.hpp"
+#include "piano.notation.hpp"
 #include "piano.paper.hpp"
 #include "piano.pips.hpp"
 
@@ -14,10 +16,41 @@ using namespace SOUND;
 namespace ROLL = SOUND::VIEWS::ROLL;
 
 constexpr STRING::Hot METRE = "metre";
+constexpr STRING::Hot CLEFS[] = {"clef", "bass"};
+constexpr STRING::Hot DRUM = "\U0001D125";
+constexpr STRING::Hot TREBLE = "\U0001D11E", BASS = "\U0001D122";
+// The drum clef stands an em wide 0.295; the pitched clefs 0.6 wide, the
+// treble 1.3 em tall and the bass 0.8, each with its baseline on the line
+// it names (the G, the F).
+constexpr Float WIDE = 0.295f, CLEF = 0.6f, TREBLED = 1.3f, BASSED = 0.8f;
 constexpr Float ADVANCE = 0.5172f, RISE = 0.6263f;
 constexpr Float DIGIT = 2.0f * ROLL::SPACE;
 
 }  // namespace
+
+auto SOUND::VIEWS::ROLL::STAFF::SIGNS::clef(Whole at) -> String {
+  return std::format("{}.{}", board(), ::CLEFS[at]);
+}
+
+// The clef column: the drum clef at the staff's middle, or the treble on
+// its G line and the bass on its F line; answers the column's width.
+auto SOUND::VIEWS::ROLL::STAFF::SIGNS::clefed(
+  GUI::Handle page, Float west, const Float (&lines)[2], Float down) -> Float {
+  if (!ROLL::GET::pitched()) {
+    const Float wide = ::WIDE * EM * down;
+    const GUI::Position at = {west, lines[0] + (HALF - BASELINE) * EM};
+    lettered(page, clef(0), ::DRUM, {at, wide, EM}, down);
+    lettered(page, clef(1), "", {at, 0.0f, EM}, down);
+    return wide;
+  }
+  const Float wide = ::CLEF * EM * down;
+  const Float treble = ::TREBLED * EM, bass = ::BASSED * EM;
+  const GUI::Position high = {west, centred(TREBLE_G) - BASELINE * treble};
+  const GUI::Position low = {west, centred(BASS_F) - BASELINE * bass};
+  lettered(page, clef(0), ::TREBLE, {high, wide, treble}, down);
+  lettered(page, clef(1), ::BASS, {low, wide, bass}, down);
+  return wide;
+}
 
 auto SOUND::VIEWS::ROLL::STAFF::SIGNS::named(Whole at) -> String {
   return std::format("{}.{}.{}", board(), ::METRE, at);

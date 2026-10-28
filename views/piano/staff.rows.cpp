@@ -42,15 +42,15 @@ constexpr auto (*PRESSED[])(Integer) -> Whole = {::nearest, ::placed};
 
 auto SOUND::VIEWS::ROLL::STAFF::lane(Whole pitch, Whole) -> Float {
   const Integer place = placed(pitch);
-  return place == NOWHERE ? ROWS::OFF : Float(place - TOP) * STEP;
+  return place == NOWHERE ? ROWS::OFF : Float(place - top()) * STEP;
 }
 
 auto SOUND::VIEWS::ROLL::STAFF::pitch(Float y, Whole) -> Whole {
-  return ::PRESSED[ROLL::GET::presentation()](TOP + ::row(y));
+  return ::PRESSED[ROLL::GET::presentation()](top() + ::row(y));
 }
 
 auto SOUND::VIEWS::ROLL::STAFF::deep() -> Float {
   Integer lowest = FOOT;
   for (const Line &line : GET::lines()) lowest = std::max(lowest, line.place);
-  return Float(lowest - TOP + 1) * STEP;
+  return Float(lowest - top() + 1) * STEP;
 }
