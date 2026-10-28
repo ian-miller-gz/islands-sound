@@ -31,8 +31,6 @@ auto values() -> Vector<Value> &;
 
 auto rests() -> Vector<Value> &;
 
-auto same(const Address &one, const Address &two) -> Flag;
-
 auto reached(const Live &live) -> Whole;
 
 void capture(const AUDIO::PLUGIN::Event &edge);

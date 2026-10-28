@@ -91,6 +91,8 @@ auto held() -> const Vector<Value> &;
 
 auto resting(const Address &address, Float memory) -> Float;
 
+auto same(const Address &one, const Address &two) -> Flag;
+
 void adopt(const Vector<Value> &values);
 
 constexpr STRING::Hot ARC = "arc";
