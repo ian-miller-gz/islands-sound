@@ -67,6 +67,7 @@ void SOUND::VIEWS::frame() {
   file();
   exporting();
   settings();
+  recovery();
   doors();
   for (Whole row = 0; row < registry().size(); ++row)
     if (::running(row)) registry()[row].run();

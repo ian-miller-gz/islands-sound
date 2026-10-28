@@ -55,6 +55,7 @@ void SOUND::COMMANDS::fresh() {
   ::founded();
   CONTROL::adopt(SESSION::held().values);
   RENDER::VOICE::claim();
+  settled();
 }
 
 void SOUND::COMMANDS::fresh(SHELL::Session &session) {

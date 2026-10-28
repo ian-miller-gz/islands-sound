@@ -85,7 +85,10 @@ const Vector<SHELL::Command> rows = {
   {"zoom", "", COMMANDS::zoom},
   {"pan", "", COMMANDS::pan},
   {"look", "",
-   COMMANDS::look}};
+   COMMANDS::look},
+  {"checkpoint", "", COMMANDS::checkpoint},
+  {"recovery", "", COMMANDS::recovery},
+  {"recover", "", COMMANDS::recover}};
 
 }  // namespace
 

@@ -35,11 +35,14 @@ void SOUND::COMMANDS::document(SHELL::Session &session) {
 }
 
 auto SOUND::COMMANDS::save(const String &name) -> String {
+  INVENTORY::house(name);  // a recorded take is kept by its path
   if (!SESSION::save(
         name, TRANSPORT::held(), TIMELINE::held(), INVENTORY::held(),
         GRAPH::held(), CONTROL::held(), HISTORY::held()))
     return "save refused";
   SESSION::keep(SESSION::held().name, VIEWS::kept());
+  SESSION::forget(SESSION::held().name);  // what was owed is saved
+  settled();
   return std::format("saved {}", SESSION::held().name);
 }
 

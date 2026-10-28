@@ -58,6 +58,8 @@ auto bend(Whole stock, Whole row, Float bend) -> Flag;
 
 auto take(Whole stock, const Vector<Vector<Float>> &lanes) -> STRING::Hot;
 
+auto house(const String &session) -> Whole;
+
 void close();
 
 }  // namespace SOUND::INVENTORY

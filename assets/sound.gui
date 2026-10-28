@@ -292,6 +292,11 @@ panel root style=clear anchor=stretch
     button settings.own style=place size=14 x=10 y=54 w=300 h=26
     button settings.shade style=place size=14 x=10 y=88 w=300 h=26
     button settings.close style=place size=14 anchor=southeast x=-10 y=-8 w=80 h=24 text="Close"
+  panel recovery.ask style=sheet visible=false z=11 anchor=center x=0 y=0 w=360 h=120
+    label recovery.ask.head style=muted size=14 x=10 y=8 w=340 h=18 text="Recovery"
+    label recovery.note style=ink size=14 x=10 y=36 w=340 h=36 text="The last run left unsaved work. Recover it?"
+    button recovery.take style=place size=14 anchor=southwest x=10 y=-8 w=120 h=24 text="Recover"
+    button recovery.drop style=place size=14 anchor=southeast x=-10 y=-8 w=120 h=24 text="Discard"
   panel menu style=sheet visible=false z=11 anchor=northwest x=0 y=0 w=176 h=36
     list menu.rows style=clear anchor=stretch x=6 y=6 w=6 h=6 pitch=24 pad=3 mark=selected plain=row quick=true
   panel tip style=sheet visible=false z=11 anchor=northwest x=0 y=0 w=280 h=24

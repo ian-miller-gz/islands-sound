@@ -34,6 +34,7 @@ void file();
 void exporting();
 
 void settings();
+void recovery();
 auto asking() -> Flag;
 
 void settled();

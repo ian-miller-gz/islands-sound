@@ -19,6 +19,17 @@ auto save(
 
 auto open(const String &name) -> STRING::Hot;
 
+auto recovered(const String &name) -> Flag;
+
+auto recover(
+  const String &name, const Setting &setting, const Arrangement &tracks,
+  const Inventory &pool, const Graph &wiring, const Vector<Value> &values,
+  const History &history) -> Flag;
+
+auto restore(const String &name) -> STRING::Hot;
+
+void forget(const String &name);
+
 auto rewritten() -> Whole;
 
 auto husks() -> Vector<Husk>;

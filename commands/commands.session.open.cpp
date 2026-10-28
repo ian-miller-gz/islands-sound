@@ -39,11 +39,13 @@ auto said(const COMMANDS::Gathered &told) -> String {
 
 }  // namespace
 
-auto SOUND::COMMANDS::open(const String &name) -> String {
-  const STRING::Hot refused = SESSION::open(name);
-  if (refused[0] != '\0') return std::format("open refused: {}", refused);
+// The adopted session landed on every part, Open's and Recover's one
+// tail: the voices dropped and claimed again around it, the takes re-read
+// by path, the graph stood, the values re-asserted, the kept face put
+// back, and the standing edits settled as owed to no recovery row.
+static auto landed(STRING::Hot word) -> String {
   RENDER::VOICE::drop();
-  Gathered told;
+  COMMANDS::Gathered told;
   TRANSPORT::adopt(SESSION::held().setting);
   TIMELINE::adopt(SESSION::held().arrangement);
   INVENTORY::adopt(SESSION::held().inventory);
@@ -59,6 +61,19 @@ auto SOUND::COMMANDS::open(const String &name) -> String {
   if (!husks.empty()) told.print(std::format("held {} husks", husks.size()));
   FIELDS::Map face;
   if (SESSION::kept(SESSION::held().name, face)) VIEWS::keep(face);
-  told.print(std::format("opened {}", SESSION::held().name));
+  COMMANDS::settled();
+  told.print(std::format("{} {}", word, SESSION::held().name));
   return ::said(told);
+}
+
+auto SOUND::COMMANDS::open(const String &name) -> String {
+  const STRING::Hot refused = SESSION::open(name);
+  if (refused[0] != '\0') return std::format("open refused: {}", refused);
+  return ::landed("opened");
+}
+
+auto SOUND::COMMANDS::recover(const String &name) -> String {
+  const STRING::Hot refused = SESSION::restore(name);
+  if (refused[0] != '\0') return std::format("recover refused: {}", refused);
+  return ::landed("recovered");
 }
