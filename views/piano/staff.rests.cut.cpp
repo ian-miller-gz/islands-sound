@@ -4,6 +4,7 @@
 
 #include "piano.beams.hpp"
 #include "piano.internal.hpp"
+#include "piano.notation.hpp"
 
 namespace {
 using namespace SOUND;
@@ -74,6 +75,7 @@ void rest(
 auto SOUND::VIEWS::ROLL::STAFF::rested(const Vector<Stem> &stems)
   -> Vector<Rest> {
   Vector<Rest> rests;
+  if (ROLL::GET::presentation() == ROLL::PRESENTATION::GRID) return rests;
   ::rest(stems, ::HANDS, rests);
   return rests;
 }
