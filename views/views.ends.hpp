@@ -10,12 +10,14 @@ struct Line {
   Whole stock = NONE;
   Whole floor = 0, length = 0;
   Float west = 0.0f, room = 0.0f;
+  Whole opens = 0;
 };
 
 struct Bed {
   String board;
   Float deep = 0.0f, scale = 1.0f;
   Whole grain = 1;
+  Whole snap = 0;
 };
 
 struct Pool {

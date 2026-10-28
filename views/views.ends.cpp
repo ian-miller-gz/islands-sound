@@ -19,13 +19,21 @@ auto placed(const Bed &bed, const Line &line) -> Float {
   return std::clamp(at, 0.0f, line.room);
 }
 
+auto snapped(const Bed &bed, const Line &line, Whole length) -> Whole {
+  if (bed.snap == 0) return length;
+  const Whole at = line.opens + length;
+  const Whole landed = (at + bed.snap / 2) / bed.snap * bed.snap;
+  const Whole most = line.floor + Whole(std::lround(line.room * Float(bed.grain)));
+  return std::clamp(landed > line.opens ? landed - line.opens : 0, line.floor, most);
+}
+
 void written(GUI::Handle page, const Bed &bed, const Line &line, Whole row) {
   const String head = VIEWS::ENDS::named(bed, row) + "." + VIEWS::ENDS::HEAD;
   const Float at = std::clamp(
     GUI::GET::position(page, head.c_str()).x, 0.0f, line.room);
   const Whole length =
     line.floor + Whole(std::lround(at * Float(bed.grain)));
-  COMMANDS::lengthened(line.stock, length);
+  COMMANDS::lengthened(line.stock, ::snapped(bed, line, length));
 }
 
 void laid(

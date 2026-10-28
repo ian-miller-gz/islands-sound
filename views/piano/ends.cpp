@@ -15,7 +15,7 @@ Whole born = 0;
 auto bed() -> VIEWS::ENDS::Bed {
   return {
     VIEWS::ROLL::board(), VIEWS::ROLL::ROWS::deep(), VIEWS::ROLL::scaled(),
-    VIEWS::ROLL::GRAIN};
+    VIEWS::ROLL::GRAIN, VIEWS::ROLL::bench().snap};
 }
 
 auto lined() -> Vector<VIEWS::ENDS::Line> {
@@ -30,7 +30,7 @@ auto lined() -> Vector<VIEWS::ENDS::Line> {
     lines.push_back(
       {span.stock, floor, std::min(INVENTORY::length(stock), run),
        VIEWS::ROLL::across(span.opens + floor),
-       VIEWS::ROLL::across(run - floor)});
+       VIEWS::ROLL::across(run - floor), span.opens});
   }
   return lines;
 }

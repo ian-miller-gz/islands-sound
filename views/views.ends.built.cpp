@@ -14,6 +14,7 @@ constexpr STRING::Hot INKED = "endline";
 constexpr STRING::Hot HELD = "endhead";
 constexpr Float UNWORN = -1.0f;
 constexpr Float LAID = 0.5f;
+constexpr Float DOTTED = 1.5f;  // the run's dash, in board units
 
 void stand(GUI::Handle page, const Bed &bed, Whole row) {
   const String id = VIEWS::ENDS::named(bed, row);
@@ -23,6 +24,7 @@ void stand(GUI::Handle page, const Bed &bed, Whole row) {
   const String run = id + "." + VIEWS::ENDS::RUN;
   BOARDS::place(page, id.c_str(), "stroke", run, {}, {});
   GUI::set(page, run.c_str(), GUI::Style{::INKED});
+  GUI::set(page, run.c_str(), GUI::Dash{::DOTTED});
   const String head = id + "." + VIEWS::ENDS::HEAD;
   BOARDS::place(page, id.c_str(), "grip", head, {}, {});
   GUI::set(page, head.c_str(), GUI::Style{::HELD});

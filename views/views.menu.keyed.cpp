@@ -12,7 +12,7 @@ String parked;
 void SOUND::VIEWS::MENU::park(GUI::Handle page, const String &cell) {
   ::parked = cell;
   GUI::edit(page, "");
-  GUI::set(page, ::ROWS, GUI::Cursor{0});
+  GUI::set(page, ::ROWS, GUI::Cursor{GUI::Cursor::NONE});
 }
 
 auto SOUND::VIEWS::MENU::GET::door() -> String { return ::parked; }

@@ -58,6 +58,7 @@ void SOUND::VIEWS::MENU::raise(
   GUI::set(page, ::PANEL, GUI::Seat{});
   ::worded(page);
   ::pointed(page);
+  GUI::set(page, ::ROWS, GUI::Cursor{GUI::Cursor::NONE});
   GUI::set(page, ::PANEL, GUI::Visibility{true});
 }
 
@@ -70,6 +71,7 @@ void SOUND::VIEWS::MENU::raise(
   GUI::set(page, ::PANEL, GUI::Position{0.0f, 0.0f});
   GUI::set(page, ::PANEL, GUI::Seat{door, GUI::BELOW, ::FOOT});
   ::worded(page);
+  GUI::set(page, ::ROWS, GUI::Cursor{GUI::Cursor::NONE});
   GUI::set(page, ::PANEL, GUI::Visibility{true});
 }
 
