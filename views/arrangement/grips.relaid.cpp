@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <format>
 
-#include "../../commands/commands.split.hpp"
+#include "../../commands.hpp"
 #include "../../history.hpp"
 #include "../../inventory.hpp"
 #include "../../timeline.hpp"

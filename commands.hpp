@@ -3,6 +3,7 @@
 #include <cartridge/interface.hpp>
 
 #include "commands/commands.aim.hpp"
+#include "commands/commands.split.hpp"
 #include "graph.hpp"
 
 namespace SOUND::COMMANDS {
