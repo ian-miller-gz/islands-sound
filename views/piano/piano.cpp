@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include <utility>
+
 #include <island/gui/seat.hpp>
 
 #include "../../boards.hpp"
@@ -20,7 +22,6 @@ Whole born = 0;
 void tools() {
   VIEWS::ROLL::ROWS::rows();
   VIEWS::ROLL::STAFF::drawn();
-  VIEWS::ROLL::STAFF::stemmed();
   VIEWS::ROLL::ruler();
   VIEWS::ROLL::dials();
   VIEWS::ROLL::doors();
@@ -47,9 +48,14 @@ void plates(GUI::Handle page) {
     BOARDS::place(
       page, board.c_str(), "node", GUI::SAC::SEAT::named(board.c_str(), row),
       {}, {});
-  VIEWS::ROLL::steadied(page, wanted);
-  VIEWS::ROLL::seat(page, wanted, ::shown);
+  // The plates stand before the stems are read off them, so a note
+  // authored between two frames is stemmed in the frame that shows it;
+  // the heads then seat with this frame's stems (their flips read them).
+  const Vector<VIEWS::ROLL::Pip> was = std::move(::shown);
   ::shown = wanted;
+  VIEWS::ROLL::STAFF::stemmed();
+  VIEWS::ROLL::steadied(page, wanted);
+  VIEWS::ROLL::seat(page, wanted, was);
 }
 
 void run() {
