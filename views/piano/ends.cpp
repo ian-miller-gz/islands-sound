@@ -46,5 +46,5 @@ void SOUND::VIEWS::ROLL::ends() {
 void SOUND::VIEWS::ROLL::SHED::ends() {
   const GUI::Handle page = document();
   if (VIEWS::reborn(::born)) ::pool = {};
-  VIEWS::ENDS::bare(page, ::bed(), ::pool);
+  VIEWS::ENDS::bare(page, {VIEWS::ROLL::board()}, ::pool);
 }
