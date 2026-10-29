@@ -11,16 +11,16 @@ style handlelit color=#f0a35aff border=0
 style region color=#241a14ff edge=#a08468ff border=1 hover=#241a14ff press=#241a14ff
 style bare color=#00000000 border=0 hover=#00000000 press=#00000000
 style entry color=#00000000 edge=#f3e9d8ff border=0 hover=#43352bff press=#a1652aff
-style knob style=entry color=#33261dff edge=#c9b59aff press=#f0a35aff track=#a08a70ff
+style knob style=entry color=#33261dff edge=#c9b59aff press=#f0a35aff track=#a08a70ff glow=#ffa33cff
 style hearing style=knob edge=#f0a35aff press=#f0a35aff
-style overruled style=knob press=#c9b59aff
+style overruled style=knob press=#c9b59aff glow=#c9b59aff
 style call color=#d9822bff edge=#2a1f18ff border=0 hover=#e8963fff press=#f0a35aff
 style selected color=#66411dff hover=#66411dff press=#a1652aff
 style dimmed color=#51371fff hover=#51371fff press=#a1652aff
 style focus color=#00000000 edge=#f0a35aff border=2
 style lanemark style=selected border=0
 style paper color=#1f1712ff edge=#c9b59aff border=1 hover=#66411dff
-style chrome color=#00000000 edge=#f3e9d8ff border=0 hover=#00000000 press=#00000000 glow=#f0a35aff
+style chrome color=#00000000 edge=#f3e9d8ff border=0 hover=#00000000 press=#00000000 glow=#ffbb5cff
 
 style row style=entry size=16 pad=6
 style icon style=chrome hover=#f3e9d81f press=#f3e9d833
