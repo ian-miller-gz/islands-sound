@@ -193,6 +193,8 @@ void roll(SHELL::Session &session);
 void beat(SHELL::Session &session);
 void drive(SHELL::Session &session);
 void strike(SHELL::Session &session);
+
+void cc(SHELL::Session &session);
 void hear(SHELL::Session &session);
 void record(SHELL::Session &session);
 

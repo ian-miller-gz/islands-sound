@@ -25,6 +25,12 @@ struct Turned {
   Float value = 0.0f;
 };
 
+struct Dialled {
+  Whole number = 0;
+  Whole at = 0;
+  Float value = 0.0f;
+};
+
 struct Crossed {
   Whole lane = 0;
   Vector<Vector<Float>> lanes;
@@ -35,6 +41,7 @@ struct Take {
   Vector<Vector<Float>> heard;
   Vector<Crossed> tapped;
   Vector<Turned> turned;
+  Vector<Dialled> dialled;
   Whole at = 0;
   Whole frames = 0;
   Float tempo = TEMPO;
@@ -49,6 +56,7 @@ struct Reel {
   Whole heard = 0;
   Whole tapped = 0;
   Whole turned = 0;
+  Whole dialled = 0;
   Vector<Whole> crossed;
 };
 

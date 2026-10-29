@@ -5,7 +5,7 @@
 
 #include "../control.hpp"
 #include "../timeline.hpp"
-#include "../commands.hpp"
+#include "commands.internal.hpp"
 
 namespace {
 using namespace SOUND;
@@ -18,20 +18,22 @@ auto counted(const String &token) -> Whole {
   return std::strtoul(token.c_str(), nullptr, 10);
 }
 
-auto stated() -> String {
+}  // namespace
+
+auto SOUND::COMMANDS::reeled() -> String {
   const CONTROL::Reel reel = CONTROL::reel();
   const Whole track = CONTROL::driven();
   const String tapped =
     reel.tapped == 0 ? String() : std::format(" tapped {}", reel.tapped);
+  const String dialled =
+    reel.dialled == 0 ? String() : std::format(" dialled {}", reel.dialled);
   return std::format(
     "control track {} record {} take {} at {} frames {} notes {} heard {} "
-    "turned {}{}",
+    "turned {}{}{}",
     track == NONE ? String("none") : std::to_string(track),
     reel.armed ? "armed" : "off", reel.taking ? "running" : "idle", reel.at,
-    reel.frames, reel.notes, reel.heard, reel.turned, tapped);
+    reel.frames, reel.notes, reel.heard, reel.turned, tapped, dialled);
 }
-
-}  // namespace
 
 void SOUND::COMMANDS::beat(SHELL::Session &session) {
   const Whole times =
@@ -54,7 +56,7 @@ void SOUND::COMMANDS::drive(SHELL::Session &session) {
     CONTROL::drive(track, lane);
   }
   tend();
-  session.print(::stated());
+  session.print(reeled());
 }
 
 void SOUND::COMMANDS::strike(SHELL::Session &session) {
@@ -67,7 +69,7 @@ void SOUND::COMMANDS::strike(SHELL::Session &session) {
     .first = std::min(::counted(session.arguments[1]), CONTROL::LOUDEST),
     .second = std::min(::counted(session.arguments[2]), CONTROL::LOUDEST)});
   tend();
-  session.print(::stated());
+  session.print(reeled());
 }
 
 void SOUND::COMMANDS::hear(SHELL::Session &session) {
@@ -82,7 +84,7 @@ void SOUND::COMMANDS::hear(SHELL::Session &session) {
     static_cast<AUDIO::Sample>(std::clamp(level, -1.0f, 1.0f) * (SCALE - 1.0f));
   const Vector<AUDIO::Sample> block(frames * CHANNELS, held);
   CONTROL::hear(block.data(), frames);
-  session.print(::stated());
+  session.print(reeled());
 }
 
 void SOUND::COMMANDS::record(SHELL::Session &session) {
@@ -92,5 +94,5 @@ void SOUND::COMMANDS::record(SHELL::Session &session) {
     CONTROL::arm(want == ON);
   }
   tend();
-  session.print(::stated());
+  session.print(reeled());
 }

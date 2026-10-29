@@ -38,6 +38,14 @@ auto laned(Whole track, Whole kind) -> Whole {
   return NONE;
 }
 
+auto dialled(Whole track) -> Whole {
+  const Vector<ARRANGEMENT::TRACK::Lane> &lanes =
+    TIMELINE::held().tracks[track].lanes;
+  const Whole armed = CONTROL::laned();
+  if (armed < lanes.size() && lanes[armed].kind == KIND::CONTROL) return armed;
+  return NONE;
+}
+
 auto crossed(Whole track, Whole lane) -> Whole {
   const Vector<ARRANGEMENT::TRACK::Lane> &lanes =
     TIMELINE::held().tracks[track].lanes;
@@ -64,6 +72,8 @@ auto landings(const CONTROL::Reel &reel) -> Vector<Landing> {
     ::fallen(falls, track, KIND::NOTES, ::laned(track, KIND::NOTES));
   if (reel.turned > 0)
     ::fallen(falls, track, KIND::LOGIC, ::laned(track, KIND::LOGIC));
+  if (reel.dialled > 0)
+    ::fallen(falls, track, KIND::CONTROL, ::dialled(track));
   return falls;
 }
 

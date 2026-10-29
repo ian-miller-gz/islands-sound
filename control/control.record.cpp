@@ -76,6 +76,7 @@ auto SOUND::CONTROL::reel() -> Reel {
     .heard = live.take.heard.empty() ? 0 : live.take.heard[0].size(),
     .tapped = ::crossed(live.take),
     .turned = live.take.turned.size(),
+    .dialled = live.take.dialled.size(),
     .crossed = ::lanes(live.take)};
 }
 

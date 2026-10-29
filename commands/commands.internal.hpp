@@ -63,6 +63,10 @@ auto kept(Change change, const String &said = String()) -> Flag;
 
 void landed(const CONTROL::Take &take);
 
+void dialled(const CONTROL::Take &take);
+
+auto reeled() -> String;
+
 void loops(SHELL::Session &session);
 
 auto lined(Whole index, const Edit &edit) -> String;

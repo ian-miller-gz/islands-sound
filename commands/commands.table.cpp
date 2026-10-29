@@ -68,6 +68,7 @@ const Vector<SHELL::Command> rows = {
    COMMANDS::roll},
   {"drive", "", COMMANDS::drive},
   {"strike", "", COMMANDS::strike},
+  {"cc", "", COMMANDS::cc},
   {"hear", "", COMMANDS::hear},
   {"record", "", COMMANDS::record},
   {"beat",

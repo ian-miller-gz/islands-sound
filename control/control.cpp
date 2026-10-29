@@ -54,8 +54,14 @@ auto SOUND::CONTROL::read() -> Whole {
 }
 
 auto SOUND::CONTROL::read(const MIDI::Message &message) -> Flag {
-  if (message.kind == MIDI::Message::CONTROL)
+  if (message.kind == MIDI::Message::CONTROL) {
+    if (::live.taking)
+      ::live.take.dialled.push_back(
+        {.number = message.first,
+         .at = reached(::live),
+         .value = Float(message.second) / Float(LOUDEST)});
     return MAP::heard(message) || pedal(message);
+  }
   if (
     message.kind != MIDI::Message::NOTE_ON &&
     message.kind != MIDI::Message::NOTE_OFF)

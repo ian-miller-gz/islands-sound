@@ -95,4 +95,5 @@ void SOUND::COMMANDS::land() {
   ::seat(take);
   landed(take);
   ::turn(take);
+  dialled(take);
 }
