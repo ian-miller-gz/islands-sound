@@ -111,6 +111,7 @@ auto composed(const Vector<::Piece> &pieces, Whole kind) -> Whole {
     ::curved(stock, pieces, INVENTORY::held());
   else
     ::turned(stock, pieces, INVENTORY::held());
+  INVENTORY::length(stock, pieces.back().offset + pieces.back().held);
   return stock;
 }
 
