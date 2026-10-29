@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include "../../history.hpp"
 #include "../../shape.hpp"
 #include "easel.draft.hpp"
 
@@ -7,6 +8,7 @@ using namespace SOUND;
 
 Vector<VIEWS::SIGNALS::Point> drafting;
 Flag spanning = false;
+Flag arced = false;
 
 auto owned(Whole at) -> Whole {
   for (Whole row = 0; row < ::drafting.size(); ++row)
@@ -42,6 +44,10 @@ auto SOUND::VIEWS::SIGNALS::DRAFT::spanning() -> Flag & { return ::spanning; }
 void SOUND::VIEWS::SIGNALS::DRAFT::lay(
   Integer across, Float value, Whole shape) {
   const Whole at = stamped(across);
+  if (!::arced) {
+    HISTORY::begin();
+    ::arced = true;
+  }
   const Whole stock = ::claimed(at);
   if (stock == NONE) return;
   const Whole row = ::owned(at);
@@ -65,6 +71,9 @@ auto SOUND::VIEWS::SIGNALS::stamped(Integer across) -> Whole {
 void SOUND::VIEWS::SIGNALS::begun() {
   ::drafting.clear();
   ::spanning = false;
+  if (!::arced) return;
+  ::arced = false;
+  HISTORY::end();
 }
 
 void SOUND::VIEWS::SIGNALS::drawn(const Vector<GUI::SAC::STROKE::Cell> &cells) {
