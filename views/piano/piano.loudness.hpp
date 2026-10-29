@@ -7,6 +7,8 @@ namespace SOUND::VIEWS::ROLL {
 void loudness();
 void loudness(SHELL::Session &session);
 
+void loudness(Flag on);
+
 namespace SHED {
 void loudness();
 }  // namespace SHED

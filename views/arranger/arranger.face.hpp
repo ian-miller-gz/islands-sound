@@ -8,6 +8,8 @@ auto editable(Whole kind) -> Flag;
 
 auto edit(Whole track, Whole lane) -> Flag;
 
+auto velocity(Whole track, Whole lane) -> Flag;
+
 auto words() -> Vector<SHELL::Command>;
 
 }  // namespace SOUND::VIEWS::ARRANGER

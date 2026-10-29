@@ -8,4 +8,6 @@ namespace SOUND::VIEWS::ROLL {
 
 auto face() -> const View &;
 
+auto words() -> Vector<SHELL::Command>;
+
 }  // namespace SOUND::VIEWS::ROLL

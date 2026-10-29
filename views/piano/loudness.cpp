@@ -88,4 +88,8 @@ void SOUND::VIEWS::ROLL::loudness(SHELL::Session &session) {
       ::STEM, at, stems[at].index, ::loud(LOUDNESS::velocity(stems[at]))));
 }
 
+void SOUND::VIEWS::ROLL::loudness(Flag on) {
+  ROLL::faced().loudness = on ? ::SHOWN : ::HIDDEN;
+}
+
 void SOUND::VIEWS::ROLL::SHED::loudness() { LOUDNESS::bare(document()); }

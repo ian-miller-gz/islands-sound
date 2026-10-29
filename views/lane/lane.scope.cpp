@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "../../timeline.hpp"
+#include "../piano/piano.face.hpp"
 #include "lane.internal.hpp"
 
 namespace {
@@ -69,7 +70,9 @@ auto SOUND::VIEWS::LANE::scope(Whole clip) -> Flag {
 }
 
 auto SOUND::VIEWS::LANE::words() -> Vector<SHELL::Command> {
-  return {{::WORD, ::HELP, ::scope}};
+  Vector<SHELL::Command> said = {{::WORD, ::HELP, ::scope}};
+  for (const SHELL::Command &one : ROLL::words()) said.push_back(one);
+  return said;
 }
 
 auto SOUND::VIEWS::LANE::GET::scoped() -> const Clip * {

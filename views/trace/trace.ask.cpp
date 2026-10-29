@@ -10,6 +10,7 @@ namespace TRACE = SOUND::VIEWS::TRACE;
 namespace ARRANGER = SOUND::VIEWS::ARRANGER;
 
 constexpr STRING::Hot EDITS = "Edit";
+constexpr STRING::Hot VELOCITY = "Velocity";
 
 auto shown(Whole row) -> Flag {
   const Whole track = TRACE::attended();
@@ -19,10 +20,18 @@ auto shown(Whole row) -> Flag {
   return row < lanes.size() && ARRANGER::editable(lanes[row].kind);
 }
 
+auto noted(Whole row) -> Flag {
+  const Whole track = TRACE::attended();
+  if (!::shown(row)) return false;
+  return TIMELINE::held().tracks[track].lanes[row].kind == KIND::NOTES;
+}
+
 void edit(Whole row) { ARRANGER::edit(TRACE::attended(), row); }
 
+void velocity(Whole row) { ARRANGER::velocity(TRACE::attended(), row); }
+
 const Vector<VIEWS::MENU::Act> ACTS = {
-  {.word = ::EDITS, .act = ::edit, .shown = ::shown}};
+  {::EDITS, ::edit, ::shown}, {::VELOCITY, ::velocity, ::noted}};
 
 }  // namespace
 
