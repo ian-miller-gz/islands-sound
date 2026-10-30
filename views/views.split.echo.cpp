@@ -44,11 +44,13 @@ void SOUND::VIEWS::SPLIT::draw(GFX::Pass &) {
   ::wanted = {};
   GUI::Echo echo;
   if (open() && from.on && from.size.w > 0.0f && from.size.h > 0.0f) {
-    const GUI::Position to = GUI::GET::origin(page, GROUND::LOWER);
+    const GUI::Position ground = GUI::GET::origin(page, GROUND::LOWER);
     const GUI::Extent room = GUI::GET::measured(page, GROUND::LOWER);
+    const Float down = GUI::GET::origin(page, MAIN).y + top();
+    const Float tall = ground.y + room.h - down;
     echo = {
-      from.at.x, from.at.y, from.size.w, std::min(from.size.h, room.h), 0.0f,
-      to.y - from.at.y};
+      from.at.x, from.at.y, from.size.w, std::min(from.size.h, tall), 0.0f,
+      down - from.at.y};
   }
   GUI::echo(page, echo);
 }
