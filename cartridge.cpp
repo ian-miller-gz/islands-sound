@@ -15,8 +15,6 @@ void frame() {
   SOUND::VIEWS::frame();
 }
 
-// A clean close owes no recovery: the row is for the run that never
-// reached here.
 void close() {
   SOUND::SESSION::forget(SOUND::SESSION::held().name);
   SOUND::RENDER::VOICE::drop();

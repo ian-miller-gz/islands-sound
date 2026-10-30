@@ -26,12 +26,8 @@ auto named() -> String {
   return name.empty() ? String(::UNNAMED) : name;
 }
 
-// The counted edits: the ledger's and the inventory's, RENDER::moved's own
-// sum — what a Save would be saving.
 auto moved() -> Whole { return HISTORY::counted() + INVENTORY::counted(); }
 
-// The row written: the housed takes first, so a recorded take the row
-// names by path is on disk before the row is.
 void write() {
   INVENTORY::house(SESSION::held().name);
   SESSION::recover(

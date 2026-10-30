@@ -20,9 +20,6 @@ auto inked(const HEADS::Worn &now) -> String {
   return ROLL::tinted(::INKS[now.ink], now.tier);
 }
 
-// A ledger: an even place off every staff — past the rules' ends, or in
-// the grand staff's gap, where the rules either side stand more than a
-// line apart.
 auto ledgered(Integer place) -> Flag {
   const Vector<Integer> rules = ROLL::STAFF::GET::rules();
   if (place == ROLL::STAFF::NOWHERE || place % ::PAIRED != 0) return false;

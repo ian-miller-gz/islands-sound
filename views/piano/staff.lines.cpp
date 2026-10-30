@@ -56,9 +56,6 @@ auto SOUND::VIEWS::ROLL::STAFF::relined() -> Flag {
   return true;
 }
 
-// Every pitch's line under the key, spelled once per key: a line a
-// pitch, ordered by place and, on one place, the pitch the signature
-// spells plain first — so a press on a place writes the natural.
 auto SOUND::VIEWS::ROLL::STAFF::pitched(const Key &key) -> Vector<Line> {
   const Flag same = key.tonic == ::keyed.tonic && key.scale == ::keyed.scale;
   if (same && !::spelt.empty()) return ::spelt;

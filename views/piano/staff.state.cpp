@@ -28,9 +28,6 @@ void stems(SHELL::Session &session) {
 
 }  // namespace
 
-// The pitched staff says its key and its rules, then only the lines the
-// signature spells plain inside the grand staff (a line a pitch would be
-// a hundred and twenty-eight).
 static void pitched(SHELL::Session &session) {
   const Key key = TRANSPORT::keyed(0);
   session.print(std::format(

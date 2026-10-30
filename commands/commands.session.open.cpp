@@ -39,10 +39,6 @@ auto said(const COMMANDS::Gathered &told) -> String {
 
 }  // namespace
 
-// The adopted session landed on every part, Open's and Recover's one
-// tail: the voices dropped and claimed again around it, the takes re-read
-// by path, the graph stood, the values re-asserted, the kept face put
-// back, and the standing edits settled as owed to no recovery row.
 static auto landed(STRING::Hot word) -> String {
   RENDER::VOICE::drop();
   COMMANDS::Gathered told;

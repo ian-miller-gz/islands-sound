@@ -46,9 +46,9 @@ struct Worn {
   Integer place = 0;
   Float side = 0.0f;
   Flag flipped = false;
-  Whole sign = NONE;     // the pitched staff: the accidental before the head
-  Flag hollow = false;   // the pitched staff: a half note or longer
-  Flag pitched = false;  // drawn on the pitched staff, not the drum's
+  Whole sign = NONE;
+  Flag hollow = false;
+  Flag pitched = false;
   auto operator==(const Worn &) const -> Bool = default;
 };
 

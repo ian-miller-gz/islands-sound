@@ -48,9 +48,6 @@ void plates(GUI::Handle page) {
     BOARDS::place(
       page, board.c_str(), "node", GUI::SAC::SEAT::named(board.c_str(), row),
       {}, {});
-  // The plates stand before the stems are read off them, so a note
-  // authored between two frames is stemmed in the frame that shows it;
-  // the heads then seat with this frame's stems (their flips read them).
   const Vector<VIEWS::ROLL::Pip> was = std::move(::shown);
   ::shown = wanted;
   VIEWS::ROLL::STAFF::stemmed();

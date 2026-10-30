@@ -14,8 +14,6 @@ constexpr STRING::Hot DOOR = "piano.bench.presentation";
 constexpr STRING::Hot WHOSE = "piano.presentation";
 constexpr STRING::Hot LINE = "bench presentation {}";
 constexpr Whole COUNT = std::size(ROLL::PRESENTATIONS);
-// The door is a square on the bench's first row, so it says its state by
-// a glyph: the grid's cells, the staff's treble clef.
 constexpr STRING::Hot GLYPHS[] = {"\u25A6", "\U0001D11E"};
 
 void raise() {

@@ -21,11 +21,11 @@ auto open(const String &name) -> String;
 void fresh();
 void fresh(SHELL::Session &session);
 
-// The recovery row (order 394q): what Save would write, written into the
-// store's recovery table whenever the counted edits have moved and a
-// period has passed since the last row — never on the transport alone —
-// and read back by recover() through Open's own path. settled() marks the
-// standing edits as owed to no row (a fresh, opened or saved session).
+/// @brief The recovery row (order 394q): what Save would write, written into
+/// the store's recovery table whenever the counted edits have moved and a
+/// period has passed since the last row — never on the transport alone — and
+/// read back by recover() through Open's own path. settled() marks the
+/// standing edits as owed to no row (a fresh, opened or saved session).
 void settled();
 void checkpoint();
 void checkpoint(SHELL::Session &session);

@@ -23,13 +23,9 @@ struct Spelling {
   Integer accidental = 0;
 };
 
-// The key's seven degrees, each a letter and the accidental that letter
-// wears in the signature — the tonic's letter chosen, when the tonic is
-// a black key, as whichever spelling asks the fewest accidentals of the
-// scale. A scale of other than seven notes spells chromatically.
 struct Signature {
-  Vector<Spelling> degrees;  // by scale degree
-  Vector<Whole> classes;     // the pitch class of each degree
+  Vector<Spelling> degrees;
+  Vector<Whole> classes;
   Integer worn[LETTERS] = {};
   Flag tonal = false;
 };
@@ -77,9 +73,6 @@ auto signed_(const Key &key) -> Signature {
   return signature;
 }
 
-// One pitch's spelling under the signature: its degree's own when in the
-// scale, else the neighbouring degree's letter raised or lowered — the
-// way the signature leans — never past one accidental.
 auto spelled(const Signature &signature, Whole pitch) -> Spelling {
   const Whole klass = pitch % CLASSES;
   if (signature.tonal)

@@ -25,8 +25,6 @@ constexpr Glyph HEADED = ::inked(ROLL::INK);
 constexpr Glyph MARKED = {24.0f, 12.4f, 6.2f, 13.1f};
 constexpr Glyph STRESSED = ::inked({0.05f, 0.416f, -0.146f});
 constexpr Glyph BRACKETED = ::inked({0.05f, 0.513f, 0.1425f});
-// The accidental stands west of the head: its own ink centred 0.45 em
-// before the head's, 0.28 em wide, on the head's baseline.
 constexpr Glyph SIGNED = {
   ROLL::EM, 0.28f * ROLL::EM, (0.45f + 0.14f) * ROLL::EM,
   (ROLL::BASELINE - 0.135f) * ROLL::EM};

@@ -18,12 +18,6 @@ void raised(GUI::Handle page, Flag on) {
 
 }  // namespace
 
-// The recovery plate (order 394q): once a run, at its first frame, the
-// store is asked for a recovery row under the session's name — a run
-// that never closed cleanly left one — and the plate offers it. Recover
-// takes it through Open's own path, so the ledger comes back and undo
-// stands; Discard forgets it; Escape lowers the plate and leaves the row
-// for the next run to offer again.
 void SOUND::VIEWS::recovery() {
   const GUI::Handle page = document();
   if (!::offered) {

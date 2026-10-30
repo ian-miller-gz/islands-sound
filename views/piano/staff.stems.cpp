@@ -20,7 +20,7 @@ struct Hit {
   auto operator==(const Hit &) const -> Bool = default;
 };
 
-constexpr Integer MIDDLE = 4;  // the treble's middle line: above it, down
+constexpr Integer MIDDLE = 4;
 
 Vector<Hit> kept;
 Vector<STAFF::Stem> stood;

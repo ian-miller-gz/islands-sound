@@ -14,7 +14,7 @@ constexpr STRING::Hot INKED = "endline";
 constexpr STRING::Hot HELD = "endhead";
 constexpr Float UNWORN = -1.0f;
 constexpr Float LAID = 0.5f;
-constexpr Float DOTTED = 1.5f;  // the run's dash, in board units
+constexpr Float DOTTED = 1.5f;
 
 void stand(GUI::Handle page, const Bed &bed, Whole row) {
   const String id = VIEWS::ENDS::named(bed, row);

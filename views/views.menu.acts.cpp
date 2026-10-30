@@ -43,8 +43,6 @@ void hang(GUI::Handle page, const Vector<String> &labels, STRING::Hot list) {
   const GUI::Position at = GUI::GET::origin(page, door.c_str());
   const GUI::Extent size = GUI::GET::measured(page, door.c_str());
   VIEWS::MENU::raise(labels, at.x, at.y + size.h + ::GAP, list);
-  // Summoned by keys, the menu marks its first row: the hand has no
-  // pointer to find a row with, where a pointer's menu marks none.
   GUI::set(page, ::ROWS, GUI::Cursor{::FIRST});
 }
 
