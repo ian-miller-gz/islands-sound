@@ -54,16 +54,9 @@ auto SOUND::VIEWS::SPLIT::lower() -> Whole { return open() ? ::held() : NONE; }
 auto SOUND::VIEWS::SPLIT::choose(const String &name) -> Flag {
   const Whole at = ::row(name);
   if (!::viewed(at)) return false;
-  const Whole now = lower();
-  const Flag twin = hosted(at) || mirrored(at);
-  const Flag trade = at == chosen() && !twin && now != NONE;
-  const Flag done = !trade || VIEWS::choose(String(roster()[now].name));
-  if (!trade) ::below = at;
+  ::below = at;
   focus(BELOW);
-  return done;
+  return true;
 }
 
-void SOUND::VIEWS::SPLIT::traded(Whole row) {
-  if (row != chosen() && row == lower()) ::below = chosen();
-  focus(UPPER);
-}
+void SOUND::VIEWS::SPLIT::traded(Whole) { focus(UPPER); }
