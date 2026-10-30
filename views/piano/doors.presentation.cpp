@@ -14,6 +14,9 @@ constexpr STRING::Hot DOOR = "piano.bench.presentation";
 constexpr STRING::Hot WHOSE = "piano.presentation";
 constexpr STRING::Hot LINE = "bench presentation {}";
 constexpr Whole COUNT = std::size(ROLL::PRESENTATIONS);
+// The door is a square on the bench's first row, so it says its state by
+// a glyph: the grid's cells, the staff's treble clef.
+constexpr STRING::Hot GLYPHS[] = {"\u25A6", "\U0001D11E"};
 
 void raise() {
   Vector<String> rows;
@@ -40,9 +43,7 @@ void SOUND::VIEWS::ROLL::present() {
   const Whole row = MENU::taken(::WHOSE);
   if (row < ::COUNT) faced().presentation = row;
   if (GUI::GET::clicked(page, ::DOOR)) ::raise();
-  const String word = PRESENTATIONS[GET::presentation()];
-  GUI::set(page, ::DOOR, GUI::Text{word});
-  GUI::set(page, ::DOOR, GUI::Visibility{true});  // both notations present
+  GUI::set(page, ::DOOR, GUI::Text{String(::GLYPHS[GET::presentation()])});
 }
 
 void SOUND::VIEWS::ROLL::present(SHELL::Session &session) {
