@@ -50,10 +50,12 @@ void SOUND::VIEWS::ARRANGER::shared(GUI::Handle page) {
   } else {
     ::placed(page, below.name, SPLIT::top(), ::WHOLE);
   }
-  const Whole held = paged(UPPER) != NONE ? UPPER : BELOW;
+  const Whole held = paged(UPPER) != NONE   ? UPPER
+                     : paged(BELOW) != NONE ? BELOW
+                                            : NONE;
   const LANE::Mark mark = offered();
-  const Whole kind = mark.kind != NONE ? mark.kind : paged(held);
-  if (kind != NONE) {
+  const Whole kind = mark.kind != NONE ? mark.kind : NONE;
+  if (held != NONE && kind != NONE) {
     LANE::paged(kind);
     if (kind != paged(held)) turned(held, kind);
   }

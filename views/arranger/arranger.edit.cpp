@@ -61,6 +61,7 @@ auto SOUND::VIEWS::ARRANGER::edit(Whole track, Whole lane) -> Flag {
                        : paged(SPLIT::UPPER) != NONE ? SPLIT::UPPER
                                                      : focused;
   turned(region, one->kind);
+  LANE::paged(one->kind);
   if (SPLIT::shared()) {
     SPLIT::focus(region);
     return true;
