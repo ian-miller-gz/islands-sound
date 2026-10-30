@@ -11,6 +11,8 @@ using namespace SOUND;
 using VIEWS::MENU::Act;
 
 constexpr Whole SUMMON = 10;
+constexpr STRING::Hot ROWS = "menu.rows";
+constexpr Whole FIRST = 0;
 constexpr Float GAP = 4.0f;
 constexpr VIEWS::Chord KEYED = {
   .action = INPUT::KEYS::HOTKEY, .code = ::SUMMON, .shift = true};
@@ -41,6 +43,9 @@ void hang(GUI::Handle page, const Vector<String> &labels, STRING::Hot list) {
   const GUI::Position at = GUI::GET::origin(page, door.c_str());
   const GUI::Extent size = GUI::GET::measured(page, door.c_str());
   VIEWS::MENU::raise(labels, at.x, at.y + size.h + ::GAP, list);
+  // Summoned by keys, the menu marks its first row: the hand has no
+  // pointer to find a row with, where a pointer's menu marks none.
+  GUI::set(page, ::ROWS, GUI::Cursor{::FIRST});
 }
 
 auto shown(const Vector<Act> &acts, Whole row) -> Vector<Whole> {
