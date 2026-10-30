@@ -22,7 +22,4 @@ void SOUND::VIEWS::SPLIT::state(SHELL::Session &session) {
     std::format("{} {} {}", ::FOCUS, REGIONS[focused()], aimed()->name));
   if (held()) session.print(::HELD);
   session.print(std::format(::HANDLE, GET::handle()));
-  if (!doubled() || roster()[at].state == nullptr) return;
-  const Turn turn(true);
-  roster()[at].state(session);
 }

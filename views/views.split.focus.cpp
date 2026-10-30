@@ -47,10 +47,8 @@ auto headed(const String &id) -> Whole {
 
 void SOUND::VIEWS::SPLIT::pressed(GUI::Handle page) {
   if (!open()) return;
-  const GUI::Handle twin = second();
-  const Flag below = doubled() && GUI::GET::pressed(twin);
-  if (below && !landed(twin).empty()) return void(::fact = BELOW);
   if (!GUI::GET::pressed(page)) return;
+  if (GUI::GET::echoed(page)) return void(::fact = BELOW);
   const String id = landed(page);
   const Whole place = placed(id);
   const Whole head = place == NONE ? ::headed(id) : place;

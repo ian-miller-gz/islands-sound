@@ -16,6 +16,5 @@ auto SOUND::VIEWS::GET::seen(const View &unit) -> Seen {
 auto SOUND::VIEWS::GET::seen() -> Seen {
   const View *unit = SPLIT::aimed();
   if (unit == nullptr || !owns(unit->name, ZOOM)) return {};
-  const SPLIT::Turn turn(SPLIT::turned());
   return seen(*unit);
 }

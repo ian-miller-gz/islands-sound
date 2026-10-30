@@ -24,7 +24,6 @@ auto SOUND::VIEWS::open(STRING::Hot assets) -> Status {
   settled();
   sheet() = GUI::mount(assets, ::LAYOUT);
   if (sheet() == GUI::NONE) return 1;
-  SPLIT::mount(assets, ::LAYOUT);
   Vector<View> &units = registry();
   for (Whole row = 0; row < units.size(); ++row) {
     standings()[row] = units[row].panel;

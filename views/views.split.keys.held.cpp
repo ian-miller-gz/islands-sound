@@ -73,9 +73,7 @@ auto own(const String &id) -> Flag {
 
 auto elsewhere() -> Flag {
   const GUI::Handle page = VIEWS::sheet();
-  if (GUI::GET::pressed(page) && !::own(GUI::GET::hover(page))) return true;
-  const GUI::Handle twin = VIEWS::SPLIT::second();
-  return VIEWS::SPLIT::doubled() && GUI::GET::pressed(twin);
+  return GUI::GET::pressed(page) && !::own(GUI::GET::hover(page));
 }
 
 }  // namespace

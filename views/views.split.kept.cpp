@@ -11,30 +11,14 @@ constexpr STRING::Hot HEIGHT = "split.height";
 constexpr STRING::Hot LAST = "split.last";
 constexpr STRING::Hot VIEW = "split.view";
 
-const String STEM = String(VIEWS::SPLIT::LOWER) + VIEWS::SPLIT::DOT;
 
 }  // namespace
-
-void SOUND::VIEWS::SPLIT::board(FIELDS::Map &face) {
-  if (second() == GUI::NONE) return;
-  const Turn turn(true);
-  for (Whole row = 0; row < roster().size(); ++row)
-    if (mirrored(row)) KEPT::board(face, roster()[row], ::STEM);
-}
-
-void SOUND::VIEWS::SPLIT::boarded(const FIELDS::Map &face) {
-  if (second() == GUI::NONE) return;
-  const Turn turn(true);
-  for (Whole row = 0; row < roster().size(); ++row)
-    if (mirrored(row)) KEPT::boarded(face, roster()[row], ::STEM);
-}
 
 void SOUND::VIEWS::SPLIT::keep(FIELDS::Map &face) {
   face[::HEIGHT] = height();
   face[::LAST] = last();
   const Whole at = lower();
   if (at != NONE) face[::VIEW] = String(roster()[at].name);
-  board(face);
 }
 
 void SOUND::VIEWS::SPLIT::restore(const FIELDS::Map &face) {
@@ -45,5 +29,4 @@ void SOUND::VIEWS::SPLIT::restore(const FIELDS::Map &face) {
   restore(tall, kept);
   String name;
   if (KEPT::text(face, ::VIEW, name)) choose(name);
-  boarded(face);
 }

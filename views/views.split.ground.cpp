@@ -35,7 +35,7 @@ void rimmed(GUI::Handle page) {
 void SOUND::VIEWS::SPLIT::grounded(
   GUI::Handle page, const Seat &seat, Float tall) {
   const Flag on = open();
-  ::shown(page, GROUND::LOWER, on && !doubled());
+  ::shown(page, GROUND::LOWER, on);
   ::shown(page, GROUND::UPPER, on);
   ::shown(page, RIM, on);
   if (!on) return;

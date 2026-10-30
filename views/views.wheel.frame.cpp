@@ -26,9 +26,6 @@ void turned(const VIEWS::View *unit) {
 void SOUND::VIEWS::wheeled() {
   ::turned(found(String(standing())));
   ::turned(::lowered());
-  if (!SPLIT::doubled()) return;
-  const SPLIT::Turn turn(true);
-  ::turned(found(String(standing())));
 }
 
 void SOUND::VIEWS::wheeled(const GUI::NGA::Wheel &turn) {

@@ -50,7 +50,7 @@ void pointed(GUI::Handle page) {
 
 void SOUND::VIEWS::MENU::raise(
   const Vector<String> &rows, Float x, Float y, STRING::Hot whose) {
-  const GUI::Handle page = SPLIT::home();
+  const GUI::Handle page = sheet();
   ::said = rows;
   ::claim = whose;
   ::hung.clear();
@@ -64,7 +64,7 @@ void SOUND::VIEWS::MENU::raise(
 
 void SOUND::VIEWS::MENU::raise(
   const Vector<String> &rows, STRING::Hot whose, STRING::Hot door) {
-  const GUI::Handle page = SPLIT::home();
+  const GUI::Handle page = sheet();
   ::said = rows;
   ::claim = whose;
   ::hung = door;
@@ -76,15 +76,15 @@ void SOUND::VIEWS::MENU::raise(
 }
 
 void SOUND::VIEWS::MENU::lower() {
-  GUI::set(SPLIT::home(), ::PANEL, GUI::Visibility{false});
+  GUI::set(sheet(), ::PANEL, GUI::Visibility{false});
 }
 
 auto SOUND::VIEWS::MENU::standing() -> Flag {
-  return GUI::GET::visibility(SPLIT::home(), ::PANEL);
+  return GUI::GET::visibility(sheet(), ::PANEL);
 }
 
 auto SOUND::VIEWS::MENU::taken(STRING::Hot whose) -> Whole {
-  const GUI::Handle page = SPLIT::home();
+  const GUI::Handle page = sheet();
   if (!standing() || ::claim != whose) return NONE;
   if (!GUI::GET::activated(page, ::ROWS)) return NONE;
   GUI::set(page, ::PANEL, GUI::Visibility{false});
@@ -93,7 +93,7 @@ auto SOUND::VIEWS::MENU::taken(STRING::Hot whose) -> Whole {
 }
 
 void SOUND::VIEWS::MENU::frame() {
-  const GUI::Handle page = SPLIT::home();
+  const GUI::Handle page = sheet();
   if (page == GUI::NONE || !standing()) return;
   ::worded(page);
   if (::hung.empty()) ::pointed(page);
