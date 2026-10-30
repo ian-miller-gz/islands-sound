@@ -64,6 +64,7 @@ void state(SHELL::Session &session) {
   const VIEWS::View &stands = ::stander();
   session.print(std::format(
     "arranger page {} face {}", VIEWS::ARRANGER::spoken(), stands.name));
+  const VIEWS::View &lane = VIEWS::LANE::face();
   if (VIEWS::SPLIT::shared())
     session.print(std::format(
       "arranger lower {} focus {}", VIEWS::ARRANGER::spoken(BELOW),
@@ -71,6 +72,8 @@ void state(SHELL::Session &session) {
   VIEWS::LANE::marked(session);
   VIEWS::LANE::faces(session);
   if (stands.state != nullptr) stands.state(session);
+  if (VIEWS::SPLIT::shared() && &stands != &lane && lane.state != nullptr)
+    lane.state(session);
 }
 
 [[maybe_unused]] const Flag offered = VIEWS::offer(

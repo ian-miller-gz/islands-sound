@@ -44,8 +44,13 @@ void SOUND::VIEWS::ARRANGER::shared(GUI::Handle page) {
   }
   ::placed(page, above.name, ::WHOLE, SPLIT::height());
   ::placed(page, below.name, SPLIT::top(), ::WHOLE);
-  const Whole kind = paged(UPPER) != NONE ? paged(UPPER) : paged(BELOW);
-  if (kind != NONE) LANE::paged(kind);
+  const Whole held = paged(UPPER) != NONE ? UPPER : BELOW;
+  const LANE::Mark mark = offered();
+  const Whole kind = mark.kind != NONE ? mark.kind : paged(held);
+  if (kind != NONE) {
+    LANE::paged(kind);
+    if (kind != paged(held)) turned(held, kind);
+  }
   listen(SPLIT::focused() == UPPER);
   above.run();
   listen(SPLIT::focused() == BELOW);

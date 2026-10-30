@@ -57,6 +57,10 @@ auto SOUND::VIEWS::ARRANGER::edit(Whole track, Whole lane) -> Flag {
   LANE::mark(track, lane);
   const Whole region = SPLIT::open() ? SPLIT::focused() : SPLIT::UPPER;
   turned(region, one->kind);
+  if (SPLIT::shared()) {
+    SPLIT::focus(paged(SPLIT::UPPER) != NONE ? SPLIT::UPPER : SPLIT::BELOW);
+    return true;
+  }
   return region == SPLIT::BELOW ? SPLIT::choose(NAME) : VIEWS::choose(NAME);
 }
 
