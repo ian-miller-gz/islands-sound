@@ -9,26 +9,27 @@
 namespace {
 using namespace SOUND;
 using namespace SOUND::VIEWS::ARRANGER;
+using VIEWS::SPLIT::UPPER;
 
 constexpr STRING::Hot TOOLS = "tools";
 constexpr STRING::Hot MARKED = "selected";
 constexpr STRING::Hot PLAIN = "icon";
 constexpr STRING::Hot SESSION = "session";
 
-Whole paging = NONE;
+auto page() -> Whole { return VIEWS::ARRANGER::turned(); }
 
 auto standers() -> Vector<const VIEWS::View *> {
   return {&VIEWS::ARRANGEMENT::face(), &VIEWS::LANE::face()};
 }
 
 auto stander() -> const VIEWS::View & {
-  return ::paging == NONE ? VIEWS::ARRANGEMENT::face() : VIEWS::LANE::face();
+  return ::page() == NONE ? VIEWS::ARRANGEMENT::face() : VIEWS::LANE::face();
 }
 
 void band(GUI::Handle page) {
   const String id = String(NAME) + "." + ::SESSION;
   if (GUI::GET::clicked(page, id.c_str())) VIEWS::ARRANGER::turned(NONE);
-  GUI::set(page, id.c_str(), GUI::Style{::paging == NONE ? ::MARKED : ::PLAIN});
+  GUI::set(page, id.c_str(), GUI::Style{::page() == NONE ? ::MARKED : ::PLAIN});
 }
 
 void gated(GUI::Handle page) {
@@ -43,11 +44,15 @@ void gated(GUI::Handle page) {
 
 void run() {
   const GUI::Handle page = VIEWS::document();
+  if (!VIEWS::ARRANGER::seen())
+    VIEWS::ARRANGER::turned(
+      VIEWS::ARRANGER::paged(UPPER) == NONE ? VIEWS::ARRANGER::offered().kind
+                                             : NONE);
   ::band(page);
   VIEWS::ARRANGER::label(page);
-  if (VIEWS::ARRANGER::below(page)) return;
   ::gated(page);
-  if (::paging != NONE) VIEWS::LANE::paged(::paging);
+  VIEWS::ARRANGER::TOOLS::seat(page);
+  if (::page() != NONE) VIEWS::LANE::paged(::page());
   ::stander().run();
 }
 
@@ -55,7 +60,6 @@ void state(SHELL::Session &session) {
   const VIEWS::View &stands = ::stander();
   session.print(std::format(
     "arranger page {} face {}", VIEWS::ARRANGER::spoken(), stands.name));
-  if (VIEWS::SPLIT::shared()) VIEWS::ARRANGER::below(session);
   VIEWS::LANE::marked(session);
   VIEWS::LANE::faces(session);
   if (stands.state != nullptr) stands.state(session);
@@ -73,23 +77,8 @@ void state(SHELL::Session &session) {
    .keep = VIEWS::ARRANGER::keep,
    .restore = VIEWS::ARRANGER::restore,
    .shed = VIEWS::ARRANGER::shed});
-[[maybe_unused]] const Flag hosted = VIEWS::SPLIT::host(NAME);
 [[maybe_unused]] const Flag owned = VIEWS::ARRANGER::own();
 
 }  // namespace
 
-auto SOUND::VIEWS::ARRANGER::turned() -> Whole { return ::paging; }
-
-auto SOUND::VIEWS::ARRANGER::turned(Whole kind) -> Flag {
-  if (kind != NONE && !LANE::editable(kind)) return false;
-  ::paging = kind;
-  return true;
-}
-
-auto SOUND::VIEWS::ARRANGER::spoken() -> STRING::Hot {
-  return ::paging == NONE ? ::SESSION : KIND::spoken(::paging);
-}
-
-auto SOUND::VIEWS::ARRANGER::faced() -> const View * {
-  return SPLIT::shared() ? focused() : &::stander();
-}
+auto SOUND::VIEWS::ARRANGER::faced() -> const View * { return &::stander(); }

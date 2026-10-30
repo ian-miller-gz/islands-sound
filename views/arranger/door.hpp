@@ -27,6 +27,4 @@ namespace SOUND::VIEWS::ARRANGER::BAND {
 
 void door(GUI::Handle page);
 
-void opened();
-
 }  // namespace SOUND::VIEWS::ARRANGER::BAND

@@ -12,10 +12,20 @@ namespace SOUND::VIEWS::ARRANGER {
 
 constexpr STRING::Hot NAME = "arranger";
 
+auto region() -> Whole;
+
 auto turned() -> Whole;
+
+auto paged(Whole region) -> Whole;
+
+auto turned(Whole region, Whole kind) -> Flag;
+
+auto seen() -> Flag;
 auto turned(Whole kind) -> Flag;
 
 auto spoken() -> STRING::Hot;
+
+auto spoken(Whole region) -> STRING::Hot;
 
 auto faced() -> const View *;
 
@@ -31,20 +41,10 @@ void restore(const FIELDS::Map &face);
 
 void shed();
 
-auto below(GUI::Handle page) -> Flag;
-void below(SHELL::Session &session);
-
-auto lowered() -> const View &;
-auto raised() -> const View &;
-void lower(const View &face);
-
 auto faced(Whole region) -> const View *;
 void ask(Whole region, const View &face);
 
 auto own() -> Flag;
-void focus(const View &face);
-auto focused() -> const View *;
-
 }  // namespace SOUND::VIEWS::ARRANGER
 
 namespace SOUND::VIEWS::ARRANGER::TOOLS {

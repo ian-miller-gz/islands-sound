@@ -63,7 +63,7 @@ void SOUND::VIEWS::SPLIT::chose() {
   const GUI::Handle page = sheet();
   const Vector<View> &units = roster();
   for (Whole at = 0; at < units.size(); ++at) {
-    if (units[at].panel || hosted(at)) continue;
+    if (units[at].panel || units[at].door != nullptr) continue;
     const String id = ::icon(units[at]);
     if (GUI::GET::clicked(page, id.c_str())) choose(units[at].name);
     light(page, id, at == lower() ? mark(BELOW) : PLAIN);

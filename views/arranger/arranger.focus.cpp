@@ -6,7 +6,6 @@
 
 namespace {
 using namespace SOUND;
-using VIEWS::SPLIT::BELOW;
 using VIEWS::SPLIT::UPPER;
 
 struct Head {
@@ -21,23 +20,9 @@ constexpr Head HEADS[] = {
   {"signals", VIEWS::LANE::face},
   {"wave", VIEWS::LANE::face}};
 
-auto seated(const VIEWS::View &face) -> Whole {
-  return &face == &VIEWS::ARRANGER::lowered() ? BELOW : UPPER;
-}
-
 }  // namespace
 
 auto SOUND::VIEWS::ARRANGER::own() -> Flag {
-  for (const ::Head &head : ::HEADS)
-    SPLIT::owned(head.word, NAME, ::seated(head.face()));
+  for (const ::Head &head : ::HEADS) SPLIT::owned(head.word, NAME, UPPER);
   return true;
-}
-
-void SOUND::VIEWS::ARRANGER::focus(const View &face) {
-  SPLIT::focus(::seated(face));
-}
-
-auto SOUND::VIEWS::ARRANGER::focused() -> const View * {
-  if (SPLIT::focused() == BELOW) return &lowered();
-  return &raised();
 }

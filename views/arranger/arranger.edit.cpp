@@ -55,8 +55,9 @@ auto SOUND::VIEWS::ARRANGER::edit(Whole track, Whole lane) -> Flag {
   if (one == nullptr) return false;
   if (!LANE::editable(one->kind)) return false;
   LANE::mark(track, lane);
-  turned(one->kind);
-  return SPLIT::open() ? SPLIT::choose(NAME) : VIEWS::choose(NAME);
+  const Whole region = SPLIT::open() ? SPLIT::focused() : SPLIT::UPPER;
+  turned(region, one->kind);
+  return region == SPLIT::BELOW ? SPLIT::choose(NAME) : VIEWS::choose(NAME);
 }
 
 auto SOUND::VIEWS::ARRANGER::velocity(Whole track, Whole lane) -> Flag {

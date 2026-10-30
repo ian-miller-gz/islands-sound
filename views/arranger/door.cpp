@@ -28,13 +28,15 @@ auto editing(const LANE::Mark &mark) -> Flag {
 void opened(GUI::Handle page) {
   const String &id = ::strip().door;
   if (!GUI::GET::clicked(page, id.c_str()) && !SPLIT::struck(id)) return;
-  if (SPLIT::shared()) return ask(SPLIT::UPPER, LANE::face());
   const LANE::Mark mark = offered();
   if (::editing(mark)) {
-    turned(NONE);
+    turned(SPLIT::UPPER, NONE);
     VIEWS::choose(NAME);
-  } else if (mark.lane != NONE)
-    edit(mark.track, mark.lane);
+  } else if (mark.lane != NONE) {
+    LANE::mark(mark.track, mark.lane);
+    turned(SPLIT::UPPER, mark.kind);
+    VIEWS::choose(NAME);
+  }
 }
 
 void arrived() {
@@ -46,8 +48,7 @@ void arrived() {
 void returned(GUI::Handle page) {
   const String &id = ::strip().icon;
   if (!GUI::GET::clicked(page, id.c_str()) && !SPLIT::struck(id)) return;
-  if (SPLIT::shared()) return ask(SPLIT::UPPER, VIEWS::ARRANGEMENT::face());
-  turned(NONE);
+  turned(SPLIT::UPPER, NONE);
   VIEWS::choose(NAME);
 }
 

@@ -12,10 +12,29 @@ namespace LANE = SOUND::VIEWS::LANE;
 struct Held {
   String track, lane;
   Whole kind = NONE;
+  auto operator==(const Held &) const -> bool = default;
+};
+
+struct Stood {
+  GUI::Handle page = GUI::NONE;
+  Held held;
 };
 
 Held held;
+Vector<Stood> stood;
 Whole born = 0;
+/// @brief The held face's first showing on this page: written to the page's
+/// own cells before it is read back from them (the split's second page).
+auto arrived(GUI::Handle page) -> Flag {
+  for (Stood &one : ::stood)
+    if (one.page == page) {
+      if (one.held == ::held) return false;
+      one.held = ::held;
+      return true;
+    }
+  ::stood.push_back({page, ::held});
+  return true;
+}
 
 auto found() -> LANE::Face * {
   for (LANE::Face &one : LANE::records())
@@ -55,7 +74,7 @@ void SOUND::VIEWS::LANE::record() {
   const Flag fresh = VIEWS::reborn(::born);
   Face *one = ::found();
   if (one == nullptr) return;
-  if (fresh) return ::write(*one, ::held.kind);
+  if (fresh || ::arrived(VIEWS::document())) return ::write(*one, ::held.kind);
   ::read(*one, ::held.kind);
 }
 

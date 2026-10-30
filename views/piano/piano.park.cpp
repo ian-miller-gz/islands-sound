@@ -19,8 +19,7 @@ Flag pending = false;
 
 auto below() -> Flag {
   const GUI::Handle page = VIEWS::document();
-  return VIEWS::SPLIT::shared() &&
-         GUI::GET::position(page, VIEWS::LANE::face().name).y > ::ORIGIN;
+  return page == VIEWS::SPLIT::second();
 }
 
 auto noted() -> Float {

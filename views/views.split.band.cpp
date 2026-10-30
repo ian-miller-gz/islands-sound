@@ -26,13 +26,11 @@ auto doubles(Whole at) -> Flag {
 }
 
 auto fit(Whole at) -> Flag {
-  const Flag twin = VIEWS::SPLIT::hosted(at) || ::doubles(at);
-  return ::viewed(at) && (at != VIEWS::chosen() || twin);
+  return ::viewed(at) && (at != VIEWS::chosen() || ::doubles(at));
 }
 
 auto paired() -> Whole {
-  for (Whole at = 0; at < VIEWS::roster().size(); ++at)
-    if (::viewed(at) && VIEWS::SPLIT::hosted(at)) return at;
+  if (::fit(VIEWS::chosen())) return VIEWS::chosen();
   for (Whole at = 0; at < VIEWS::roster().size(); ++at)
     if (::viewed(at) && at != VIEWS::chosen()) return at;
   return NONE;
