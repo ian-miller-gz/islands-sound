@@ -28,8 +28,15 @@ auto SOUND::VIEWS::ARRANGER::paged(Whole region) -> Whole {
 
 auto SOUND::VIEWS::ARRANGER::turned(Whole region, Whole kind) -> Flag {
   if (kind != NONE && !LANE::editable(kind)) return false;
+  // One sheet, one of each face: an ask for the face the other region
+  // already shows is refused (the second page draws none of the arranger
+  // yet), so no region ever takes the other's face from it.
+  const Whole other = region == UPPER ? BELOW : UPPER;
+  const Flag same = (kind == NONE) == (::paging[other] == NONE);
+  if (SPLIT::shared() && ::seen[other] && same) return false;
   ::paging[region] = kind;
   ::seen[region] = true;
+  own();
   return true;
 }
 
@@ -37,7 +44,9 @@ auto SOUND::VIEWS::ARRANGER::turned(Whole kind) -> Flag {
   return turned(region(), kind);
 }
 
-auto SOUND::VIEWS::ARRANGER::seen() -> Flag { return ::seen[region()]; }
+auto SOUND::VIEWS::ARRANGER::seen(Whole region) -> Flag {
+  return ::seen[region];
+}
 
 auto SOUND::VIEWS::ARRANGER::spoken() -> STRING::Hot {
   return spoken(region());

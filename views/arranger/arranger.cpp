@@ -9,6 +9,7 @@
 namespace {
 using namespace SOUND;
 using namespace SOUND::VIEWS::ARRANGER;
+using VIEWS::SPLIT::BELOW;
 using VIEWS::SPLIT::UPPER;
 
 constexpr STRING::Hot TOOLS = "tools";
@@ -44,14 +45,17 @@ void gated(GUI::Handle page) {
 
 void run() {
   const GUI::Handle page = VIEWS::document();
-  if (!VIEWS::ARRANGER::seen())
+  if (VIEWS::SPLIT::shared() && !VIEWS::ARRANGER::seen(BELOW))
     VIEWS::ARRANGER::turned(
-      VIEWS::ARRANGER::paged(UPPER) == NONE ? VIEWS::ARRANGER::offered().kind
-                                             : NONE);
+      BELOW, VIEWS::ARRANGER::paged(UPPER) == NONE
+               ? VIEWS::ARRANGER::offered().kind
+               : NONE);
   ::band(page);
   VIEWS::ARRANGER::label(page);
-  ::gated(page);
   VIEWS::ARRANGER::TOOLS::seat(page);
+  if (VIEWS::SPLIT::shared()) return VIEWS::ARRANGER::shared(page);
+  VIEWS::ARRANGER::joined(page);
+  ::gated(page);
   if (::page() != NONE) VIEWS::LANE::paged(::page());
   ::stander().run();
 }
@@ -60,6 +64,10 @@ void state(SHELL::Session &session) {
   const VIEWS::View &stands = ::stander();
   session.print(std::format(
     "arranger page {} face {}", VIEWS::ARRANGER::spoken(), stands.name));
+  if (VIEWS::SPLIT::shared())
+    session.print(std::format(
+      "arranger lower {} focus {}", VIEWS::ARRANGER::spoken(BELOW),
+      VIEWS::ARRANGER::facing(VIEWS::SPLIT::focused()).name));
   VIEWS::LANE::marked(session);
   VIEWS::LANE::faces(session);
   if (stands.state != nullptr) stands.state(session);
@@ -77,6 +85,7 @@ void state(SHELL::Session &session) {
    .keep = VIEWS::ARRANGER::keep,
    .restore = VIEWS::ARRANGER::restore,
    .shed = VIEWS::ARRANGER::shed});
+[[maybe_unused]] const Flag hosted = VIEWS::SPLIT::host(NAME);
 [[maybe_unused]] const Flag owned = VIEWS::ARRANGER::own();
 
 }  // namespace

@@ -6,6 +6,7 @@
 
 namespace {
 using namespace SOUND;
+using VIEWS::SPLIT::BELOW;
 using VIEWS::SPLIT::UPPER;
 
 struct Head {
@@ -23,6 +24,11 @@ constexpr Head HEADS[] = {
 }  // namespace
 
 auto SOUND::VIEWS::ARRANGER::own() -> Flag {
-  for (const ::Head &head : ::HEADS) SPLIT::owned(head.word, NAME, UPPER);
+  const Flag lowered = SPLIT::shared() ? paged(BELOW) != NONE : false;
+  const Flag raised = SPLIT::shared() ? paged(UPPER) == NONE : true;
+  for (const ::Head &head : ::HEADS) {
+    const Flag lane = head.face == VIEWS::LANE::face;
+    SPLIT::owned(head.word, NAME, lane ? (lowered ? BELOW : UPPER) : (raised ? UPPER : BELOW));
+  }
   return true;
 }

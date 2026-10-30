@@ -20,7 +20,13 @@ auto paged(Whole region) -> Whole;
 
 auto turned(Whole region, Whole kind) -> Flag;
 
-auto seen() -> Flag;
+auto seen(Whole region) -> Flag;
+
+auto facing(Whole region) -> const View &;
+
+void shared(GUI::Handle page);
+
+void joined(GUI::Handle page);
 auto turned(Whole kind) -> Flag;
 
 auto spoken() -> STRING::Hot;

@@ -26,7 +26,8 @@ auto doubles(Whole at) -> Flag {
 }
 
 auto fit(Whole at) -> Flag {
-  return ::viewed(at) && (at != VIEWS::chosen() || ::doubles(at));
+  const Flag twin = VIEWS::SPLIT::hosted(at) || ::doubles(at);
+  return ::viewed(at) && (at != VIEWS::chosen() || twin);
 }
 
 auto paired() -> Whole {

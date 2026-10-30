@@ -48,7 +48,7 @@ void SOUND::VIEWS::ARRANGER::TOOLS::seat(GUI::Handle page) {
   if (VIEWS::reborn(::born)) ::stale = true;
   if (!std::exchange(::known, true))
     std::ranges::fill(::places, GUI::GET::position(page, ::GRIP));
-  const Whole at = page == SPLIT::second() ? SPLIT::BELOW : SPLIT::UPPER;
+  const Whole at = SPLIT::shared() ? SPLIT::focused() : SPLIT::UPPER;
   ::heard(page, at);
   const GUI::Position wanted = ::seated(page, at);
   if (!::stale && wanted == ::written) return;
