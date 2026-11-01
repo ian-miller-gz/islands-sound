@@ -22,7 +22,7 @@ auto viewed(Whole at) -> Flag {
 }
 
 auto doubles(Whole at) -> Flag {
-  return VIEWS::SPLIT::mirrored(at);
+  return VIEWS::SPLIT::mirrored(at) && VIEWS::SPLIT::second() != GUI::NONE;
 }
 
 auto fit(Whole at) -> Flag {

@@ -16,7 +16,9 @@ Flag seen[std::size(VIEWS::SPLIT::REGIONS)] = {true, false};
 
 }  // namespace
 
-auto SOUND::VIEWS::ARRANGER::region() -> Whole { return UPPER; }
+auto SOUND::VIEWS::ARRANGER::region() -> Whole {
+  return VIEWS::document() == SPLIT::second() ? BELOW : UPPER;
+}
 
 auto SOUND::VIEWS::ARRANGER::turned() -> Whole { return ::paging[region()]; }
 
@@ -26,6 +28,9 @@ auto SOUND::VIEWS::ARRANGER::paged(Whole region) -> Whole {
 
 auto SOUND::VIEWS::ARRANGER::turned(Whole region, Whole kind) -> Flag {
   if (kind != NONE && !LANE::editable(kind)) return false;
+  const Whole other = region == UPPER ? BELOW : UPPER;
+  const Flag same = (kind == NONE) == (::paging[other] == NONE);
+  if (SPLIT::shared() && ::seen[other] && same) return false;
   ::paging[region] = kind;
   ::seen[region] = true;
   own();

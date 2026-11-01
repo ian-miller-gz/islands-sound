@@ -37,9 +37,20 @@ auto hosted(Whole row) -> Flag;
 auto mirror(STRING::Hot name) -> Flag;
 auto mirrored(Whole row) -> Flag;
 
+void mount(STRING::Hot assets, STRING::Hot layout);
+auto second() -> GUI::Handle;
 auto doubled() -> Flag;
-void echo(GUI::Position at, GUI::Extent size);
+auto turned() -> Flag;
+auto home() -> GUI::Handle;
 void draw(GFX::Pass &pass);
+
+struct Turn {
+  explicit Turn(Flag on);
+  ~Turn();
+  Turn(const Turn &) = delete;
+  auto operator=(const Turn &) -> Turn & = delete;
+  Flag on = false;
+};
 
 auto shared() -> Flag;
 

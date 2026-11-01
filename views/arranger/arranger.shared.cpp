@@ -36,20 +36,14 @@ auto SOUND::VIEWS::ARRANGER::facing(Whole region) -> const View & {
 /// the bar's foot, each listening when its region holds the focus.
 void SOUND::VIEWS::ARRANGER::shared(GUI::Handle page) {
   const View &above = facing(UPPER), &below = facing(BELOW);
-  const Flag same = &above == &below;
   for (const View *unit : ::standers()) {
-    VIEWS::show(*unit, !same || unit == &above);
+    VIEWS::show(*unit, true);
     GUI::set(
       page, (String(unit->name) + "." + ::TOOLS).c_str(),
       GUI::Visibility{unit == &facing(SPLIT::focused())});
   }
   ::placed(page, above.name, ::WHOLE, SPLIT::height());
-  if (same) {
-    SPLIT::echo(
-      GUI::GET::origin(page, above.name), GUI::GET::measured(page, above.name));
-  } else {
-    ::placed(page, below.name, SPLIT::top(), ::WHOLE);
-  }
+  ::placed(page, below.name, SPLIT::top(), ::WHOLE);
   const Whole held = paged(UPPER) != NONE   ? UPPER
                      : paged(BELOW) != NONE ? BELOW
                                             : NONE;
@@ -58,11 +52,6 @@ void SOUND::VIEWS::ARRANGER::shared(GUI::Handle page) {
   if (held != NONE && kind != NONE) {
     LANE::paged(kind);
     if (kind != paged(held)) turned(held, kind);
-  }
-  if (same) {
-    above.run();
-    ::laid = true;
-    return;
   }
   listen(SPLIT::focused() == UPPER);
   above.run();
