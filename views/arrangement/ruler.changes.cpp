@@ -68,7 +68,7 @@ auto place(GUI::Handle page, Whole pulses) -> Float {
 }
 
 auto headed(const Seats &seats) -> Float {
-  const Flag second = seats.stem == ::metres.stem;
+  const Flag second = seats.stem == ::metres().stem;
   return CHANGES::INSET + (second ? CHANGES::DIALLED + CHANGES::INSET : 0.0f);
 }
 
