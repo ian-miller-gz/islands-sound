@@ -49,6 +49,10 @@ void SOUND::VIEWS::SPLIT::mount(STRING::Hot assets, STRING::Hot layout) {
 
 auto SOUND::VIEWS::SPLIT::second() -> GUI::Handle { return ::page; }
 
+auto SOUND::VIEWS::side() -> Whole {
+  return ::page != GUI::NONE && sheet() == ::page ? 1 : 0;
+}
+
 auto SOUND::VIEWS::SPLIT::doubled() -> Flag {
   const Whole at = lower();
   return at != NONE && at == chosen() && mirrored(at) && !hosted(at);

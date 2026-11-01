@@ -125,6 +125,21 @@ void light(Pool &pool, Named named, Whole count);
 
 auto reborn(Pool &pool) -> Flag;
 
+constexpr Whole SIDES = 2;
+
+/// @brief Which page the views draw on this call: 0 the sheet, 1 the
+/// split's second page under a `SPLIT::Turn`.
+auto side() -> Whole;
+
+/// @brief A view's file-scope cache held once per page, so a view doubled
+/// on the split's second page stands its own rows there.
+template <typename Held>
+struct Sided {
+  Held each[SIDES] = {};
+  auto operator()() -> Held & { return each[side()]; }
+  auto operator()() const -> const Held & { return each[side()]; }
+};
+
 constexpr Float EASE = 0.34f;
 constexpr Float SETTLE = 0.5f;
 auto eased(Float held, Float wanted) -> Float;
