@@ -16,7 +16,7 @@ constexpr STRING::Hot KIND = "node";
 constexpr Float CROWDED = 4.0f;
 constexpr Float RAISED = 2.0f;
 
-VIEWS::Pool pool;
+VIEWS::Sided<VIEWS::Pool> pool;
 
 auto size() -> GUI::Extent {
   return GUI::GET::extent(VIEWS::document(), WAVE::GRIP);
@@ -28,15 +28,15 @@ auto named(Whole slot) -> String {
 
 void build(GUI::Handle page, Whole count) {
   const String board = WAVE::board();
-  for (Whole slot = count; slot < ::pool.stood; ++slot)
+  for (Whole slot = count; slot < ::pool().stood; ++slot)
     BOARDS::drop(page, ::named(slot));
-  for (Whole slot = ::pool.stood; slot < count; ++slot) {
+  for (Whole slot = ::pool().stood; slot < count; ++slot) {
     const String id = ::named(slot);
     BOARDS::place(page, board.c_str(), ::KIND, id, {}, {});
     GUI::set(page, id.c_str(), GUI::Style{WAVE::GRIP});
     GUI::set(page, id.c_str(), GUI::Depth{::RAISED});
   }
-  VIEWS::built(::pool, count);
+  VIEWS::built(::pool(), count);
 }
 
 void written(GUI::Handle page, Whole slot, const WAVE::Clip &clip) {
@@ -75,7 +75,7 @@ auto SOUND::VIEWS::WAVE::shown(const Clip &clip) -> Flag {
 }
 
 void SOUND::VIEWS::WAVE::SHED::grips() {
-  VIEWS::reborn(::pool);
+  VIEWS::reborn(::pool());
   ::build(document(), 0);
 }
 
@@ -83,11 +83,11 @@ void SOUND::VIEWS::WAVE::grips() {
   const GUI::Handle page = document();
   if (scaled() <= ORIGIN) return;
   const Vector<Clip> seated = placed();
-  VIEWS::reborn(::pool);
+  VIEWS::reborn(::pool());
   const Whole wanted = seated.size() * ::ENDS;
-  const Whole seats = VIEWS::sized(::pool, wanted, window());
-  if (seats != ::pool.stood) ::build(page, seats);
-  for (Whole slot = wanted; slot < ::pool.stood; ++slot)
+  const Whole seats = VIEWS::sized(::pool(), wanted, window());
+  if (seats != ::pool().stood) ::build(page, seats);
+  for (Whole slot = wanted; slot < ::pool().stood; ++slot)
     GUI::set(page, ::named(slot).c_str(), GUI::Visibility{false});
   for (Whole slot = 0; slot < wanted; ++slot)
     ::written(page, slot, seated[slot / ::ENDS]);

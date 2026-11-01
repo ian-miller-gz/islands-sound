@@ -21,8 +21,8 @@ struct Folded {
 
 Vector<Folded> folded;
 
-Vector<VIEWS::ARRANGEMENT::Stand> stood;
-Whole born = 0;
+VIEWS::Sided<Vector<VIEWS::ARRANGEMENT::Stand>> stood;
+VIEWS::Sided<Whole> born;
 
 auto caret(const String &id) -> String { return id + "." + ::FOLDED; }
 
@@ -83,11 +83,11 @@ void door(const String &id) {
 
 void build(const Vector<VIEWS::ARRANGEMENT::Stand> &stands) {
   const GUI::Handle page = VIEWS::document();
-  for (Whole row = stands.size(); row < ::stood.size(); ++row)
+  for (Whole row = stands.size(); row < ::stood().size(); ++row)
     for (const String &part :
-         {::caret(::stood[row].id), ::armer(::stood[row].id)})
+         {::caret(::stood()[row].id), ::armer(::stood()[row].id)})
       GUI::NODES::remove(page, part.c_str());
-  for (Whole row = ::stood.size(); row < stands.size(); ++row)
+  for (Whole row = ::stood().size(); row < stands.size(); ++row)
     ::door(stands[row].id);
 }
 
@@ -139,7 +139,7 @@ auto SOUND::VIEWS::ARRANGEMENT::shut(const String &track, const String &lane)
 
 void SOUND::VIEWS::ARRANGEMENT::doors() {
   const GUI::Handle page = document();
-  for (const Stand &stand : ::stood) {
+  for (const Stand &stand : ::stood()) {
     if (GUI::GET::clicked(page, ::caret(stand.id).c_str()))
       ::fold(stand.name, stand.standing);
     if (GUI::GET::clicked(page, ::armer(stand.id).c_str()))
@@ -149,9 +149,9 @@ void SOUND::VIEWS::ARRANGEMENT::doors() {
 
 void SOUND::VIEWS::ARRANGEMENT::doors(const Vector<Stand> &stands) {
   ::settle(stands);
-  if (VIEWS::reborn(::born)) ::stood.clear();
-  if (stands.size() != ::stood.size()) ::build(stands);
-  ::stood = stands;
+  if (VIEWS::reborn(::born())) ::stood().clear();
+  if (stands.size() != ::stood().size()) ::build(stands);
+  ::stood() = stands;
   ::carets(stands);
   ::arms(stands);
 }

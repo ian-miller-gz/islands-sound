@@ -32,9 +32,9 @@ constexpr Float LEVEL = 1.0f;
 
 using VIEWS::ARRANGEMENT::Box;
 
-Vector<Box> shown;
-Whole born = 0;
-Flag parked = false;
+VIEWS::Sided<Vector<Box>> shown;
+VIEWS::Sided<Whole> born;
+VIEWS::Sided<Flag> parked;
 
 auto laid() -> Vector<Box> {
   Vector<Box> wanted;
@@ -60,7 +60,7 @@ auto named(const Box &box) -> String {
 }
 
 void bound() {
-  const Float scale = ::parked ? VIEWS::ARRANGEMENT::scaled() : ::START;
+  const Float scale = ::parked() ? VIEWS::ARRANGEMENT::scaled() : ::START;
   GUI::NGA::set(
     VIEWS::document(), VIEWS::ARRANGEMENT::board().c_str(),
     GUI::NGA::Bounds{
@@ -79,14 +79,14 @@ void park() {
 
 void run() {
   const GUI::Handle page = VIEWS::document();
-  if (VIEWS::reborn(::born)) {
-    ::shown.clear();
-    ::parked = false;
+  if (VIEWS::reborn(::born())) {
+    ::shown().clear();
+    ::parked() = false;
   }
   ::bound();
-  if (!::parked) {
+  if (!::parked()) {
     ::park();
-    ::parked = true;
+    ::parked() = true;
   }
   VIEWS::ARRANGEMENT::chase();
   VIEWS::ARRANGEMENT::bands();
@@ -105,8 +105,9 @@ void run() {
   VIEWS::ARRANGEMENT::marquee();
   const Vector<Box> wanted = ::laid();
   BOARDS::sweep(
-    page, VIEWS::ARRANGEMENT::board().c_str(), wanted.size(), ::shown.size());
-  for (Whole row = ::shown.size(); row < wanted.size(); ++row) {
+    page, VIEWS::ARRANGEMENT::board().c_str(), wanted.size(),
+    ::shown().size());
+  for (Whole row = ::shown().size(); row < wanted.size(); ++row) {
     const String id =
       GUI::SAC::SEAT::named(VIEWS::ARRANGEMENT::board().c_str(), row);
     BOARDS::place(
@@ -122,7 +123,7 @@ void run() {
     GUI::NGA::set(
       page, label.c_str(), GUI::NGA::Pinned{GUI::NGA::Pinned::ACROSS});
   }
-  ::shown = wanted;
+  ::shown() = wanted;
   for (Whole row = 0; row < wanted.size(); ++row) {
     const String id =
       GUI::SAC::SEAT::named(VIEWS::ARRANGEMENT::board().c_str(), row);
@@ -154,8 +155,8 @@ void run() {
 void state(SHELL::Session &session) {
   const String board = VIEWS::ARRANGEMENT::board();
   session.print(std::format(
-    "arrangement boxes {} playhead {} grain {} pan {} zoom {}", ::shown.size(),
-    TRANSPORT::marker().position, VIEWS::ARRANGEMENT::GRAIN,
+    "arrangement boxes {} playhead {} grain {} pan {} zoom {}",
+    ::shown().size(), TRANSPORT::marker().position, VIEWS::ARRANGEMENT::GRAIN,
     GUI::NGA::GET::pan(VIEWS::document(), board.c_str()).x,
     GUI::NGA::GET::zoom(VIEWS::document(), board.c_str()).value));
   VIEWS::ARRANGEMENT::snap(session);
@@ -169,12 +170,12 @@ void state(SHELL::Session &session) {
   VIEWS::ARRANGEMENT::outtakes(session);
   VIEWS::ARRANGEMENT::cover(session);
   VIEWS::ARRANGEMENT::sketch(session);
-  for (Whole row = 0; row < ::shown.size(); ++row)
+  for (Whole row = 0; row < ::shown().size(); ++row)
     session.print(std::format(
       "box {} track {} lane {} band {} stock {} at {} for {} wears {}", row,
-      ::shown[row].track, ::shown[row].lane, ::shown[row].band,
-      ::named(::shown[row]), ::shown[row].at, ::shown[row].frames,
-      VIEWS::ARRANGEMENT::plated(::shown[row].kind)));
+      ::shown()[row].track, ::shown()[row].lane, ::shown()[row].band,
+      ::named(::shown()[row]), ::shown()[row].at, ::shown()[row].frames,
+      VIEWS::ARRANGEMENT::plated(::shown()[row].kind)));
 }
 
 }  // namespace
@@ -200,7 +201,7 @@ auto SOUND::VIEWS::ARRANGEMENT::board() -> String {
 }
 
 auto SOUND::VIEWS::ARRANGEMENT::boxes() -> const Vector<Box> & {
-  return ::shown;
+  return ::shown();
 }
 
 auto SOUND::VIEWS::ARRANGEMENT::scaled() -> Float {

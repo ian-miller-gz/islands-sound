@@ -22,11 +22,11 @@ constexpr Whole SHARPS[] = {1, 3, 6, 8, 10};
 constexpr Float ORIGIN = 0.0f;
 constexpr Float SPARE = 0.5f;
 
-Whole stood = 0;
-Whole born = 0;
-Whole rowed = 0;
-Float reach = ::ORIGIN;
-Vector<Key> worn;
+VIEWS::Sided<Whole> stood;
+VIEWS::Sided<Whole> born;
+VIEWS::Sided<Whole> rowed;
+VIEWS::Sided<Float> reach;
+VIEWS::Sided<Vector<Key>> worn;
 
 auto standing(const Key &key) -> Flag {
   return SCORE::degree(key, key.tonic) != NONE;
@@ -57,10 +57,10 @@ void strike(GUI::Handle page, Whole section) {
 }
 
 void relaid(GUI::Handle page, const Vector<VIEWS::ROLL::Keyed> &sections) {
-  for (Whole section = sections.size(); section < ::stood; ++section)
+  for (Whole section = sections.size(); section < ::stood(); ++section)
     ::strike(page, section);
   for (Whole section = 0; section < sections.size(); ++section) {
-    if (section >= ::stood || section == 0 && ::stood == 0) {
+    if (section >= ::stood() || section == 0 && ::stood() == 0) {
       ::seat(page, section, sections[section]);
       continue;
     }
@@ -69,7 +69,7 @@ void relaid(GUI::Handle page, const Vector<VIEWS::ROLL::Keyed> &sections) {
         page, VIEWS::ROLL::sectioned(::STEM, section, pitch).c_str(),
         GUI::Style{VIEWS::ROLL::dressed(pitch, sections[section].key).c_str()});
   }
-  ::stood = sections.size();
+  ::stood() = sections.size();
   VIEWS::ROLL::ROWS::banded(page, ::STEM, sections);
 }
 
@@ -122,31 +122,33 @@ auto SOUND::VIEWS::ROLL::named(Whole pitch) -> String {
 
 void SOUND::VIEWS::ROLL::SHED::keys() {
   const GUI::Handle page = document();
-  if (VIEWS::reborn(::born)) {
-    ::stood = 0;
-    ::reach = ::ORIGIN;
-    ::worn.clear();
+  if (VIEWS::reborn(::born())) {
+    ::stood() = 0;
+    ::reach() = ::ORIGIN;
+    ::worn().clear();
     return;
   }
-  for (Whole section = 0; section < ::stood; ++section) ::strike(page, section);
-  ::stood = 0;
+  for (Whole section = 0; section < ::stood(); ++section)
+    ::strike(page, section);
+  ::stood() = 0;
 }
 
 void SOUND::VIEWS::ROLL::keys() {
   const GUI::Handle page = document();
-  if (VIEWS::reborn(::born)) {
-    ::stood = 0;
-    ::reach = ::ORIGIN;
-    ::worn.clear();
+  if (VIEWS::reborn(::born())) {
+    ::stood() = 0;
+    ::reach() = ::ORIGIN;
+    ::worn().clear();
   }
-  const Flag moved = rekeyed(::worn);
+  const Flag moved = rekeyed(::worn());
   const Float grew = GUI::SAC::ROWS::reach(
-    ::reach, GUI::NGA::GET::pan(page, board().c_str()).x, window().w, ::SPARE);
-  const Flag grown = grew > ::reach;
-  ::reach = grew;
-  const Vector<Keyed> sections = keyed(::reach);
-  const Flag rowed = ROWS::moved(::rowed);
-  if (::stood == 0 || moved) return ::relaid(page, sections);
+    ::reach(), GUI::NGA::GET::pan(page, board().c_str()).x, window().w,
+    ::SPARE);
+  const Flag grown = grew > ::reach();
+  ::reach() = grew;
+  const Vector<Keyed> sections = keyed(::reach());
+  const Flag rowed = ROWS::moved(::rowed());
+  if (::stood() == 0 || moved) return ::relaid(page, sections);
   if (rowed) ROWS::banded(page, ::STEM, sections);
   if (!grown) return;
   const Keyed &last = sections.back();
@@ -163,7 +165,7 @@ void SOUND::VIEWS::ROLL::keys(SHELL::Session &session) {
     STEP,
     ::standing(key) ? std::format("{} {}", SCORE::classed(key.tonic), key.scale)
                     : String("off")));
-  const Vector<Keyed> sections = keyed(::reach);
+  const Vector<Keyed> sections = keyed(::reach());
   for (Whole section = 1; section < sections.size(); ++section)
     session.print(std::format(
       "section {} at {} key {} from {:g} to {:g}", section,

@@ -24,13 +24,19 @@ struct Seats {
   Whole stood = 0;
 };
 
-Seats tempos{"tempo", "dial", CHANGES::DIALLED, [](Whole at) {
-               return COMMANDS::paced(at);
-             }};
-Seats metres{"metre", "field", CHANGES::TYPED, [](Whole at) {
-               return COMMANDS::metred(at);
-             }};
-Whole born = 0;
+VIEWS::Sided<Seats> tempos = {{
+  {"tempo", "dial", CHANGES::DIALLED,
+   [](Whole at) { return COMMANDS::paced(at); }},
+  {"tempo", "dial", CHANGES::DIALLED,
+   [](Whole at) { return COMMANDS::paced(at); }},
+}};
+VIEWS::Sided<Seats> metres = {{
+  {"metre", "field", CHANGES::TYPED,
+   [](Whole at) { return COMMANDS::metred(at); }},
+  {"metre", "field", CHANGES::TYPED,
+   [](Whole at) { return COMMANDS::metred(at); }},
+}};
+VIEWS::Sided<Whole> born;
 
 auto mark(const Seats &seats, Whole at) -> String {
   return std::format("{}.{}.{}", VIEWS::ARRANGEMENT::strip(), seats.stem, at);
@@ -81,11 +87,11 @@ void laid(
 
 void SOUND::VIEWS::ARRANGEMENT::changes() {
   const GUI::Handle page = document();
-  if (VIEWS::reborn(::born)) ::tempos.stood = ::metres.stood = 0;
+  if (VIEWS::reborn(::born())) ::tempos().stood = ::metres().stood = 0;
   Vector<CHANGES::Mark> marks;
-  ::laid(page, ::tempos, TRANSPORT::held().tempos, marks);
-  ::laid(page, ::metres, TRANSPORT::held().metres, marks);
+  ::laid(page, ::tempos(), TRANSPORT::held().tempos, marks);
+  ::laid(page, ::metres(), TRANSPORT::held().metres, marks);
   CHANGES::settled();
-  CHANGES::seated(page, std::format("{}.{}.", strip(), ::metres.stem));
+  CHANGES::seated(page, std::format("{}.{}.", strip(), ::metres().stem));
   CHANGES::asked(marks);
 }
