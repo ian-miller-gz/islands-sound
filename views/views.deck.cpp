@@ -23,6 +23,8 @@ constexpr STRING::Hot LOOP = "deck.loop";
 constexpr STRING::Hot CHASE = "deck.chase";
 constexpr STRING::Hot POSITION = "deck.position";
 constexpr STRING::Hot PACE = "deck.tempo";
+constexpr STRING::Hot SCAN = "deck.scan";
+constexpr STRING::Hot GRAPH = "graph";
 
 constexpr Whole SMOOTH = 0;
 constexpr GUI::Dial::Graphic BARE = GUI::Dial::NONE;
@@ -111,6 +113,7 @@ void SOUND::VIEWS::deck() {
   if (GUI::GET::clicked(page, ::RECORD)) ::armed();
   if (GUI::GET::clicked(page, ::LOOP)) cycled();
   if (GUI::GET::clicked(page, ::CHASE)) VIEWS::chasing(!VIEWS::chasing());
+  if (GUI::GET::clicked(page, ::SCAN)) VIEWS::choose(::GRAPH);
   ::turning(GUI::GET::dialled(page, ::PACE));
   Float tempo = TRANSPORT::paced();
   if (::taken(page, tempo)) COMMANDS::paced(0, tempo);
