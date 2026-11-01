@@ -93,4 +93,8 @@ void state(SHELL::Session &session) {
 
 }  // namespace
 
-auto SOUND::VIEWS::ARRANGER::faced() -> const View * { return &::stander(); }
+auto SOUND::VIEWS::ARRANGER::faced() -> const View * {
+  const View *held =
+    VIEWS::SPLIT::shared() ? faced(VIEWS::SPLIT::focused()) : nullptr;
+  return held != nullptr ? held : &::stander();
+}
