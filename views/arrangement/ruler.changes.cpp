@@ -16,6 +16,7 @@ constexpr STRING::Hot INK = "icon";
 constexpr Float LETTER = 11.0f;
 constexpr Float NORTH = 1.0f;
 constexpr Float OVER = 2.0f;
+constexpr Float HEADED = 1.0f;
 
 struct Seats {
   STRING::Hot stem, widget;
@@ -60,6 +61,11 @@ auto place(GUI::Handle page, Whole pulses) -> Float {
   return (across - west) * scale + CHANGES::INSET;
 }
 
+auto headed(const Seats &seats) -> Float {
+  const Flag second = seats.stem == ::metres.stem;
+  return CHANGES::INSET + (second ? CHANGES::DIALLED + CHANGES::INSET : 0.0f);
+}
+
 template <typename Row>
 void laid(
   GUI::Handle page, Seats &seats, const Vector<Row> rows,
@@ -68,8 +74,13 @@ void laid(
   const String editing = GUI::GET::editing(page);
   for (Whole at = 0; at < rows.size(); ++at) {
     const String id = ::mark(seats, at);
-    const Float east = ::place(page, rows[at].at) + CHANGES::beside(rows[at]);
+    const Float east =
+      at == 0 ? ::headed(seats)
+              : ::place(page, rows[at].at) + CHANGES::beside(rows[at]);
     GUI::set(page, id.c_str(), GUI::Position{east, ::NORTH});
+    GUI::set(
+      page, id.c_str(),
+      GUI::Depth{at == 0 ? VIEWS::ARRANGEMENT::HEADER + ::HEADED : ::OVER});
     if (at > 0) marks.push_back({id, rows[at].at, seats.erase});
     if (CHANGES::taken(page, id, rows[at]) || id == editing) continue;
     CHANGES::dressed(page, id, rows[at]);
