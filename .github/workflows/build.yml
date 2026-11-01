@@ -8,17 +8,22 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - name: checkout the bundle
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           path: bundle
-      - id: engine
+      - name: "engine: the ref the manifest names"
+        id: engine
         run: |
           echo "ref=$(sed -n 's/^islands:\s*//p' bundle/manifest.yaml)" >> "$GITHUB_OUTPUT"
           echo "name=${GITHUB_REPOSITORY##*/islands-}" >> "$GITHUB_OUTPUT"
-      - run: |
+      - name: "engine: clone ${{ steps.engine.outputs.ref }}"
+        run: |
           git clone --quiet --branch "${{ steps.engine.outputs.ref }}" --depth 1 \
             --recurse-submodules --shallow-submodules https://github.com/ian-miller-gz/islands engine
-      - run: |
+          echo "engine \`${{ steps.engine.outputs.ref }}\` at $(git -C engine rev-parse --short HEAD)" >> "$GITHUB_STEP_SUMMARY"
+      - name: packages
+        run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             git g++ cmake pkg-config python3 python3-venv python3-pip \
@@ -26,19 +31,24 @@ jobs:
             libxkbcommon-dev libxext-dev libxfixes-dev libxss-dev libxtst-dev \
             libwayland-dev libgl-dev libasound2-dev libpulse-dev \
             libvulkan1 mesa-vulkan-drivers
-      - run: |
+      - name: "launcher: clone stable when the engine carries none"
+        run: |
           [ -d engine/cartridges/.core/launcher ] ||
             git clone --quiet --branch stable --depth 1 https://github.com/ian-miller-gz/islands-launcher engine/cartridges/.core/launcher
-      - id: zone
+      - name: "libs: the zone and the pins"
+        id: zone
         run: |
           zone="$(sed -n 's/^\s*SR_PROFILE:\s*SR_\([A-Z]*\).*/\L\1/p' engine/configs/make.yaml | head -1)"
           echo "zone=${zone}" >> "$GITHUB_OUTPUT"
           echo "pins=$(git -C engine submodule status | sha256sum | cut -c1-16)" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+      - name: "libs: restore"
+        id: libs
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
         with:
           path: engine/libs/${{ steps.zone.outputs.zone }}
           key: libs-${{ steps.zone.outputs.zone }}-${{ hashFiles('engine/libs/recipes/**') }}-${{ steps.zone.outputs.pins }}
-      - run: |
+      - name: "libs: build the recipes the cache lacks"
+        run: |
           cd engine
           for recipe in libs/recipes/*.sh; do
             name="$(basename "$recipe" .sh)"
@@ -46,16 +56,24 @@ jobs:
             ls "libs/${{ steps.zone.outputs.zone }}/$name"/*.a >/dev/null 2>&1 && continue
             "$recipe" "${{ steps.zone.outputs.zone }}"
           done
-      - run: |
+      - name: summary
+        run: |
+          echo "tools \`$(sed -n 's/^tools:\s*//p' engine/configs/make.yaml)\` · libs ${{ steps.zone.outputs.zone }} (cache ${{ steps.libs.outputs.cache-hit == 'true' && 'hit' || 'miss' }})" >> "$GITHUB_STEP_SUMMARY"
+      - name: "tools: install"
+        run: |
           cd engine
           python3 -m venv .venv
           .venv/bin/python3 -m pip install --quiet pytest pyyaml -e submodules/islands-tools
-      - run: cd engine && .venv/bin/python3 -m make
-      - run: |
+      - name: make
+        run: cd engine && .venv/bin/python3 -m make
+      - name: "bundle: compile against the engine"
+        run: |
           cp -r bundle "engine/cartridges/${{ steps.engine.outputs.name }}"
           cd engine && cartridges/build.sh "cartridges/${{ steps.engine.outputs.name }}"
-      - run: engine/.venv/bin/python3 -m pytest -q bundle/tests
-      - if: failure()
+      - name: "pytest: the bundle's tests"
+        run: engine/.venv/bin/python3 -m pytest -q bundle/tests
+      - name: "logs: the build's, on failure"
+        if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: logs-${{ github.run_id }}
