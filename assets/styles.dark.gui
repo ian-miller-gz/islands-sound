@@ -31,6 +31,8 @@ style standingword style=entry edge=#f3e9d8ff hover=#00000000 press=#00000000
 style tabfoot color=#3a2c22ff border=0
 style rule color=#5a4636ff border=0
 style accent style=icon edge=#f0a35aff
+style arm style=icon edge=#a8352bff
+style arming style=icon edge=#ff3b2fff
 style exportchosen color=#f0a35aff
 style ring color=#f0a35a33 edge=#00000000 border=0
 style board style=box border=2

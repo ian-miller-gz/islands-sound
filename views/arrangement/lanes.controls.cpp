@@ -10,9 +10,11 @@ using namespace SOUND;
 
 constexpr STRING::Hot FOLDED = "fold";
 constexpr Float CARET = 12.0f;
+constexpr Float ARM = 10.0f;
+constexpr Float DOTTED = 8.0f;
 constexpr STRING::Hot ARMED = "arm";
-constexpr STRING::Hot MARKED = "armed";
-constexpr STRING::Hot PLAIN = "icon";
+constexpr STRING::Hot MARKED = "arming";
+constexpr STRING::Hot PLAIN = "arm";
 constexpr STRING::Hot DOT = "\u25cf";
 
 struct Folded {
@@ -71,14 +73,16 @@ void arm(Whole track, Whole lane) {
 void door(const String &id) {
   const GUI::Handle page = VIEWS::document();
   for (const String &part : {::caret(id), ::armer(id)}) {
+    const Float side = part == ::armer(id) ? ::ARM : ::CARET;
     BOARDS::place(
       page, VIEWS::ARRANGEMENT::board().c_str(), "button", part, {},
-      {::CARET, ::CARET});
+      {side, side});
     GUI::NGA::set(
       page, part.c_str(), GUI::NGA::Pinned{GUI::NGA::Pinned::ACROSS});
     GUI::set(page, part.c_str(), GUI::Depth{VIEWS::ARRANGEMENT::CREST});
   }
   GUI::set(page, ::armer(id).c_str(), GUI::Text{String(::DOT)});
+  GUI::set(page, ::armer(id).c_str(), GUI::Size{::DOTTED});
 }
 
 void build(const Vector<VIEWS::ARRANGEMENT::Stand> &stands) {
@@ -117,9 +121,9 @@ void arms(const Vector<VIEWS::ARRANGEMENT::Stand> &stands) {
     GUI::set(
       page, id.c_str(),
       GUI::Position{
-        VIEWS::ARRANGEMENT::GUTTER - ::CARET * 2.0f -
+        VIEWS::ARRANGEMENT::GUTTER - ::CARET - ::ARM -
           VIEWS::ARRANGEMENT::INSET * 2.0f,
-        ::seated(row)});
+        ::seated(row) + (::CARET - ::ARM) / 2.0f});
     GUI::set(page, id.c_str(), GUI::Visibility{true});
     GUI::set(
       page, id.c_str(),
