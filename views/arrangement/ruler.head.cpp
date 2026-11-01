@@ -14,8 +14,8 @@ constexpr Float CAP = 6.0f;
 constexpr Float NORTH = 0.0f;
 constexpr Float OVER = 1.0f;
 
-Flag stood = false;
-Whole born = 0;
+VIEWS::Sided<Flag> stood;
+VIEWS::Sided<Whole> born;
 
 auto capped() -> String { return VIEWS::ARRANGEMENT::strip() + "." + ::HEAD; }
 
@@ -28,12 +28,12 @@ auto depth(GUI::Handle page) -> Float {
 void SOUND::VIEWS::ARRANGEMENT::cap() {
   const GUI::Handle page = document();
   const String id = ::capped();
-  if (VIEWS::reborn(::born)) ::stood = false;
-  if (!::stood) {
+  if (VIEWS::reborn(::born())) ::stood() = false;
+  if (!::stood()) {
     GUI::NODES::create(page, strip().c_str(), "panel", id.c_str());
     GUI::set(page, id.c_str(), GUI::Style{::INK});
     GUI::set(page, id.c_str(), GUI::Depth{::OVER});
-    ::stood = true;
+    ::stood() = true;
   }
   const Float scale = GUI::NGA::GET::zoom(page, board().c_str()).value;
   const Float west = GUI::NGA::GET::pan(page, board().c_str()).x;

@@ -24,11 +24,11 @@ constexpr Float ORIGIN = 0.0f;
 constexpr STRING::Hot ADRIFT = "track lacks notes lane";
 constexpr STRING::Hot WROTE = "write";
 
-Whole stood = 0;
-Whole born = 0;
-Whole rowed = 0;
-Vector<Key> worn;
-Vector<Float> stands;
+VIEWS::Sided<Whole> stood;
+VIEWS::Sided<Whole> born;
+VIEWS::Sided<Whole> rowed;
+VIEWS::Sided<Vector<Key>> worn;
+VIEWS::Sided<Vector<Float>> stands;
 
 auto key(Whole section, Whole pitch) -> String {
   return VIEWS::ROLL::sectioned(::STEM, section, pitch);
@@ -77,14 +77,14 @@ void strike(GUI::Handle page, Whole section) {
 }
 
 void relaid(GUI::Handle page, const Vector<VIEWS::ROLL::Keyed> &sections) {
-  for (Whole section = sections.size(); section < ::stood; ++section)
+  for (Whole section = sections.size(); section < ::stood(); ++section)
     ::strike(page, section);
-  for (Whole section = ::stood; section < sections.size(); ++section)
+  for (Whole section = ::stood(); section < sections.size(); ++section)
     ::seat(page, section, sections[section].key.at);
   for (Whole section = 0; section < sections.size(); ++section)
     ::redress(page, section, sections[section].key);
-  ::stood = sections.size();
-  ::stands.clear();
+  ::stood() = sections.size();
+  ::stands().clear();
 }
 
 auto placed(
@@ -101,11 +101,11 @@ auto placed(
 void laid(GUI::Handle page, const Vector<VIEWS::ROLL::Keyed> &sections) {
   const Float pan = GUI::NGA::GET::pan(page, VIEWS::ROLL::board().c_str()).x;
   const Float zoom = VIEWS::ROLL::scaled();
-  ::stands.resize(sections.size(), -VIEWS::ROLL::RAILED - 1.0f);
+  ::stands().resize(sections.size(), -VIEWS::ROLL::RAILED - 1.0f);
   for (Whole section = 0; section < sections.size(); ++section) {
     const Float at = ::placed(sections, section, pan, zoom);
-    if (at == ::stands[section]) continue;
-    ::stands[section] = at;
+    if (at == ::stands()[section]) continue;
+    ::stands()[section] = at;
     VIEWS::ROLL::ROWS::railed(
       page, ::STEM, section, sections[section].key.at, at,
       at > -VIEWS::ROLL::RAILED);
@@ -130,7 +130,7 @@ void wrote(GUI::Handle page, Whole pitch) {
 }
 
 void pressed(GUI::Handle page) {
-  for (Whole section = 0; section < ::stood; ++section)
+  for (Whole section = 0; section < ::stood(); ++section)
     for (Whole pitch = 0; pitch <= VIEWS::ROLL::HIGHEST; ++pitch)
       if (GUI::GET::clicked(page, ::key(section, pitch).c_str()))
         return ::wrote(page, pitch);
@@ -139,9 +139,9 @@ void pressed(GUI::Handle page) {
 }  // namespace
 
 void SOUND::VIEWS::ROLL::SHED::rail() {
-  if (VIEWS::reborn(::born)) {
-    ::stood = 0;
-    ::worn.clear();
+  if (VIEWS::reborn(::born())) {
+    ::stood() = 0;
+    ::worn().clear();
     return;
   }
   ::relaid(document(), {});
@@ -149,24 +149,25 @@ void SOUND::VIEWS::ROLL::SHED::rail() {
 
 void SOUND::VIEWS::ROLL::rail() {
   const GUI::Handle page = document();
-  if (VIEWS::reborn(::born)) {
-    ::stood = 0;
-    ::worn.clear();
+  if (VIEWS::reborn(::born())) {
+    ::stood() = 0;
+    ::worn().clear();
   }
   const Vector<Keyed> sections = keyed(::ORIGIN);
-  const Flag moved = ROWS::moved(::rowed);
-  if (::stood == 0 || rekeyed(::worn) || moved) ::relaid(page, sections);
+  const Flag moved = ROWS::moved(::rowed());
+  if (::stood() == 0 || rekeyed(::worn()) || moved) ::relaid(page, sections);
   ::laid(page, sections);
   ::pressed(page);
 }
 
 auto SOUND::VIEWS::ROLL::stood(Whole section) -> Float {
-  return section < ::stands.size() ? ::stands[section] : -RAILED;
+  return section < ::stands().size() ? ::stands()[section] : -RAILED;
 }
 
 void SOUND::VIEWS::ROLL::rail(SHELL::Session &session) {
   session.print(std::format(
-    "rail keys {} held west notice {}", ::stood == 0 ? 0 : GET::railed().size(),
+    "rail keys {} held west notice {}",
+    ::stood() == 0 ? 0 : GET::railed().size(),
     GUI::GET::text(document(), NOTICE)));
   const GUI::Handle page = document();
   const Vector<Keyed> sections = keyed(::ORIGIN);

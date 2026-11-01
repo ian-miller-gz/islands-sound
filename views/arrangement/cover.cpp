@@ -16,8 +16,8 @@ using namespace SOUND;
 constexpr STRING::Hot COVER = "cover";
 constexpr Float OVER = 2.0f;
 
-Vector<String> seated;
-Whole born = 0;
+VIEWS::Sided<Vector<String>> seated;
+VIEWS::Sided<Whole> born;
 
 struct Landing {
   Whole kind = KIND::AUDIO, lane = NONE, band = NONE;
@@ -79,7 +79,7 @@ auto landings(const CONTROL::Reel &reel) -> Vector<Landing> {
 
 void seat(GUI::Handle page, const Landing &fall) {
   const String plate = ::id(fall);
-  for (const String &held : ::seated)
+  for (const String &held : ::seated())
     if (held == plate) return;
   BOARDS::place(
     page, VIEWS::ARRANGEMENT::board().c_str(), "panel", plate, {}, {});
@@ -87,18 +87,18 @@ void seat(GUI::Handle page, const Landing &fall) {
     page, plate.c_str(),
     GUI::Style{VIEWS::ARRANGEMENT::plated(fall.kind).c_str()});
   GUI::set(page, plate.c_str(), GUI::Depth{::OVER});
-  ::seated.push_back(plate);
+  ::seated().push_back(plate);
 }
 
 }  // namespace
 
 void SOUND::VIEWS::ARRANGEMENT::cover() {
   const GUI::Handle page = VIEWS::document();
-  if (VIEWS::reborn(::born)) ::seated.clear();
+  if (VIEWS::reborn(::born())) ::seated().clear();
   const CONTROL::Reel reel = CONTROL::reel();
   const Float opens = across(reel.at);
   const Float closes = std::max(opens, across(VIEWS::clock()));
-  for (const String &plate : ::seated)
+  for (const String &plate : ::seated())
     GUI::set(page, plate.c_str(), GUI::Visibility{false});
   for (const ::Landing &fall : ::landings(reel)) {
     if (fall.band == NONE) continue;
