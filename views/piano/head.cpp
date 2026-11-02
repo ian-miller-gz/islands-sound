@@ -19,8 +19,8 @@ constexpr Float HAIR = 2.0f;
 constexpr Float NORTH = 0.0f;
 constexpr Float RAISED = 1.0f;
 
-Flag stood = false;
-Whole born = 0;
+VIEWS::Sided<Flag> stood;
+VIEWS::Sided<Whole> born;
 
 auto pulse() -> Whole {
   return SCORE::pulsed(VIEWS::clock(), TRANSPORT::held().tempos);
@@ -32,7 +32,7 @@ void seat(GUI::Handle page, const String &id) {
     {::HAIR, VIEWS::ROLL::ROWS::deep()});
   GUI::set(page, id.c_str(), GUI::Style{::MARKED});
   GUI::set(page, id.c_str(), GUI::Depth{::RAISED});
-  ::stood = true;
+  ::stood() = true;
 }
 
 }  // namespace
@@ -48,17 +48,17 @@ void SOUND::VIEWS::ROLL::chase() {
 }
 
 void SOUND::VIEWS::ROLL::SHED::head() {
-  if (VIEWS::reborn(::born)) ::stood = false;
-  if (!::stood) return;
+  if (VIEWS::reborn(::born())) ::stood() = false;
+  if (!::stood()) return;
   BOARDS::drop(document(), board() + "." + ::STEM);
-  ::stood = false;
+  ::stood() = false;
 }
 
 void SOUND::VIEWS::ROLL::head() {
   const GUI::Handle page = document();
   const String id = board() + "." + ::STEM;
-  if (VIEWS::reborn(::born)) ::stood = false;
-  if (!::stood) ::seat(page, id);
+  if (VIEWS::reborn(::born())) ::stood() = false;
+  if (!::stood()) ::seat(page, id);
   const Float scale = GUI::NGA::GET::zoom(page, board().c_str()).value;
   const GUI::SAC::PLAYHEAD::Mark mark =
     GUI::SAC::PLAYHEAD::blade(across(::pulse()), scale, ::HAIR);

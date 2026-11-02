@@ -17,9 +17,9 @@ constexpr STRING::Hot PLATE = "paper";
 constexpr Float AIR = ROLL::HALF * ROLL::SPACE;
 constexpr Float BARE = 0.0f, NORTH = ROLL::STEP;
 
-Flag stood = false;
-Whole born = 0;
-Float east = ROLL::RAILED;
+VIEWS::Sided<Flag> stood;
+VIEWS::Sided<Whole> born;
+VIEWS::Sided<Float> east = {{ROLL::RAILED, ROLL::RAILED}};
 
 auto named(STRING::Hot stem) -> String { return ROLL::board() + "." + stem; }
 
@@ -48,7 +48,7 @@ void seat(GUI::Handle page) {
   const Float wide =
     column + SIGNS::metred(page, column, lines, down) + ::AIR - ROLL::RAILED;
   const String plate = ::named(::PLATE);
-  ::east = ROLL::RAILED + wide;
+  ::east() = ROLL::RAILED + wide;
   GUI::set(page, plate.c_str(), GUI::Position{ROLL::RAILED, ::NORTH});
   GUI::set(
     page, plate.c_str(), GUI::Extent{wide, ROLL::STAFF::deep() - ::NORTH});
@@ -59,17 +59,19 @@ void seat(GUI::Handle page) {
 
 void SOUND::VIEWS::ROLL::STAFF::clef() {
   const GUI::Handle page = document();
-  if (VIEWS::reborn(::born)) ::stood = false;
+  if (VIEWS::reborn(::born())) ::stood() = false;
   const Flag wanted = papered();
-  if (wanted != ::stood) ::build(page, wanted);
-  ::stood = wanted;
+  if (wanted != ::stood()) ::build(page, wanted);
+  ::stood() = wanted;
   if (wanted) ::seat(page);
 }
 
-auto SOUND::VIEWS::ROLL::margin() -> Float { return ::stood ? ::east : RAILED; }
+auto SOUND::VIEWS::ROLL::margin() -> Float {
+  return ::stood() ? ::east() : RAILED;
+}
 
 void SOUND::VIEWS::ROLL::STAFF::SHED::clef() {
-  if (VIEWS::reborn(::born) || !::stood) return;
+  if (VIEWS::reborn(::born()) || !::stood()) return;
   ::build(document(), false);
-  ::stood = false;
+  ::stood() = false;
 }

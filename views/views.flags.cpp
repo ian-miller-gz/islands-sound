@@ -24,8 +24,8 @@ struct Seat {
   Whole loops = 0, tags = 0;
 };
 
-Vector<Seat> seats;
-Whole born = 0;
+VIEWS::Sided<Vector<Seat>> seats;
+VIEWS::Sided<Whole> born;
 
 auto numbered(const String &strip, STRING::Hot word, Whole at) -> String {
   return std::format("{}.{}.{}", strip, word, at);
@@ -51,15 +51,15 @@ void lay(const String &id, Flag shown, GUI::Position at, GUI::Extent size) {
 }
 
 auto seated(const String &strip) -> Seat & {
-  if (VIEWS::reborn(::born)) ::seats.clear();
-  for (Seat &one : ::seats)
+  if (VIEWS::reborn(::born())) ::seats().clear();
+  for (Seat &one : ::seats())
     if (one.strip == strip) return one;
   VIEWS::hoist(
     strip, ::named(strip, VIEWS::ENDS, VIEWS::OPENED), ::BOUND, ::BARE);
   VIEWS::hoist(
     strip, ::named(strip, VIEWS::ENDS, VIEWS::CLOSED), ::BOUND, ::BARE);
-  ::seats.push_back(Seat{strip});
-  return ::seats.back();
+  ::seats().push_back(Seat{strip});
+  return ::seats().back();
 }
 
 void loops(Seat &seat, Whole count) {
