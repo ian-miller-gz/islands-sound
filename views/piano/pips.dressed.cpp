@@ -12,8 +12,8 @@ constexpr STRING::Hot LOOSE = "loose";
 constexpr STRING::Hot HIT = "hit";
 constexpr STRING::Hot STYLES[][2] = {{::NOTE, ::LOOSE}, {::HIT, ::HIT}};
 
-Whole worn = NONE;
-Vector<Whole> tiers;
+VIEWS::Sided<Whole> worn = {{NONE, NONE}};
+VIEWS::Sided<Vector<Whole>> tiers;
 
 auto loosely(const VIEWS::ROLL::Pip &pip) -> Flag { return pip.stock == NONE; }
 
@@ -29,15 +29,15 @@ void SOUND::VIEWS::ROLL::dressed(
   GUI::Handle page, const Vector<Pip> &wanted, const Vector<Pip> &shown) {
   const String stem = board();
   const Whole notation = GET::staffed() ? 1 : 0;
-  const Flag again = notation != ::worn;
-  ::worn = notation;
-  ::tiers.resize(wanted.size(), NONE);
+  const Flag again = notation != ::worn();
+  ::worn() = notation;
+  ::tiers().resize(wanted.size(), NONE);
   for (Whole row = 0; row < wanted.size(); ++row) {
     const Flag loose = ::loosely(wanted[row]);
     const Whole now = tier(wanted[row]);
     const Flag kept = row < shown.size() && ::loosely(shown[row]) == loose &&
-                      ::tiers[row] == now;
-    ::tiers[row] = now;
+                      ::tiers()[row] == now;
+    ::tiers()[row] = now;
     if (!again && kept) continue;
     const String id = GUI::SAC::SEAT::named(stem.c_str(), row);
     const String style = ::styled(notation, loose, now);

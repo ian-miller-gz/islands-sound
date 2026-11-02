@@ -22,9 +22,9 @@ struct Hit {
 
 constexpr Integer MIDDLE = 4;
 
-Vector<Hit> kept;
-Vector<STAFF::Stem> stood;
-Whole way = NONE;
+VIEWS::Sided<Vector<Hit>> kept;
+VIEWS::Sided<Vector<STAFF::Stem>> stood;
+VIEWS::Sided<Whole> way = {{NONE, NONE}};
 
 auto before(const Hit &one, const Hit &two) -> Flag {
   return std::tie(one.foot, one.at, one.place) <
@@ -65,27 +65,27 @@ auto grouped(const Vector<Hit> &hits) -> Vector<STAFF::Stem> {
 }  // namespace
 
 auto SOUND::VIEWS::ROLL::STAFF::GET::stems() -> const Vector<Stem> & {
-  return ::stood;
+  return ::stood();
 }
 
 void SOUND::VIEWS::ROLL::STAFF::stemmed() {
   Vector<Hit> hits = ::hits();
   const Whole way = ROLL::GET::presentation();
-  const Flag moved = hits != ::kept || way != ::way;
+  const Flag moved = hits != ::kept() || way != ::way();
   if (moved) {
-    ::way = way;
-    ::kept = std::move(hits);
-    ::stood = ::grouped(::kept);
-    valued(::stood);
-    sloped(::stood, joined(::stood));
+    ::way() = way;
+    ::kept() = std::move(hits);
+    ::stood() = ::grouped(::kept());
+    valued(::stood());
+    sloped(::stood(), joined(::stood()));
   }
   beamed(moved);
 }
 
 void SOUND::VIEWS::ROLL::STAFF::SHED::stemmed() {
-  ::way = NONE;
-  ::kept.clear();
-  ::stood.clear();
-  sloped(::stood, {});
+  ::way() = NONE;
+  ::kept().clear();
+  ::stood().clear();
+  sloped(::stood(), {});
   beamed();
 }

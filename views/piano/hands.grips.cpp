@@ -23,9 +23,9 @@ struct Worn {
   auto operator==(const Worn &) const -> Bool = default;
 };
 
-Whole stood = 0;
-Whole born = 0;
-Vector<Worn> worn;
+VIEWS::Sided<Whole> stood;
+VIEWS::Sided<Whole> born;
+VIEWS::Sided<Vector<Worn>> worn;
 
 auto plate(Whole row) -> String {
   return GUI::SAC::SEAT::named(VIEWS::ROLL::board().c_str(), row);
@@ -40,7 +40,7 @@ void stand(GUI::Handle page, Whole row) {
   BOARDS::place(page, ::plate(row).c_str(), "node", id, {}, {});
   GUI::set(page, id.c_str(), GUI::Style{::MARKED});
   GUI::set(page, id.c_str(), GUI::Depth{::RAISED});
-  ::worn.push_back({});
+  ::worn().push_back({});
 }
 
 void wear(GUI::Handle page, Whole row, const Worn &now) {
@@ -62,26 +62,26 @@ auto SOUND::VIEWS::ROLL::HANDS::resting(Whole length) -> Float {
 
 void SOUND::VIEWS::ROLL::HANDS::grip(
   GUI::Handle page, const Vector<Pip> &drawn) {
-  if (VIEWS::reborn(::born)) ::stood = 0;
-  ::stood = std::min<Whole>(::stood, drawn.size());
-  ::worn.resize(::stood);
-  for (; ::stood < drawn.size(); ++::stood) ::stand(page, ::stood);
+  if (VIEWS::reborn(::born())) ::stood() = 0;
+  ::stood() = std::min<Whole>(::stood(), drawn.size());
+  ::worn().resize(::stood());
+  for (; ::stood() < drawn.size(); ++::stood()) ::stand(page, ::stood());
   const Flag tonal = GET::notation() == TONAL;
   for (Whole row = 0; row < drawn.size(); ++row) {
     const Worn now = {
       tonal, resting(drawn[row].length), ::gripped(drawn[row].length)};
     const String id = HANDS::handle(row);
     const Flag strayed = GUI::GET::position(page, id.c_str()).y != ::ORIGIN;
-    if (now == ::worn[row] && !strayed) continue;
+    if (now == ::worn()[row] && !strayed) continue;
     ::wear(page, row, now);
-    ::worn[row] = now;
+    ::worn()[row] = now;
   }
 }
 
 void SOUND::VIEWS::ROLL::SHED::hands() {
   const GUI::Handle page = document();
-  if (VIEWS::reborn(::born)) ::stood = 0;
-  for (Whole row = 0; row < ::stood; ++row)
+  if (VIEWS::reborn(::born())) ::stood() = 0;
+  for (Whole row = 0; row < ::stood(); ++row)
     BOARDS::drop(page, HANDS::handle(row));
-  ::stood = 0;
+  ::stood() = 0;
 }

@@ -26,9 +26,9 @@ constexpr GUI::Dial::Graphic LETTERED = GUI::Dial::NONE;
 constexpr GUI::Dial::Graphic DRAWN = GUI::Dial::BAR;
 constexpr Whole SMOOTH = 0;
 
-Flag stood = false;
-Whole born = 0;
-auto standing() -> Flag { return stood; }
+VIEWS::Sided<Flag> stood;
+VIEWS::Sided<Whole> born;
+auto standing() -> Flag { return stood(); }
 
 auto rung(Whole index) -> Whole {
   return PULSES * WHOLE / RUNGS[std::min(index, CLIMBED)];
@@ -62,7 +62,7 @@ auto meant(GUI::Handle page, STRING::Hot cell) -> Float {
 }
 
 void shaped(GUI::Handle page) {
-  if (VIEWS::reborn(born)) stood = false;
+  if (VIEWS::reborn(born())) stood() = false;
   GUI::set(
     page, SNAP, GUI::Dial{FINEST, Float(CLIMBED), BEAT, CLIMBED, LETTERED});
   GUI::set(
@@ -71,11 +71,11 @@ void shaped(GUI::Handle page) {
       SHORTEST, LONGEST, SHORTEST, Whole(LONGEST - SHORTEST), LETTERED});
   GUI::set(
     page, LOUD, GUI::Dial{SOFTEST, VIEWS::ROLL::FULL, FORTE, SMOOTH, DRAWN});
-  if (stood) return;
+  if (stood()) return;
   GUI::set(page, SNAP, GUI::Value{BEAT});
   GUI::set(page, LENGTH, GUI::Value{SHORTEST});
   GUI::set(page, LOUD, GUI::Value{FORTE});
-  stood = true;
+  stood() = true;
 }
 
 void taken(GUI::Handle page) {

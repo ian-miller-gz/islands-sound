@@ -21,9 +21,9 @@ struct Plate {
   Whole at = 0, frames = 0;
 };
 
-Vector<Plate> shown;
-Whole stood = 0;
-Whole born = 0;
+VIEWS::Sided<Vector<Plate>> shown;
+VIEWS::Sided<Whole> stood;
+VIEWS::Sided<Whole> born;
 
 auto bed() -> String { return VIEWS::ARRANGEMENT::board() + "." + ::BED; }
 
@@ -48,24 +48,24 @@ auto plates() -> Vector<::Plate> {
 
 void build(GUI::Handle page, Whole count) {
   const String ground = ::bed();
-  if (::stood == 0 && count != 0)
+  if (::stood() == 0 && count != 0)
     BOARDS::place(
       page, VIEWS::ARRANGEMENT::board().c_str(), "panel", ground, {}, {});
-  BOARDS::sweep(page, ground.c_str(), count, ::stood);
-  for (Whole plate = ::stood; plate < count; ++plate) {
+  BOARDS::sweep(page, ground.c_str(), count, ::stood());
+  for (Whole plate = ::stood(); plate < count; ++plate) {
     const String id = GUI::SAC::SEAT::named(ground.c_str(), plate);
     BOARDS::place(page, ground.c_str(), "node", id, {}, {});
     GUI::set(page, id.c_str(), GUI::Style{::DRESSED});
     GUI::set(page, id.c_str(), GUI::Depth{VIEWS::ARRANGEMENT::RAISED});
   }
-  ::stood = count;
+  ::stood() = count;
 }
 
 auto pressed(Float across, Float down) -> Whole {
   if (!VIEWS::ARRANGEMENT::shelved(down)) return NONE;
   const Whole at = ::framed(across);
-  for (Whole plate = 0; plate < ::shown.size(); ++plate) {
-    const ::Plate &held = ::shown[plate];
+  for (Whole plate = 0; plate < ::shown().size(); ++plate) {
+    const ::Plate &held = ::shown()[plate];
     const Float top = VIEWS::ARRANGEMENT::rail(held.band) +
                       VIEWS::ARRANGEMENT::depth(held.band) -
                       VIEWS::ARRANGEMENT::shelf(held.band);
@@ -93,7 +93,7 @@ auto landed(const ::Plate &plate, const GUI::SAC::STROKE::Gesture &gesture)
 void lifted(const GUI::SAC::STROKE::Gesture &gesture) {
   const Whole plate = ::pressed(gesture.from.at.x, gesture.from.at.y);
   if (plate == NONE) return;
-  const ::Plate &held = ::shown[plate];
+  const ::Plate &held = ::shown()[plate];
   const Whole at = ::landed(held, gesture);
   TIMELINE::restore(
     held.track, held.lane, held.out,
@@ -106,13 +106,13 @@ void SOUND::VIEWS::ARRANGEMENT::outtakes() {
   const GUI::Handle page = VIEWS::document();
   const GUI::SAC::STROKE::Gesture gesture = VIEWS::GET::gesture();
   if (gesture.closed) ::lifted(gesture);
-  if (VIEWS::reborn(::born)) ::stood = 0;
+  if (VIEWS::reborn(::born())) ::stood() = 0;
   const Vector<::Plate> wanted = ::plates();
-  if (wanted.size() != ::stood) ::build(page, wanted.size());
-  ::shown = wanted;
-  for (Whole plate = 0; plate < ::shown.size(); ++plate) {
+  if (wanted.size() != ::stood()) ::build(page, wanted.size());
+  ::shown() = wanted;
+  for (Whole plate = 0; plate < ::shown().size(); ++plate) {
     const String id = GUI::SAC::SEAT::named(::bed().c_str(), plate);
-    const ::Plate &held = ::shown[plate];
+    const ::Plate &held = ::shown()[plate];
     Float across = ARRANGEMENT::across(held.at);
     if (
       gesture.standing &&
@@ -128,9 +128,9 @@ void SOUND::VIEWS::ARRANGEMENT::outtakes() {
 }
 
 void SOUND::VIEWS::ARRANGEMENT::outtakes(SHELL::Session &session) {
-  session.print(std::format("kept {}", ::shown.size()));
-  for (Whole plate = 0; plate < ::shown.size(); ++plate)
+  session.print(std::format("kept {}", ::shown().size()));
+  for (Whole plate = 0; plate < ::shown().size(); ++plate)
     session.print(std::format(
-      "kept {} track {} lane {} at {} for {}", plate, ::shown[plate].track,
-      ::shown[plate].lane, ::shown[plate].at, ::shown[plate].frames));
+      "kept {} track {} lane {} at {} for {}", plate, ::shown()[plate].track,
+      ::shown()[plate].lane, ::shown()[plate].at, ::shown()[plate].frames));
 }

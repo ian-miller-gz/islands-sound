@@ -17,25 +17,25 @@ using VIEWS::ARRANGEMENT::Pip;
 constexpr STRING::Hot GROUND = "ink";
 constexpr STRING::Hot INKED = "sketch";
 
-Vector<Whole> stood;
-Vector<Flag> bedded;
-Whole born = 0;
+VIEWS::Sided<Vector<Whole>> stood;
+VIEWS::Sided<Vector<Flag>> bedded;
+VIEWS::Sided<Whole> born;
 
 auto ground(const String &box) -> String { return box + "." + ::GROUND; }
 
 auto cleared() -> Flag {
-  if (!VIEWS::reborn(::born)) return false;
-  ::stood.clear();
-  ::bedded.clear();
+  if (!VIEWS::reborn(::born())) return false;
+  ::stood().clear();
+  ::bedded().clear();
   return true;
 }
 
 void bare(GUI::Handle page, Whole row, const String &bed) {
-  if (::stood[row] != 0) BOARDS::sweep(page, bed.c_str(), 0, ::stood[row]);
-  ::stood[row] = 0;
-  if (!::bedded[row]) return;
+  if (::stood()[row] != 0) BOARDS::sweep(page, bed.c_str(), 0, ::stood()[row]);
+  ::stood()[row] = 0;
+  if (!::bedded()[row]) return;
   BOARDS::drop(page, bed);
-  ::bedded[row] = false;
+  ::bedded()[row] = false;
 }
 
 void inked(GUI::Handle page, Whole row, const Box &box) {
@@ -46,17 +46,17 @@ void inked(GUI::Handle page, Whole row, const Box &box) {
   const Vector<Pip> marks = VIEWS::ARRANGEMENT::pips(box);
   const Float wide = VIEWS::ARRANGEMENT::across(box.frames);
   const Float deep = VIEWS::ARRANGEMENT::inlaid(box.band);
-  if (!::bedded[row]) {
+  if (!::bedded()[row]) {
     BOARDS::place(page, id.c_str(), "panel", bed, {}, {});
-    ::bedded[row] = true;
+    ::bedded()[row] = true;
   }
-  for (Whole mark = ::stood[row]; mark < marks.size(); ++mark) {
+  for (Whole mark = ::stood()[row]; mark < marks.size(); ++mark) {
     const String pip = GUI::SAC::SEAT::named(bed.c_str(), mark);
     BOARDS::place(page, bed.c_str(), "panel", pip, {}, {});
     GUI::set(page, pip.c_str(), GUI::Style{::INKED});
   }
-  BOARDS::sweep(page, bed.c_str(), marks.size(), ::stood[row]);
-  ::stood[row] = marks.size();
+  BOARDS::sweep(page, bed.c_str(), marks.size(), ::stood()[row]);
+  ::stood()[row] = marks.size();
   for (Whole mark = 0; mark < marks.size(); ++mark) {
     const String pip = GUI::SAC::SEAT::named(bed.c_str(), mark);
     GUI::set(
@@ -85,7 +85,7 @@ void SOUND::VIEWS::ARRANGEMENT::sketch(SHELL::Session &session) {
 void SOUND::VIEWS::ARRANGEMENT::SHED::sketch() {
   const GUI::Handle page = VIEWS::document();
   if (::cleared()) return;
-  for (Whole row = 0; row < ::stood.size(); ++row)
+  for (Whole row = 0; row < ::stood().size(); ++row)
     ::bare(page, row, ::ground(GUI::SAC::SEAT::named(board().c_str(), row)));
 }
 
@@ -93,8 +93,8 @@ void SOUND::VIEWS::ARRANGEMENT::sketch() {
   const GUI::Handle page = VIEWS::document();
   ::cleared();
   const Vector<Box> &laid = boxes();
-  ::stood.resize(laid.size(), 0);
-  ::bedded.resize(laid.size(), false);
+  ::stood().resize(laid.size(), 0);
+  ::bedded().resize(laid.size(), false);
   for (Whole row = 0; row < laid.size(); ++row) ::inked(page, row, drawn(row));
   fades();
 }

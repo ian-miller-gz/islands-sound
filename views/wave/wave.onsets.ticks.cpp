@@ -14,7 +14,7 @@ constexpr STRING::Hot LINE = "wave onsets {}";
 constexpr STRING::Hot INK = "onset";
 constexpr Float RAISED = 2.0f;
 
-VIEWS::Pool pool;
+VIEWS::Sided<VIEWS::Pool> pool;
 
 auto tick(Whole at) -> String { return std::format("{}.{}", WAVE::ONSET, at); }
 
@@ -30,21 +30,21 @@ auto shown(Float west, Float east) -> Vector<Whole> {
 
 void build(GUI::Handle page, Whole count) {
   const String board = WAVE::board();
-  for (Whole at = count; at < ::pool.stood; ++at)
+  for (Whole at = count; at < ::pool().stood; ++at)
     GUI::NODES::remove(page, ::tick(at).c_str());
-  for (Whole at = ::pool.stood; at < count; ++at) {
+  for (Whole at = ::pool().stood; at < count; ++at) {
     const String id = ::tick(at);
     GUI::NODES::create(page, board.c_str(), WAVE::PANEL, id.c_str());
     GUI::set(page, id.c_str(), GUI::Style{::INK});
     GUI::set(page, id.c_str(), GUI::Depth{::RAISED});
   }
-  VIEWS::built(::pool, count);
+  VIEWS::built(::pool(), count);
 }
 
 }  // namespace
 
 void SOUND::VIEWS::WAVE::SHED::onsets() {
-  VIEWS::reborn(::pool);
+  VIEWS::reborn(::pool());
   ::build(document(), 0);
 }
 
@@ -54,10 +54,10 @@ void SOUND::VIEWS::WAVE::onsets() {
   if (scale <= ORIGIN) return;
   const Float west = GUI::NGA::GET::pan(page, board().c_str()).x;
   const Vector<Whole> frames = ::shown(west, west + window());
-  VIEWS::reborn(::pool);
-  const Whole seats = VIEWS::sized(::pool, frames.size(), window());
-  if (seats != ::pool.stood) ::build(page, seats);
-  VIEWS::light(::pool, ::tick, frames.size());
+  VIEWS::reborn(::pool());
+  const Whole seats = VIEWS::sized(::pool(), frames.size(), window());
+  if (seats != ::pool().stood) ::build(page, seats);
+  VIEWS::light(::pool(), ::tick, frames.size());
   const GUI::Extent run = {GUI::GET::extent(page, ONSET).w / scale, deep()};
   for (Whole at = 0; at < frames.size(); ++at) {
     const String id = ::tick(at);
@@ -68,5 +68,5 @@ void SOUND::VIEWS::WAVE::onsets() {
 
 void SOUND::VIEWS::WAVE::onsets(SHELL::Session &session) {
   if (LANE::faced(laned()).onsets == 0) return;
-  session.print(std::format(::LINE, ::pool.lit));
+  session.print(std::format(::LINE, ::pool().lit));
 }
