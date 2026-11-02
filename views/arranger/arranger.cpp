@@ -85,6 +85,7 @@ void state(SHELL::Session &session) {
    .state = ::state,
    .words = VIEWS::ARRANGER::words(),
    .faced = VIEWS::ARRANGER::faced,
+   .twinned = VIEWS::ARRANGER::twinned,
    .keep = VIEWS::ARRANGER::keep,
    .restore = VIEWS::ARRANGER::restore,
    .shed = VIEWS::ARRANGER::shed});

@@ -35,6 +35,8 @@ auto spoken(Whole region) -> STRING::Hot;
 
 auto faced() -> const View *;
 
+auto twinned() -> Flag;
+
 void label(GUI::Handle page);
 
 void door();

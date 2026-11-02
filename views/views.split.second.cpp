@@ -55,7 +55,10 @@ auto SOUND::VIEWS::side() -> Whole {
 
 auto SOUND::VIEWS::SPLIT::doubled() -> Flag {
   const Whole at = lower();
-  return at != NONE && at == chosen() && mirrored(at) && !hosted(at);
+  if (at == NONE || at != chosen()) return false;
+  if (!hosted(at)) return mirrored(at);
+  const View &unit = roster()[at];
+  return unit.twinned != nullptr && unit.twinned();
 }
 
 auto SOUND::VIEWS::SPLIT::turned() -> Flag {

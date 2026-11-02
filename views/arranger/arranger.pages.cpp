@@ -28,9 +28,6 @@ auto SOUND::VIEWS::ARRANGER::paged(Whole region) -> Whole {
 
 auto SOUND::VIEWS::ARRANGER::turned(Whole region, Whole kind) -> Flag {
   if (kind != NONE && !LANE::editable(kind)) return false;
-  const Whole other = region == UPPER ? BELOW : UPPER;
-  const Flag same = (kind == NONE) == (::paging[other] == NONE);
-  if (SPLIT::shared() && ::seen[other] && same) return false;
   ::paging[region] = kind;
   ::seen[region] = true;
   own();
@@ -52,4 +49,9 @@ auto SOUND::VIEWS::ARRANGER::spoken() -> STRING::Hot {
 auto SOUND::VIEWS::ARRANGER::spoken(Whole region) -> STRING::Hot {
   const Whole page = ::paging[region];
   return page == NONE ? ::SESSION : KIND::spoken(page);
+}
+
+auto SOUND::VIEWS::ARRANGER::twinned() -> Flag {
+  return SPLIT::shared() && ::seen[BELOW] &&
+         ::paging[UPPER] == ::paging[BELOW];
 }

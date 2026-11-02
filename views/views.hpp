@@ -54,6 +54,8 @@ struct View {
 
   const View *(*faced)() = nullptr;
 
+  Flag (*twinned)() = nullptr;
+
   Overview (*overview)() = nullptr;
 
   void (*keep)(FIELDS::Map &face) = nullptr;

@@ -25,6 +25,8 @@ void placed(GUI::Handle page, STRING::Hot root, Float down, Float margin) {
   if (size.h != margin) GUI::set(page, root, GUI::Extent{size.w, margin});
 }
 
+void twin(GUI::Handle page);
+
 }  // namespace
 
 auto SOUND::VIEWS::ARRANGER::facing(Whole region) -> const View & {
@@ -35,6 +37,7 @@ auto SOUND::VIEWS::ARRANGER::facing(Whole region) -> const View & {
 /// sheet, the upper region's page whole above the bar and the lower's from
 /// the bar's foot, each listening when its region holds the focus.
 void SOUND::VIEWS::ARRANGER::shared(GUI::Handle page) {
+  if (twinned()) return ::twin(page);
   const View &above = facing(UPPER), &below = facing(BELOW);
   for (const View *unit : ::standers()) {
     VIEWS::show(*unit, true);
@@ -67,3 +70,29 @@ void SOUND::VIEWS::ARRANGER::joined(GUI::Handle page) {
     ::placed(page, unit->name, ::WHOLE, ::WHOLE);
   ::laid = false;
 }
+
+namespace {
+
+/// @brief The same face in both regions: the sheet shows the upper
+/// region's and the split's second page the lower's, one face a page,
+/// each with the page's own caches, listening when its region holds the
+/// focus.
+void twin(GUI::Handle page) {
+  using namespace SOUND::VIEWS;
+  const Whole region = side() == 0 ? UPPER : BELOW;
+  const View &face = ARRANGER::facing(region);
+  for (const View *unit : ::standers()) {
+    show(*unit, unit == &face);
+    GUI::set(
+      page, (String(unit->name) + "." + ::TOOLS).c_str(),
+      GUI::Visibility{unit == &face && SPLIT::focused() == region});
+  }
+  ::placed(page, face.name, ::WHOLE, side() == 0 ? SPLIT::height() : ::WHOLE);
+  if (ARRANGER::paged(region) != NONE) LANE::paged(ARRANGER::paged(region));
+  listen(SPLIT::focused() == region);
+  face.run();
+  listen(true);
+  ::laid = true;
+}
+
+}  // namespace
