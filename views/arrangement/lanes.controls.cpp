@@ -10,8 +10,8 @@ using namespace SOUND;
 
 constexpr STRING::Hot FOLDED = "fold";
 constexpr Float CARET = 12.0f;
-constexpr Float ARM = 10.0f;
-constexpr Float DOTTED = 8.0f;
+constexpr Float ARM = 28.0f;
+constexpr Float DOTTED = 24.0f;
 constexpr STRING::Hot ARMED = "arm";
 constexpr STRING::Hot MARKED = "arming";
 constexpr STRING::Hot PLAIN = "arm";
@@ -123,8 +123,8 @@ void arms(const Vector<VIEWS::ARRANGEMENT::Stand> &stands) {
       GUI::Position{
         VIEWS::ARRANGEMENT::GUTTER - ::CARET - ::ARM -
           VIEWS::ARRANGEMENT::INSET * 2.0f,
-        ::seated(row) + (::CARET - ::ARM) / 2.0f});
-    GUI::set(page, id.c_str(), GUI::Visibility{true});
+        ::seated(row)});
+    GUI::set(page, id.c_str(), GUI::Visibility{stands[row].laden});
     GUI::set(
       page, id.c_str(),
       GUI::Style{

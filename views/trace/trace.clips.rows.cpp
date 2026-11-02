@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <format>
 
+#include "../../kind.hpp"
 #include "../arranger/arranger.face.hpp"
 #include "../lane/lane.face.hpp"
 #include "trace.internal.hpp"
@@ -11,6 +12,7 @@ namespace TRACE = SOUND::VIEWS::TRACE;
 namespace LANE = SOUND::VIEWS::LANE;
 
 constexpr STRING::Hot NAMED = "name";
+constexpr STRING::Hot KINDED = "kind";
 constexpr STRING::Hot PLACED = "at";
 constexpr STRING::Hot MARK = "selected";
 constexpr STRING::Hot SPAN = "{} · {}";
@@ -22,8 +24,8 @@ void pressed(const TRACE::Clipped &row) {
     LANE::scope(NONE);
     return;
   }
-  const LANE::Mark mark = LANE::marked();
-  VIEWS::ARRANGER::edit(mark.track, mark.lane);
+  const Whole track = TRACE::attended();
+  if (track == NONE || !VIEWS::ARRANGER::edit(track, row.lane)) return;
   ::pending = row.clip;
 }
 
@@ -35,6 +37,9 @@ void rowed(GUI::Handle page, const Vector<TRACE::Clipped> &rows) {
     const TRACE::Clipped &one = rows[first + row];
     if (GUI::GET::clicked(page, cell.c_str())) ::pressed(one);
     GUI::set(page, (cell + "." + ::NAMED).c_str(), GUI::Text{one.name});
+    GUI::set(
+      page, (cell + "." + ::KINDED).c_str(),
+      GUI::Text{String(KIND::spoken(one.kind))});
     GUI::set(
       page, (cell + "." + ::PLACED).c_str(),
       GUI::Text{std::format(::SPAN, one.place, one.bars)});

@@ -98,7 +98,7 @@ void SOUND::VIEWS::ROLL::cycle(
   VIEWS::handled(strip(), west, scale, ::unfolded);
   VIEWS::flagged(strip(), west, scale, ::down(), ::folded);
   VIEWS::asked(strip(), dressed, step.span, ::pulsed, VIEWS::OFFER::ROLL);
-  changes();
+  VIEWS::CHANGES::lay(tape());
 }
 
 void SOUND::VIEWS::ROLL::cycle(SHELL::Session &session) {
@@ -106,5 +106,5 @@ void SOUND::VIEWS::ROLL::cycle(SHELL::Session &session) {
   const Float scale = GUI::NGA::GET::zoom(page, board().c_str()).value;
   const Float west = GUI::NGA::GET::pan(page, board().c_str()).x;
   VIEWS::flagged(session, ::stood(), west, scale, ::folded);
-  changes(session);
+  VIEWS::CHANGES::state(session, tape());
 }

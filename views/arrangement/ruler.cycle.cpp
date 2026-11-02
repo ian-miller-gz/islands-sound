@@ -5,7 +5,6 @@
 
 #include "../views.internal.hpp"
 #include "arrangement.internal.hpp"
-#include "ruler.changes.hpp"
 
 namespace {
 using namespace SOUND;
@@ -85,7 +84,7 @@ void SOUND::VIEWS::ARRANGEMENT::cycle(
   VIEWS::flagged(strip(), west, scale, ::down(), ::placed);
   VIEWS::asked(
     strip(), dressed, step.span, VIEWS::pulsed, VIEWS::OFFER::ARRANGEMENT);
-  changes();
+  VIEWS::CHANGES::lay(tape());
 }
 
 void SOUND::VIEWS::ARRANGEMENT::cycle(SHELL::Session &session) {
@@ -93,4 +92,5 @@ void SOUND::VIEWS::ARRANGEMENT::cycle(SHELL::Session &session) {
   const Float scale = GUI::NGA::GET::zoom(page, board().c_str()).value;
   const Float west = GUI::NGA::GET::pan(page, board().c_str()).x;
   VIEWS::flagged(session, ::pool().lit, west, scale, ::placed);
+  VIEWS::CHANGES::state(session, tape());
 }

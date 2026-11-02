@@ -10,12 +10,8 @@ using namespace SOUND::VIEWS::ARRANGER;
 namespace LANE = SOUND::VIEWS::LANE;
 namespace SPLIT = SOUND::VIEWS::SPLIT;
 
-constexpr STRING::Hot RESTING = "pair";
-constexpr STRING::Hot HELD = "pairlit";
-constexpr STRING::Hot PLATE = ".set";
-
 auto create(const String &icon, Whole region) -> Pair {
-  return {icon, icon + SPLIT::DOOR, icon + ::PLATE, region};
+  return {icon, icon + SPLIT::DOOR, region};
 }
 
 auto strip() -> const Pair & { return paired(SPLIT::UPPER); }
@@ -66,9 +62,6 @@ void SOUND::VIEWS::ARRANGER::light(GUI::Handle page, const Pair &pair) {
   const View *face = faced(pair.region);
   for (const Half &half : HALVES)
     VIEWS::light(page, pair.*half.id, face == &half.face() ? mark : PLAIN);
-  const String over = String(GUI::GET::hover(page));
-  const Flag rested = over == pair.icon || over == pair.door;
-  GUI::set(page, pair.plate.c_str(), GUI::Style{rested ? ::HELD : ::RESTING});
 }
 
 void SOUND::VIEWS::ARRANGER::door() {

@@ -45,6 +45,7 @@ void locate(SHELL::Session &session);
 void chase(SHELL::Session &session);
 
 void settings(SHELL::Session &session);
+void scan(SHELL::Session &session);
 void tempo(SHELL::Session &session);
 void metre(SHELL::Session &session);
 void cycle(SHELL::Session &session);

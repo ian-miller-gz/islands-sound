@@ -5,6 +5,7 @@
 
 #include "../../arrangement.hpp"
 #include "../../peaks.hpp"
+#include "../views.changes.hpp"
 #include "../lane/lane.face.hpp"
 #include "wave.face.hpp"
 
@@ -38,6 +39,7 @@ auto laned() -> LANE::Mark;
 auto placed() -> Vector<Clip>;
 
 auto scaled() -> Float;
+auto tape() -> VIEWS::CHANGES::Tape;
 auto window() -> Float;
 auto deep() -> Float;
 auto least() -> Float;

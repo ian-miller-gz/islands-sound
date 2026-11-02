@@ -5,12 +5,11 @@ style day color=#fefbf3ff border=0
 
 panel root style=clear anchor=stretch
   panel views style=sheet z=9 anchor=left|right x=240 y=82 w=8 h=34
-    panel views.arranger.set style=pair x=4 y=2 w=50 h=30
-      button views.arranger style=icon size=18 x=2 y=1 w=28 h=28 text="▬"
-      button views.arranger.door style=icon size=18 x=30 y=1 w=18 h=28 text="▦"
-    button views.graph style=icon size=18 x=60 y=3 w=28 h=28 text="⇒"
-    button views.params style=icon size=18 x=90 y=3 w=28 h=28 text="≣"
-    button views.split style=icon size=18 x=120 y=3 w=28 h=28 text="▄"
+    button views.arranger style=icon size=18 x=4 y=3 w=28 h=28 text="▬"
+    button views.arranger.door style=icon size=18 x=34 y=3 w=28 h=28 text="▦"
+    button views.graph style=icon size=18 x=64 y=3 w=28 h=28 text="⇒"
+    button views.params style=icon size=18 x=94 y=3 w=28 h=28 text="≣"
+    button views.split style=icon size=18 x=124 y=3 w=28 h=28 text="▄"
     label views.arranger.hint visible=false text="Arranger"
     label views.graph.hint visible=false text="Graph"
     label views.params.hint visible=false text="Parameter"
@@ -86,7 +85,8 @@ panel root style=clear anchor=stretch
         button trace.kind style=place size=14 visible=false anchor=southwest x=10 y=-32 w=104 h=28
         button trace.grow style=place size=14 visible=false anchor=southeast x=-10 y=-32 w=90 h=28 text="Add lane"
         panel cliprow style=clear visible=false
-          label cliprow.name style=ink size=15 anchor=northwest x=6 y=3 w=120 h=18
+          label cliprow.name style=ink size=15 anchor=northwest x=6 y=3 w=72 h=18
+          label cliprow.kind style=muted size=12 anchor=northwest x=80 y=5 w=52 h=16
           label cliprow.at style=muted size=12 anchor=northeast x=-6 y=5 w=72 h=16
         list trace.clips style=clear visible=false anchor=stretch x=8 y=8 w=8 h=8 pitch=24 pad=3 mark=selected plain=row pattern=cliprow
         panel trace.edit style=sheet visible=false z=9 anchor=stretch x=0 y=0 w=0 h=0
@@ -190,26 +190,26 @@ panel root style=clear anchor=stretch
             panel wave.tools style=clear anchor=northwest x=0 y=0 w=240 h=118
               list wave.rows style=clear anchor=stretch x=8 y=36 w=8 h=4 pitch=24 pad=3 plain=row pattern=rig
       panel arrangement style=clear anchor=stretch x=0 y=0 w=0 h=0
-        graph arrangement.minimap style=board anchor=left|right x=0 y=0 w=0 h=46
-        panel arrangement.slide style=slide z=9 anchor=northwest x=0 y=0 w=30 h=46
-        panel arrangement.ruler style=ruler anchor=left|right x=0 y=46 w=0 h=28 clip=true
+        graph arrangement.minimap style=board anchor=left|right x=0 y=0 w=0 h=34
+        panel arrangement.slide style=slide z=9 anchor=northwest x=0 y=0 w=30 h=34
+        panel arrangement.ruler style=ruler anchor=left|right x=0 y=34 w=0 h=40 clip=true
         graph arrangement.board style=board anchor=stretch x=0 y=74 w=0 h=0
         field arrangement.rename style=entry size=13 visible=false z=10 w=160 h=22
       panel lane style=clear anchor=stretch x=0 y=0 w=0 h=0
-        graph lane.minimap style=board anchor=left|right x=0 y=0 w=0 h=46
-        panel lane.slide style=slide z=9 anchor=northwest x=0 y=0 w=30 h=46
-        panel piano style=clear anchor=stretch x=0 y=46 w=0 h=0
-          panel piano.ruler style=ruler anchor=left|right x=0 y=0 w=0 h=28 clip=true
-          graph piano.board style=board anchor=stretch x=0 y=28 w=0 h=0 roam=false
+        graph lane.minimap style=board anchor=left|right x=0 y=0 w=0 h=34
+        panel lane.slide style=slide z=9 anchor=northwest x=0 y=0 w=30 h=34
+        panel piano style=clear anchor=stretch x=0 y=34 w=0 h=0
+          panel piano.ruler style=ruler anchor=left|right x=0 y=0 w=0 h=40 clip=true
+          graph piano.board style=board anchor=stretch x=0 y=40 w=0 h=0 roam=false
           graph piano.loudness style=board visible=false x=0 w=0 h=64 beside=piano.board side=below roam=false
           label piano.notice style=muted size=13 anchor=southwest x=10 y=-24 w=420 h=18
-        panel signals style=clear anchor=stretch x=0 y=46 w=0 h=0
-          panel signals.ruler style=ruler anchor=left|right x=32 y=0 w=0 h=28 clip=true
-          panel signals.rail style=ruler anchor=top|bottom x=0 y=28 w=32 h=0 clip=true
-          graph signals.board style=board anchor=stretch x=32 y=28 w=0 h=0
-        panel wave style=clear anchor=stretch x=0 y=46 w=0 h=0
-          panel wave.ruler style=ruler anchor=left|right x=0 y=0 w=0 h=28 clip=true
-          graph wave.board style=board anchor=stretch x=0 y=28 w=0 h=0 roam=false
+        panel signals style=clear anchor=stretch x=0 y=34 w=0 h=0
+          panel signals.ruler style=ruler anchor=left|right x=32 y=0 w=0 h=40 clip=true
+          panel signals.rail style=ruler anchor=top|bottom x=0 y=40 w=32 h=0 clip=true
+          graph signals.board style=board anchor=stretch x=32 y=40 w=0 h=0
+        panel wave style=clear anchor=stretch x=0 y=34 w=0 h=0
+          panel wave.ruler style=ruler anchor=left|right x=0 y=0 w=0 h=40 clip=true
+          graph wave.board style=board anchor=stretch x=0 y=40 w=0 h=0 roam=false
         panel waveclip style=waveclip visible=false
         panel wavenote style=found visible=false h=6
           label wavenote.name style=muted size=11
@@ -270,11 +270,10 @@ panel root style=clear anchor=stretch
     panel split.handle style=handle anchor=center x=0 y=0 w=56 h=4
     list split.keys style=clear visible=false x=0 y=0 w=0 h=0
     panel split.views style=sheet visible=false anchor=left|right x=0 y=8 w=0 h=34
-      panel split.arranger.set style=pair x=4 y=2 w=50 h=30
-        button split.arranger style=icon size=18 x=2 y=1 w=28 h=28 text="▬"
-        button split.arranger.door style=icon size=18 x=30 y=1 w=18 h=28 text="▦"
-      button split.graph style=icon size=18 x=60 y=3 w=28 h=28 text="⇒"
-      button split.params style=icon size=18 x=90 y=3 w=28 h=28 text="≣"
+      button split.arranger style=icon size=18 x=4 y=3 w=28 h=28 text="▬"
+      button split.arranger.door style=icon size=18 x=34 y=3 w=28 h=28 text="▦"
+      button split.graph style=icon size=18 x=64 y=3 w=28 h=28 text="⇒"
+      button split.params style=icon size=18 x=94 y=3 w=28 h=28 text="≣"
       label split.arranger.hint visible=false
       label split.graph.hint visible=false
       label split.params.hint visible=false
@@ -294,6 +293,15 @@ panel root style=clear anchor=stretch
     button settings.own style=place size=14 x=10 y=54 w=300 h=26
     button settings.shade style=place size=14 x=10 y=88 w=300 h=26
     button settings.close style=place size=14 anchor=southeast x=-10 y=-8 w=80 h=24 text="Close"
+  panel scan.ask style=sheet visible=false z=11 anchor=center x=0 y=0 w=520 h=320
+    label scan.ask.head style=muted size=14 x=10 y=8 w=300 h=18 text="VST3 plugins"
+    label scan.note style=ink size=14 x=10 y=32 w=500 h=18 text="No scan yet"
+    panel scanrow style=clear visible=false
+      label scanrow.name style=ink size=14 anchor=northwest x=6 y=3 w=160 h=18
+      label scanrow.path style=muted size=12 anchor=left|right x=170 y=5 w=6 h=16
+    list scan.rows style=clear anchor=stretch x=6 y=56 w=6 h=40 pitch=24 pad=3 plain=row pattern=scanrow
+    button scan.take style=place size=14 anchor=southwest x=10 y=-8 w=100 h=24 text="Scan"
+    button scan.close style=place size=14 anchor=southeast x=-10 y=-8 w=80 h=24 text="Close"
   panel recovery.ask style=sheet visible=false z=11 anchor=center x=0 y=0 w=360 h=120
     label recovery.ask.head style=muted size=14 x=10 y=8 w=340 h=18 text="Recovery"
     label recovery.note style=ink size=14 x=10 y=36 w=340 h=36 text="The last run left unsaved work. Recover it?"

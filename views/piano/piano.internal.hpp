@@ -6,6 +6,7 @@
 
 #include "../../history.hpp"
 #include "../../score.hpp"
+#include "../views.changes.hpp"
 #include "../views.marks.hpp"
 #include "piano.face.hpp"
 
@@ -76,8 +77,7 @@ auto marked() -> Whole;
 void doors();
 void doors(SHELL::Session &session);
 
-void changes();
-void changes(SHELL::Session &session);
+auto tape() -> VIEWS::CHANGES::Tape;
 
 auto degreed(Whole pitch, Whole at) -> Whole;
 
@@ -255,7 +255,6 @@ void rail();
 void range();
 void ruler();
 void cycle();
-void changes();
 void seams();
 void ends();
 

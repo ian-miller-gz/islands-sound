@@ -86,6 +86,7 @@ void written(Whole step, const Vector<GUI::SAC::LADDER::Mark> &dressed) {
 void SOUND::VIEWS::SIGNALS::SHED::ruler() {
   VIEWS::reborn(::pool());
   ::build(0);
+  VIEWS::CHANGES::shed(tape());
 }
 
 void SOUND::VIEWS::SIGNALS::ruler() {
@@ -95,6 +96,7 @@ void SOUND::VIEWS::SIGNALS::ruler() {
   if (seats != ::pool().stood) ::build(seats);
   VIEWS::light(::pool(), ::tick, dressed.size());
   ::written(rung(), dressed);
+  VIEWS::CHANGES::lay(tape());
 }
 
 void SOUND::VIEWS::SIGNALS::ruler(SHELL::Session &session) {

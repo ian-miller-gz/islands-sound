@@ -2,16 +2,15 @@
 #include <charconv>
 #include <format>
 
-#include "../../transport.hpp"
-#include "ruler.changes.hpp"
+#include "../history.hpp"
+#include "../transport.hpp"
+#include "views.changes.hpp"
 
 namespace {
 using namespace SOUND;
 
 constexpr Float NOWHERE = 0.0f;
 constexpr char SLASH = '/';
-
-String seat;
 
 auto read(const String &run, Whole &value) -> Flag {
   const char *end = run.data() + run.size();
@@ -27,20 +26,18 @@ auto split(const String &run, Metre &row) -> Flag {
 
 }  // namespace
 
-auto SOUND::VIEWS::ARRANGEMENT::CHANGES::beside(const Metre &row) -> Float {
-  for (const Tempo &tempo : TRANSPORT::held().tempos)
-    if (tempo.at == row.at) return DIALLED + INSET;
+auto SOUND::VIEWS::CHANGES::beside(const Metre &) -> Float {
   return ::NOWHERE;
 }
 
-auto SOUND::VIEWS::ARRANGEMENT::CHANGES::worded(const Metre &row) -> String {
+auto SOUND::VIEWS::CHANGES::worded(const Metre &row) -> String {
   return std::format("{}{}{}", row.numerator, ::SLASH, row.denominator);
 }
 
-void SOUND::VIEWS::ARRANGEMENT::CHANGES::dressed(
+void SOUND::VIEWS::CHANGES::dressed(
   GUI::Handle, const String &, const Metre &) {}
 
-auto SOUND::VIEWS::ARRANGEMENT::CHANGES::taken(
+auto SOUND::VIEWS::CHANGES::taken(
   GUI::Handle page, const String &id, const Metre &row) -> Flag {
   if (!GUI::GET::committed(page, id.c_str())) return false;
   Metre typed = row;
@@ -50,12 +47,12 @@ auto SOUND::VIEWS::ARRANGEMENT::CHANGES::taken(
   return true;
 }
 
-void SOUND::VIEWS::ARRANGEMENT::CHANGES::seated(
-  GUI::Handle page, const String &stem) {
-  const String editing = GUI::GET::editing(page);
-  if (editing != ::seat && editing.starts_with(stem))
-    GUI::set(
-      page, editing.c_str(),
-      GUI::Caret{Whole(GUI::GET::text(page, editing.c_str()).size()), 0});
-  ::seat = editing;
+auto SOUND::VIEWS::CHANGES::metred(Whole from, Whole to) -> Flag {
+  const Metre held = TRANSPORT::metred(from);
+  HISTORY::begin();
+  const Flag carried =
+    COMMANDS::metred(to, held.numerator, held.denominator) &&
+    COMMANDS::metred(from);
+  HISTORY::end();
+  return carried;
 }

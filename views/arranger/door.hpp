@@ -6,7 +6,7 @@
 namespace SOUND::VIEWS::ARRANGER {
 
 struct Pair {
-  String icon, door, plate;
+  String icon, door;
   Whole region = NONE;
 };
 

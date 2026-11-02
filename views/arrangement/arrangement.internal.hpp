@@ -4,6 +4,7 @@
 #include <island/gui/stroke.hpp>
 
 #include "../../score.hpp"
+#include "../views.changes.hpp"
 #include "../views.hpp"
 #include "../views.marks.hpp"
 
@@ -101,6 +102,8 @@ auto bar() -> Whole;
 
 void ruler();
 void ruler(SHELL::Session &session);
+
+auto tape() -> VIEWS::CHANGES::Tape;
 
 void bands();
 void bands(SHELL::Session &session);

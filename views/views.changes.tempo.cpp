@@ -3,9 +3,9 @@
 #include <charconv>
 #include <format>
 
-#include "../../history.hpp"
-#include "../../transport.hpp"
-#include "ruler.changes.hpp"
+#include "../history.hpp"
+#include "../transport.hpp"
+#include "views.changes.hpp"
 
 namespace {
 using namespace SOUND;
@@ -29,15 +29,15 @@ void turned(Whole at, Float tempo) {
 
 }  // namespace
 
-auto SOUND::VIEWS::ARRANGEMENT::CHANGES::beside(const Tempo &) -> Float {
+auto SOUND::VIEWS::CHANGES::beside(const Tempo &) -> Float {
   return ::NOWHERE;
 }
 
-auto SOUND::VIEWS::ARRANGEMENT::CHANGES::worded(const Tempo &row) -> String {
+auto SOUND::VIEWS::CHANGES::worded(const Tempo &row) -> String {
   return std::format("{:g}", row.tempo);
 }
 
-void SOUND::VIEWS::ARRANGEMENT::CHANGES::dressed(
+void SOUND::VIEWS::CHANGES::dressed(
   GUI::Handle page, const String &id, const Tempo &row) {
   const Float resting = TRANSPORT::held().tempos.front().tempo;
   GUI::set(
@@ -48,7 +48,7 @@ void SOUND::VIEWS::ARRANGEMENT::CHANGES::dressed(
   GUI::set(page, id.c_str(), GUI::Value{row.tempo});
 }
 
-auto SOUND::VIEWS::ARRANGEMENT::CHANGES::taken(
+auto SOUND::VIEWS::CHANGES::taken(
   GUI::Handle page, const String &id, const Tempo &row) -> Flag {
   if (GUI::GET::dialled(page, id.c_str())) {
     if (GUI::GET::editing(page) == id) GUI::edit(page, "");
@@ -64,7 +64,15 @@ auto SOUND::VIEWS::ARRANGEMENT::CHANGES::taken(
   return true;
 }
 
-void SOUND::VIEWS::ARRANGEMENT::CHANGES::settled() {
+auto SOUND::VIEWS::CHANGES::paced(Whole from, Whole to) -> Flag {
+  const Float tempo = TRANSPORT::paced(from);
+  HISTORY::begin();
+  const Flag carried = COMMANDS::paced(to, tempo) && COMMANDS::paced(from);
+  HISTORY::end();
+  return carried;
+}
+
+void SOUND::VIEWS::CHANGES::settled() {
   if (::dialling && !::moved) {
     HISTORY::end();
     ::dialling = false;

@@ -172,6 +172,7 @@ void owned(Flag on);
 void shaded(GUI::Theme shade);
 
 void settings(SHELL::Session &session);
+void scan(SHELL::Session &session);
 
 namespace WIRED {
 

@@ -75,6 +75,7 @@ void written(
 void SOUND::VIEWS::WAVE::SHED::ruler() {
   VIEWS::reborn(::pool());
   ::build(document(), 0);
+  VIEWS::CHANGES::shed(tape());
 }
 
 void SOUND::VIEWS::WAVE::ruler() {
@@ -88,4 +89,5 @@ void SOUND::VIEWS::WAVE::ruler() {
   for (Whole at = 0; at < dressed.size(); ++at)
     ::written(page, at, dressed, step);
   VIEWS::asked(strip(), dressed, step, VIEWS::pulsed, VIEWS::OFFER::WAVE);
+  VIEWS::CHANGES::lay(tape());
 }
