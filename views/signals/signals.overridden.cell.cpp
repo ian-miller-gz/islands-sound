@@ -19,8 +19,8 @@ constexpr Float WIDTH = 26.0f;
 constexpr Float WHOLE = 100.0f;
 constexpr Whole FIGURES = 2;
 
-Flag stood = false;
-Whole born = 0;
+VIEWS::Sided<Flag> stood;
+VIEWS::Sided<Whole> born;
 
 auto id() -> String { return VIEWS::SIGNALS::column() + "." + ::STEM; }
 
@@ -31,7 +31,7 @@ void seat(GUI::Handle page) {
     {::WIDTH, ::LETTER});
   GUI::set(page, cell.c_str(), GUI::Style{::INK});
   GUI::set(page, cell.c_str(), GUI::Size{::LETTER});
-  ::stood = true;
+  ::stood() = true;
 }
 
 }  // namespace
@@ -41,17 +41,17 @@ auto SOUND::VIEWS::SIGNALS::reading(Float value) -> String {
 }
 
 void SOUND::VIEWS::SIGNALS::SHED::restore() {
-  if (VIEWS::reborn(::born)) ::stood = false;
-  if (!::stood) return;
+  if (VIEWS::reborn(::born())) ::stood() = false;
+  if (!::stood()) return;
   BOARDS::drop(document(), ::id());
-  ::stood = false;
+  ::stood() = false;
 }
 
 void SOUND::VIEWS::SIGNALS::read(Flag on) {
   const GUI::Handle page = document();
   const String cell = ::id();
-  if (VIEWS::reborn(::born)) ::stood = false;
-  if (!::stood) ::seat(page);
+  if (VIEWS::reborn(::born())) ::stood() = false;
+  if (!::stood()) ::seat(page);
   GUI::set(page, cell.c_str(), GUI::Visibility{on});
   if (!on) return;
   const Float value = sounded();

@@ -8,8 +8,8 @@
 namespace {
 using namespace SOUND;
 
-VIEWS::ENDS::Pool pool;
-Whole born = 0;
+VIEWS::Sided<VIEWS::ENDS::Pool> pool;
+VIEWS::Sided<Whole> born;
 
 auto bed() -> VIEWS::ENDS::Bed {
   return {
@@ -38,12 +38,12 @@ auto lined() -> Vector<VIEWS::ENDS::Line> {
 
 void SOUND::VIEWS::SIGNALS::ends() {
   const GUI::Handle page = document();
-  if (VIEWS::reborn(::born)) ::pool = {};
-  VIEWS::ENDS::lay(page, ::bed(), ::lined(), ::pool);
+  if (VIEWS::reborn(::born())) ::pool() = {};
+  VIEWS::ENDS::lay(page, ::bed(), ::lined(), ::pool());
 }
 
 void SOUND::VIEWS::SIGNALS::SHED::ends() {
   const GUI::Handle page = document();
-  if (VIEWS::reborn(::born)) ::pool = {};
-  VIEWS::ENDS::bare(page, {VIEWS::SIGNALS::board()}, ::pool);
+  if (VIEWS::reborn(::born())) ::pool() = {};
+  VIEWS::ENDS::bare(page, {VIEWS::SIGNALS::board()}, ::pool());
 }

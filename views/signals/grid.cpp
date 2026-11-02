@@ -17,7 +17,7 @@ constexpr STRING::Hot BEATEN = "beat";
 constexpr STRING::Hot PANEL = "panel";
 constexpr Float CROWD = 20.0f;
 
-VIEWS::Pool pool;
+VIEWS::Sided<VIEWS::Pool> pool;
 
 auto mark(Whole at) -> String {
   return std::format("{}.{}.{}", VIEWS::SIGNALS::board(), ::STEM, at);
@@ -46,13 +46,13 @@ auto dress(Flag opens) -> String {
 
 void build(Whole count) {
   const GUI::Handle page = VIEWS::document();
-  for (Whole at = count; at < ::pool.stood; ++at)
+  for (Whole at = count; at < ::pool().stood; ++at)
     BOARDS::drop(page, ::mark(at));
-  for (Whole at = ::pool.stood; at < count; ++at)
+  for (Whole at = ::pool().stood; at < count; ++at)
     BOARDS::place(
       page, VIEWS::SIGNALS::board().c_str(), ::PANEL, ::mark(at), {},
       {VIEWS::SIGNALS::HAIR, VIEWS::SIGNALS::DEEP});
-  VIEWS::built(::pool, count);
+  VIEWS::built(::pool(), count);
 }
 
 }  // namespace
@@ -74,17 +74,17 @@ auto SOUND::VIEWS::SIGNALS::opening() -> TRANSPORT::Section {
 auto SOUND::VIEWS::SIGNALS::bar() -> Whole { return opening().bar; }
 
 void SOUND::VIEWS::SIGNALS::SHED::grid() {
-  VIEWS::reborn(::pool);
+  VIEWS::reborn(::pool());
   ::build(0);
 }
 
 void SOUND::VIEWS::SIGNALS::grid() {
   const GUI::Handle page = document();
   const Vector<GUI::SAC::LADDER::Mark> marks = ::dressed();
-  VIEWS::reborn(::pool);
-  const Whole seats = VIEWS::sized(::pool, marks.size(), window());
-  if (seats != ::pool.stood) ::build(seats);
-  VIEWS::light(::pool, ::mark, marks.size());
+  VIEWS::reborn(::pool());
+  const Whole seats = VIEWS::sized(::pool(), marks.size(), window());
+  if (seats != ::pool().stood) ::build(seats);
+  VIEWS::light(::pool(), ::mark, marks.size());
   for (Whole at = 0; at < marks.size(); ++at) {
     const String id = ::mark(at);
     GUI::set(
@@ -98,7 +98,7 @@ void SOUND::VIEWS::SIGNALS::grid(SHELL::Session &session) {
   const Vector<GUI::SAC::LADDER::Mark> marks = ::dressed();
   const TRANSPORT::Section one = opening();
   session.print(std::format(
-    "grid marks {} beat {} step {} bar {} first {} metre {}/{}", ::pool.lit,
+    "grid marks {} beat {} step {} bar {} first {} metre {}/{}", ::pool().lit,
     beat(), step, one.numerator,
     marks.empty() || step == 0 ? 0 : Whole(marks.front().at) / step,
     one.numerator, one.denominator));
