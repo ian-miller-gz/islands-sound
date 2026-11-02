@@ -20,6 +20,7 @@ constexpr auto PERIOD = std::chrono::seconds(1);
 
 Whole written = NONE;
 Whole seen = NONE;
+Flag primed = false;
 Clock::time_point stamp;
 
 auto named() -> String {
@@ -42,7 +43,7 @@ void write() {
 void SOUND::COMMANDS::settled() {
   ::written = ::seen = ::moved();
   ::stamp = Clock::now();
-  SESSION::primed();
+  ::primed = false;
 }
 
 void SOUND::COMMANDS::checkpoint() {
@@ -51,8 +52,12 @@ void SOUND::COMMANDS::checkpoint() {
     ::seen = now;
     ::stamp = Clock::now();
   }
-  if (now == ::written) return;
   if (Clock::now() - ::stamp < ::PERIOD) return;
+  if (!::primed) {
+    ::primed = true;
+    SESSION::primed();
+  }
+  if (now == ::written) return;
   ::write();
 }
 
