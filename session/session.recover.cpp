@@ -10,12 +10,21 @@ using namespace SOUND::SESSION;
 
 constexpr STRING::Hot TABLE = "recovery";
 constexpr STRING::Hot UNNAMED = "unnamed";
+constexpr STRING::Hot PRIMER = ".primed";
 
 auto keyed(const String &name) -> String {
   return name.empty() ? String(::UNNAMED) : name;
 }
 
 }  // namespace
+
+void SOUND::SESSION::primed() {
+  const STORE::Handle opened = store();
+  if (opened.id == 0) return;
+  FIELDS::Map row;
+  if (STORE::get(opened, ::TABLE, ::PRIMER, row)) return;
+  STORE::put(opened, ::TABLE, ::PRIMER, row);
+}
 
 auto SOUND::SESSION::recovered(const String &name) -> Flag {
   FIELDS::Map row;

@@ -19,6 +19,7 @@ constexpr STRING::Hot UNNAMED = "unnamed";
 constexpr auto PERIOD = std::chrono::seconds(1);
 
 Whole written = NONE;
+Whole seen = NONE;
 Clock::time_point stamp;
 
 auto named() -> String {
@@ -34,18 +35,23 @@ void write() {
     SESSION::held().name, TRANSPORT::held(), TIMELINE::held(),
     INVENTORY::held(), GRAPH::held(), CONTROL::held(), HISTORY::held());
   ::written = ::moved();
-  ::stamp = Clock::now();
 }
 
 }  // namespace
 
 void SOUND::COMMANDS::settled() {
-  ::written = ::moved();
+  ::written = ::seen = ::moved();
   ::stamp = Clock::now();
+  SESSION::primed();
 }
 
 void SOUND::COMMANDS::checkpoint() {
-  if (::moved() == ::written) return;
+  const Whole now = ::moved();
+  if (now != ::seen) {
+    ::seen = now;
+    ::stamp = Clock::now();
+  }
+  if (now == ::written) return;
   if (Clock::now() - ::stamp < ::PERIOD) return;
   ::write();
 }

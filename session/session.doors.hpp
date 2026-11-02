@@ -28,6 +28,10 @@ auto recover(
 
 auto restore(const String &name) -> STRING::Hot;
 
+/// @brief The recovery table made ahead of the first checkpoint, so the
+/// store's first write never lands inside an edit's frame.
+void primed();
+
 void forget(const String &name);
 
 auto rewritten() -> Whole;
