@@ -29,8 +29,8 @@ constexpr Float NORTH = 0.0f;
 constexpr Float CROWD = 44.0f;
 constexpr Whole COARSER = 2;
 
-VIEWS::Pool pool;
-Flag capping = false;
+VIEWS::Sided<VIEWS::Pool> pool;
+VIEWS::Sided<Flag> capping;
 
 auto tick(Whole at) -> String {
   return std::format("{}.{}", VIEWS::ROLL::strip(), at);
@@ -85,9 +85,9 @@ void place(
 void build(Whole count) {
   const GUI::Handle page = VIEWS::document();
   const String strip = VIEWS::ROLL::strip();
-  for (Whole at = count; at < ::pool.stood; ++at)
+  for (Whole at = count; at < ::pool().stood; ++at)
     GUI::NODES::remove(page, ::tick(at).c_str());
-  for (Whole at = ::pool.stood; at < count; ++at) {
+  for (Whole at = ::pool().stood; at < count; ++at) {
     const String id = ::tick(at);
     ::place(page, strip, "button", id, {}, {});
     GUI::set(page, id.c_str(), GUI::Style{::CELL});
@@ -99,7 +99,7 @@ void build(Whole count) {
     GUI::set(page, label.c_str(), GUI::Style{::INK});
     GUI::set(page, label.c_str(), GUI::Size{::LETTER});
   }
-  VIEWS::built(::pool, count);
+  VIEWS::built(::pool(), count);
 }
 
 void dress(
@@ -138,11 +138,11 @@ void located(const Vector<GUI::SAC::LADDER::Mark> &dressed) {
 void capped() {
   const GUI::Handle page = VIEWS::document();
   const String id = VIEWS::ROLL::strip() + "." + ::HEADED;
-  if (!::capping) {
+  if (!::capping()) {
     ::place(page, VIEWS::ROLL::strip(), "panel", id, {}, {});
     GUI::set(page, id.c_str(), GUI::Style{::CAPPED});
     GUI::set(page, id.c_str(), GUI::Depth{::OVER});
-    ::capping = true;
+    ::capping() = true;
   }
   const String board = VIEWS::ROLL::board();
   const Float scale = GUI::NGA::GET::zoom(page, board.c_str()).value;
@@ -173,8 +173,8 @@ auto SOUND::VIEWS::ROLL::marks() -> Vector<GUI::SAC::LADDER::Mark> {
 }
 
 void SOUND::VIEWS::ROLL::SHED::ruler() {
-  if (VIEWS::reborn(::pool)) {
-    ::capping = false;
+  if (VIEWS::reborn(::pool())) {
+    ::capping() = false;
     return;
   }
   ::build(0);
@@ -183,10 +183,10 @@ void SOUND::VIEWS::ROLL::SHED::ruler() {
 void SOUND::VIEWS::ROLL::ruler() {
   const GUI::SAC::LADDER::Rung step = ::rung();
   const Vector<GUI::SAC::LADDER::Mark> dressed = marks();
-  if (VIEWS::reborn(::pool)) ::capping = false;
-  const Whole seats = VIEWS::sized(::pool, dressed.size(), window().w);
-  if (seats != ::pool.stood) ::build(seats);
-  VIEWS::light(::pool, ::tick, dressed.size());
+  if (VIEWS::reborn(::pool())) ::capping() = false;
+  const Whole seats = VIEWS::sized(::pool(), dressed.size(), window().w);
+  if (seats != ::pool().stood) ::build(seats);
+  VIEWS::light(::pool(), ::tick, dressed.size());
   ::dress(step, dressed);
   ::located(dressed);
   ::capped();
@@ -200,6 +200,6 @@ void SOUND::VIEWS::ROLL::ruler(SHELL::Session &session) {
     "ruler rung {} span {} beat {} bar {}", String(step.name), step.span,
     PULSES, opening().numerator));
   session.print(std::format(
-    "ruler marks {} first {}", ::pool.lit,
+    "ruler marks {} first {}", ::pool().lit,
     dressed.empty() ? Integer(0) : dressed.front().at));
 }

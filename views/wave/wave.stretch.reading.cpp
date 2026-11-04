@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include "../../boards.hpp"
 #include "wave.internal.hpp"
+#include "wave.rows.hpp"
 
 namespace {
 using namespace SOUND;
@@ -13,19 +14,19 @@ constexpr Float LETTER = 15.0f;
 constexpr Float WIDE = 80.0f;
 constexpr Float TALL = 20.0f;
 
-VIEWS::Pool pool;
+VIEWS::Sided<VIEWS::Pool> pool;
 
 auto reading() -> String { return String(WAVE::HANDLE) + "." + ::LEAF; }
 
 void build(GUI::Handle page, Whole count) {
   const String id = ::reading();
-  if (count == 0 && ::pool.stood > 0) BOARDS::drop(page, id);
-  if (count > 0 && ::pool.stood == 0) {
+  if (count == 0 && ::pool().stood > 0) BOARDS::drop(page, id);
+  if (count > 0 && ::pool().stood == 0) {
     BOARDS::place(page, WAVE::board().c_str(), WAVE::LABEL, id, {}, {});
     GUI::set(page, id.c_str(), GUI::Style{::INK});
     GUI::set(page, id.c_str(), GUI::Depth{::RAISED});
   }
-  VIEWS::built(::pool, count);
+  VIEWS::built(::pool(), count);
 }
 
 void written(GUI::Handle page, const WAVE::Clip &clip) {
@@ -43,7 +44,7 @@ void written(GUI::Handle page, const WAVE::Clip &clip) {
 }  // namespace
 
 void SOUND::VIEWS::WAVE::SHED::reading() {
-  VIEWS::reborn(::pool);
+  VIEWS::reborn(::pool());
   ::build(document(), 0);
 }
 
@@ -53,9 +54,9 @@ void SOUND::VIEWS::WAVE::say() {
   const Vector<Clip> seated = placed();
   const Whole row = held();
   const Flag stands = row < seated.size();
-  VIEWS::reborn(::pool);
-  if (stands && ::pool.stood == 0) ::build(page, 1);
-  if (::pool.stood == 0) return;
+  VIEWS::reborn(::pool());
+  if (stands && ::pool().stood == 0) ::build(page, 1);
+  if (::pool().stood == 0) return;
   GUI::set(page, ::reading().c_str(), GUI::Visibility{stands});
   if (stands) ::written(page, landed(row, seated[row]));
 }

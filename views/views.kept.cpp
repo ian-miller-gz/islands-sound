@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include "views.attention.hpp"
 #include "views.internal.hpp"
 #include "views.split.hpp"
 
@@ -45,6 +46,7 @@ auto SOUND::VIEWS::kept() -> FIELDS::Map {
   FIELDS::Map face;
   face[::VIEWED] = String(standing());
   SPLIT::keep(face);
+  ATTENTION::keep(face);
   for (const View &unit : roster()) {
     if (::boarded(unit)) VIEWS::KEPT::board(face, unit);
     const String rows = String(unit.name) + "." + ROWS;
@@ -71,5 +73,6 @@ void SOUND::VIEWS::keep(const FIELDS::Map &face) {
     if (::boarded(unit)) VIEWS::KEPT::boarded(face, unit);
     if (unit.restore != nullptr) unit.restore(face);
   }
+  ATTENTION::restore(face);
   for (const String &grip : ::grips()) ::seated(face, grip);
 }

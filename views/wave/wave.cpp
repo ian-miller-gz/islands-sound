@@ -7,6 +7,7 @@
 #include "../../timeline.hpp"
 #include "wave.notes.hpp"
 #include "wave.overs.hpp"
+#include "wave.rows.hpp"
 
 namespace {
 using namespace SOUND;

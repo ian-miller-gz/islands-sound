@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include "piano.internal.hpp"
-#include "piano.notation.hpp"
 
 void SOUND::VIEWS::ROLL::ROWS::banded(
   GUI::Handle page, STRING::Hot stem, const Vector<Keyed> &sections) {

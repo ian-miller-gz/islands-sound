@@ -44,6 +44,7 @@ const Vector<SHELL::Command> rows = {
    COMMANDS::restore},
   {"stocks", "", COMMANDS::stocks},
   {"stock", "", COMMANDS::stock},
+  {"length", "", COMMANDS::length},
   {"author", "", COMMANDS::author},
   {"move", "",
    COMMANDS::move},
@@ -67,6 +68,7 @@ const Vector<SHELL::Command> rows = {
    COMMANDS::roll},
   {"drive", "", COMMANDS::drive},
   {"strike", "", COMMANDS::strike},
+  {"cc", "", COMMANDS::cc},
   {"hear", "", COMMANDS::hear},
   {"record", "", COMMANDS::record},
   {"beat",
@@ -84,7 +86,10 @@ const Vector<SHELL::Command> rows = {
   {"zoom", "", COMMANDS::zoom},
   {"pan", "", COMMANDS::pan},
   {"look", "",
-   COMMANDS::look}};
+   COMMANDS::look},
+  {"checkpoint", "", COMMANDS::checkpoint},
+  {"recovery", "", COMMANDS::recovery},
+  {"recover", "", COMMANDS::recover}};
 
 }  // namespace
 

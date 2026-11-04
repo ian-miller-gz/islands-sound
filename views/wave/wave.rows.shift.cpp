@@ -2,7 +2,7 @@
 #include <cmath>
 
 #include "../../timeline.hpp"
-#include "wave.internal.hpp"
+#include "wave.placed.hpp"
 #include "wave.rows.hpp"
 
 namespace {

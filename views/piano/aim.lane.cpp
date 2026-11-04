@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include "../../inventory.hpp"
 #include "../../timeline.hpp"
-#include "../lane/lane.face.hpp"
+#include "../lane/lane.mark.hpp"
 #include "piano.internal.hpp"
 
 auto SOUND::VIEWS::ROLL::laned(Whole track) -> Whole {

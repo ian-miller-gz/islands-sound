@@ -31,6 +31,7 @@ auto seat(const CONTROL::Take &take) -> Whole {
     std::format("take-{}", INVENTORY::held().stocks.size()), KIND::NOTES);
   if (stock == NONE) return NONE;
   INVENTORY::score(stock, ::written(take));
+  INVENTORY::length(stock, SCORE::pulsed(take.frames, take.tempo));
   COMMANDS::covered(track, lane, take.at, take.at + take.frames);
   return TIMELINE::place(
     INVENTORY::held(), track, lane,
@@ -61,6 +62,7 @@ void turn(const CONTROL::Take &take) {
       std::format("take-{}", INVENTORY::held().stocks.size()), KIND::LOGIC);
     if (stock == NONE) continue;
     INVENTORY::aim(stock, first.address);
+    INVENTORY::length(stock, take.frames);
     for (const CONTROL::Turned &move : take.turned)
       if (::same(move.address, first.address))
         INVENTORY::plot(stock, {.at = move.at, .value = move.value});
@@ -75,6 +77,8 @@ void turn(const CONTROL::Take &take) {
 auto SOUND::COMMANDS::landing(Whole track, Whole kind) -> Whole {
   const Vector<ARRANGEMENT::TRACK::Lane> &lanes =
     TIMELINE::held().tracks[track].lanes;
+  const Whole armed = CONTROL::laned();
+  if (armed < lanes.size() && lanes[armed].kind == kind) return armed;
   for (Whole at = 0; at < lanes.size(); ++at)
     if (lanes[at].kind == kind) return at;
   return laned(track, kind);
@@ -91,4 +95,5 @@ void SOUND::COMMANDS::land() {
   ::seat(take);
   landed(take);
   ::turn(take);
+  dialled(take);
 }

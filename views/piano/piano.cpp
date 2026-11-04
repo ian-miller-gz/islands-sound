@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include <utility>
 #include <island/gui/seat.hpp>
 
 #include "../../boards.hpp"
-#include "piano.internal.hpp"
+#include "piano.acts.hpp"
 #include "piano.loudness.hpp"
 #include "piano.notation.hpp"
 #include "piano.paper.hpp"
@@ -13,14 +14,13 @@ using namespace SOUND;
 
 constexpr STRING::Hot NAME = "piano";
 
-Vector<VIEWS::ROLL::Pip> shown;
-Flag parked = false;
-Whole born = 0;
+VIEWS::Sided<Vector<VIEWS::ROLL::Pip>> shown;
+VIEWS::Sided<Flag> parked;
+VIEWS::Sided<Whole> born;
 
 void tools() {
   VIEWS::ROLL::ROWS::rows();
   VIEWS::ROLL::STAFF::drawn();
-  VIEWS::ROLL::STAFF::stemmed();
   VIEWS::ROLL::ruler();
   VIEWS::ROLL::dials();
   VIEWS::ROLL::doors();
@@ -29,11 +29,13 @@ void tools() {
   VIEWS::ROLL::rail();
   VIEWS::ROLL::plus();
   VIEWS::ROLL::easel();
+  VIEWS::ROLL::mirrors(VIEWS::document());
   VIEWS::ROLL::keys();
   VIEWS::ROLL::grid();
   VIEWS::ROLL::range();
   VIEWS::ROLL::STAFF::clef();
   VIEWS::ROLL::seams();
+  VIEWS::ROLL::ends();
   VIEWS::ROLL::head();
 }
 
@@ -41,28 +43,30 @@ void plates(GUI::Handle page) {
   Vector<VIEWS::ROLL::Pip> wanted = VIEWS::ROLL::pips();
   VIEWS::ROLL::loosed(wanted);
   const String board = VIEWS::ROLL::board();
-  BOARDS::sweep(page, board.c_str(), wanted.size(), ::shown.size());
-  for (Whole row = ::shown.size(); row < wanted.size(); ++row)
+  BOARDS::sweep(page, board.c_str(), wanted.size(), ::shown().size());
+  for (Whole row = ::shown().size(); row < wanted.size(); ++row)
     BOARDS::place(
       page, board.c_str(), "node", GUI::SAC::SEAT::named(board.c_str(), row),
       {}, {});
+  const Vector<VIEWS::ROLL::Pip> was = std::move(::shown());
+  ::shown() = wanted;
+  VIEWS::ROLL::STAFF::stemmed();
   VIEWS::ROLL::steadied(page, wanted);
-  VIEWS::ROLL::seat(page, wanted, ::shown);
-  ::shown = wanted;
+  VIEWS::ROLL::seat(page, wanted, was);
 }
 
 void run() {
   const GUI::Handle page = VIEWS::document();
-  if (VIEWS::reborn(::born)) {
-    ::shown.clear();
-    ::parked = VIEWS::LANE::GET::seen();
+  if (VIEWS::reborn(::born())) {
+    ::shown().clear();
+    ::parked() = VIEWS::LANE::GET::seen();
   }
   VIEWS::ROLL::bound();
   VIEWS::ROLL::chase();
   VIEWS::ROLL::settle();
-  if (!::parked) {
+  if (!::parked()) {
     VIEWS::ROLL::park();
-    ::parked = true;
+    ::parked() = true;
   }
   ::tools();
   ::plates(page);
@@ -88,13 +92,13 @@ auto SOUND::VIEWS::ROLL::face() -> const VIEWS::View& {
 
 void SOUND::VIEWS::ROLL::SHED::plates() {
   const GUI::Handle page = VIEWS::document();
-  if (VIEWS::reborn(::born)) ::shown.clear();
-  BOARDS::sweep(page, board().c_str(), 0, ::shown.size());
-  ::shown.clear();
+  if (VIEWS::reborn(::born())) ::shown().clear();
+  BOARDS::sweep(page, board().c_str(), 0, ::shown().size());
+  ::shown().clear();
 }
 
 auto SOUND::VIEWS::ROLL::board() -> String {
   return String(::NAME) + "." + BOARD;
 }
 
-auto SOUND::VIEWS::ROLL::plates() -> const Vector<Pip>& { return ::shown; }
+auto SOUND::VIEWS::ROLL::plates() -> const Vector<Pip>& { return ::shown(); }

@@ -4,6 +4,7 @@
 #include <island/gui/stroke.hpp>
 
 #include "../../score.hpp"
+#include "../views.changes.hpp"
 #include "../views.hpp"
 #include "../views.marks.hpp"
 
@@ -57,6 +58,12 @@ constexpr auto across(Whole frames) -> Float {
 
 auto window() -> Float;
 
+struct Seen {
+  Whole opens = 0, closes = 0;
+};
+
+auto seen() -> Seen;
+
 auto least() -> GUI::Extent;
 
 auto deep() -> Float;
@@ -95,6 +102,8 @@ auto bar() -> Whole;
 
 void ruler();
 void ruler(SHELL::Session &session);
+
+auto tape() -> VIEWS::CHANGES::Tape;
 
 void bands();
 void bands(SHELL::Session &session);

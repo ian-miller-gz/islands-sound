@@ -31,8 +31,7 @@ auto fit(Whole at) -> Flag {
 }
 
 auto paired() -> Whole {
-  for (Whole at = 0; at < VIEWS::roster().size(); ++at)
-    if (::viewed(at) && VIEWS::SPLIT::hosted(at)) return at;
+  if (::fit(VIEWS::chosen())) return VIEWS::chosen();
   for (Whole at = 0; at < VIEWS::roster().size(); ++at)
     if (::viewed(at) && at != VIEWS::chosen()) return at;
   return NONE;
@@ -54,16 +53,9 @@ auto SOUND::VIEWS::SPLIT::lower() -> Whole { return open() ? ::held() : NONE; }
 auto SOUND::VIEWS::SPLIT::choose(const String &name) -> Flag {
   const Whole at = ::row(name);
   if (!::viewed(at)) return false;
-  const Whole now = lower();
-  const Flag twin = hosted(at) || mirrored(at);
-  const Flag trade = at == chosen() && !twin && now != NONE;
-  const Flag done = !trade || VIEWS::choose(String(roster()[now].name));
-  if (!trade) ::below = at;
+  ::below = at;
   focus(BELOW);
-  return done;
+  return true;
 }
 
-void SOUND::VIEWS::SPLIT::traded(Whole row) {
-  if (row != chosen() && row == lower()) ::below = chosen();
-  focus(UPPER);
-}
+void SOUND::VIEWS::SPLIT::traded(Whole) { focus(UPPER); }

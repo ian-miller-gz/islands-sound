@@ -25,7 +25,7 @@ auto along(const STAFF::Ends &line, Float x) -> GUI::Position {
 }  // namespace
 
 auto SOUND::VIEWS::ROLL::STAFF::centred(Integer place) -> Float {
-  return (Float(place - TOP) + HALF) * STEP;
+  return (Float(place - top()) + HALF) * STEP;
 }
 
 auto SOUND::VIEWS::ROLL::STAFF::tipped(Integer place, Flag foot) -> Float {

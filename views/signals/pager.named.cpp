@@ -6,7 +6,7 @@
 #include "../../kind.hpp"
 #include "../../plugin.hpp"
 #include "../../render.hpp"
-#include "../lane/lane.face.hpp"
+#include "../lane/lane.mark.hpp"
 #include "signals.plotted.hpp"
 
 namespace {

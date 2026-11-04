@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include <algorithm>
+
 #include "control.internal.hpp"
 #include "control.map.hpp"
 
@@ -13,12 +15,17 @@ CONTROL::Live live;
 
 auto SOUND::CONTROL::standing() -> Live & { return ::live; }
 
-void SOUND::CONTROL::drive(Whole track) {
+void SOUND::CONTROL::drive(Whole track) { drive(track, NONE); }
+
+void SOUND::CONTROL::drive(Whole track, Whole lane) {
   if (::live.track != track) lift();
   ::live.track = track;
+  ::live.lane = lane;
 }
 
 auto SOUND::CONTROL::driven() -> Whole { return ::live.track; }
+
+auto SOUND::CONTROL::laned() -> Whole { return ::live.lane; }
 
 void SOUND::CONTROL::aim(const String &node) { ::live.aim = node; }
 
@@ -28,6 +35,9 @@ void SOUND::CONTROL::settle(const Vector<String> &gone) {
   for (const String &name : gone)
     if (::live.aim == name) ::live.aim.clear();
   MAP::settle(gone);
+  std::erase_if(rests(), [&gone](const Value &rest) {
+    return std::ranges::find(gone, rest.address.node) != gone.end();
+  });
   lift();
 }
 
@@ -44,8 +54,14 @@ auto SOUND::CONTROL::read() -> Whole {
 }
 
 auto SOUND::CONTROL::read(const MIDI::Message &message) -> Flag {
-  if (message.kind == MIDI::Message::CONTROL)
+  if (message.kind == MIDI::Message::CONTROL) {
+    if (::live.taking)
+      ::live.take.dialled.push_back(
+        {.number = message.first,
+         .at = reached(::live),
+         .value = Float(message.second) / Float(LOUDEST)});
     return MAP::heard(message) || pedal(message);
+  }
   if (
     message.kind != MIDI::Message::NOTE_ON &&
     message.kind != MIDI::Message::NOTE_OFF)
@@ -73,5 +89,6 @@ void SOUND::CONTROL::close() {
   listening(false);
   ::live = {};
   values().clear();
+  rests().clear();
   MAP::adopt({});
 }

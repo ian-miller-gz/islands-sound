@@ -19,6 +19,24 @@ struct Copied {
 
 Copied carried;
 
+constexpr Whole HALVED = 2;
+
+auto runged(Whole at) -> Whole {
+  const Whole step = VIEWS::ARRANGEMENT::rung().span;
+  if (!VIEWS::ARRANGEMENT::snapped() || step == 0) return at;
+  return (at + step / ::HALVED) / step * step;
+}
+
+auto landing(Whole frames) -> Whole {
+  const Whole at = TRANSPORT::marker().position;
+  const VIEWS::ARRANGEMENT::Seen view = VIEWS::ARRANGEMENT::seen();
+  if (view.closes <= view.opens) return at;
+  if (at >= view.opens && at < view.closes) return at;
+  const Whole centre = (view.opens + view.closes) / ::HALVED;
+  const Whole half = frames / ::HALVED;
+  return ::runged(centre > half ? centre - half : 0);
+}
+
 }  // namespace
 
 auto SOUND::VIEWS::ARRANGEMENT::chosen(GUI::Handle page) -> Whole {
@@ -49,7 +67,7 @@ void SOUND::VIEWS::ARRANGEMENT::paste(GUI::Handle) {
     for (Whole lane = 0; lane < tracks[track].lanes.size(); ++lane) {
       if (tracks[track].lanes[lane].name != ::carried.lane) continue;
       SOUND::ARRANGEMENT::TRACK::LANE::Clip span = ::carried.span;
-      span.at = TRANSPORT::marker().position;
+      span.at = ::landing(span.frames);
       const Whole index = TIMELINE::place(INVENTORY::held(), track, lane, span);
       if (index == NONE) return;
       HISTORY::record(

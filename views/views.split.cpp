@@ -59,6 +59,7 @@ auto SOUND::VIEWS::SPLIT::height() -> Float { return ::height; }
 void SOUND::VIEWS::SPLIT::frame() {
   keyed();
   const GUI::Handle page = sheet();
+  RELAY::watch(page);
   if (reborn(::born)) ::known = false;
   const Seat seat = measured(page);
   if (seat.depth <= ::SHUT || seat.bar <= ::SHUT) return;

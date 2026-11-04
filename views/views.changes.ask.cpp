@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <island/gui/nga.hpp>
 
-#include "../views.internal.hpp"
-#include "ruler.changes.hpp"
+#include "views.changes.hpp"
+#include "views.internal.hpp"
 
 namespace {
 using namespace SOUND;
@@ -10,11 +10,11 @@ using namespace SOUND;
 constexpr STRING::Hot ERASES = "Delete";
 constexpr STRING::Hot WHOSE = "timing";
 
-VIEWS::ARRANGEMENT::CHANGES::Mark asking;
+VIEWS::CHANGES::Mark asking;
 
 }  // namespace
 
-void SOUND::VIEWS::ARRANGEMENT::CHANGES::asked(const Vector<Mark> &marks) {
+void SOUND::VIEWS::CHANGES::asked(const Vector<Mark> &marks) {
   if (::asking.erase != nullptr) {
     const Whole row = MENU::taken(::WHOSE);
     if (row != NONE) ::asking.erase(::asking.at);

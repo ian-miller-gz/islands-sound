@@ -6,8 +6,8 @@
 
 namespace {
 using namespace SOUND;
+namespace WAVE = SOUND::VIEWS::WAVE;
 
-constexpr STRING::Hot ROWS = "wave.rows";
 constexpr STRING::Hot TOOLS = "wave.tools";
 constexpr STRING::Hot DEPTHS[] = {TOOLS, "arranger.palette"};
 
@@ -20,14 +20,14 @@ Grown grown;
 
 auto inside(GUI::Handle page) -> Float {
   const Float tools = GUI::GET::extent(page, ::TOOLS).h - ::grown.by;
-  return tools - GUI::GET::position(page, ::ROWS).y -
-         GUI::GET::extent(page, ::ROWS).h;
+  return tools - GUI::GET::position(page, WAVE::ROWS).y -
+         GUI::GET::extent(page, WAVE::ROWS).h;
 }
 
 auto needed(GUI::Handle page, Whole rows) -> Float {
   if (rows == 0) return 0.0f;
-  const Float pad = GUI::GET::pad(page, ::ROWS);
-  return Float(rows) * (GUI::GET::pitch(page, ::ROWS) + pad) - pad;
+  const Float pad = GUI::GET::pad(page, WAVE::ROWS);
+  return Float(rows) * (GUI::GET::pitch(page, WAVE::ROWS) + pad) - pad;
 }
 
 }  // namespace

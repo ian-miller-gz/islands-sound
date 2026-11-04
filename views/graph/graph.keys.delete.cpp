@@ -25,7 +25,8 @@ auto SOUND::VIEWS::WIRED::chosen(GUI::Handle page) -> Vector<String> {
   return names;
 }
 
-void SOUND::VIEWS::WIRED::deleted(GUI::Handle page) {
+void SOUND::VIEWS::WIRED::deleted(
+  GUI::Handle page, const INPUT::KEYS::Event &) {
   const Vector<String> nodes = chosen(page);
   if (nodes.empty()) return;
   GUI::set(page, VIEWS::WIRED::NOTICE, GUI::Text{""});

@@ -14,8 +14,8 @@ constexpr STRING::Hot MARKED = "selected";
 constexpr Float HAIR = 2.0f;
 constexpr Float NORTH = 0.0f;
 
-Flag stood = false;
-Whole born = 0;
+VIEWS::Sided<Flag> stood;
+VIEWS::Sided<Whole> born;
 
 auto blade() -> String { return VIEWS::ARRANGEMENT::board() + "." + ::HEAD; }
 
@@ -24,12 +24,12 @@ auto blade() -> String { return VIEWS::ARRANGEMENT::board() + "." + ::HEAD; }
 void SOUND::VIEWS::ARRANGEMENT::head() {
   const GUI::Handle page = document();
   const String id = ::blade();
-  if (VIEWS::reborn(::born)) ::stood = false;
-  if (!::stood) {
+  if (VIEWS::reborn(::born())) ::stood() = false;
+  if (!::stood()) {
     BOARDS::place(page, board().c_str(), "panel", id, {}, {::HAIR, MARGIN});
     GUI::set(page, id.c_str(), GUI::Style{::MARKED});
     GUI::set(page, id.c_str(), GUI::Depth{BLADE});
-    ::stood = true;
+    ::stood() = true;
   }
   const Float scale = GUI::NGA::GET::zoom(page, board().c_str()).value;
   const GUI::SAC::PLAYHEAD::Mark mark =

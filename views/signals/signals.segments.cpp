@@ -13,7 +13,7 @@ constexpr STRING::Hot STROKE = "stroke";
 constexpr STRING::Hot TREADED = "wash";
 constexpr STRING::Hot STEM = "segment";
 
-VIEWS::Pool pool;
+VIEWS::Sided<VIEWS::Pool> pool;
 
 auto segment(Whole row) -> String {
   return std::format("{}.{}.{}", VIEWS::SIGNALS::board(), ::STEM, row);
@@ -21,14 +21,14 @@ auto segment(Whole row) -> String {
 
 void build(Whole count) {
   const GUI::Handle page = VIEWS::document();
-  for (Whole row = count; row < ::pool.stood; ++row)
+  for (Whole row = count; row < ::pool().stood; ++row)
     BOARDS::drop(page, ::segment(row));
-  for (Whole row = ::pool.stood; row < count; ++row) {
+  for (Whole row = ::pool().stood; row < count; ++row) {
     const String id = ::segment(row);
     BOARDS::place(page, VIEWS::SIGNALS::board().c_str(), ::STROKE, id, {}, {});
     GUI::set(page, id.c_str(), GUI::Depth{VIEWS::SIGNALS::LAID});
   }
-  VIEWS::built(::pool, count);
+  VIEWS::built(::pool(), count);
 }
 
 auto bent(Whole row) -> String {
@@ -39,17 +39,17 @@ auto bent(Whole row) -> String {
 }  // namespace
 
 void SOUND::VIEWS::SIGNALS::SHED::segments() {
-  VIEWS::reborn(::pool);
+  VIEWS::reborn(::pool());
   ::build(0);
 }
 
 void SOUND::VIEWS::SIGNALS::segments() {
   const GUI::Handle page = document();
   const Vector<Point> &rows = shown();
-  VIEWS::reborn(::pool);
-  const Whole seats = VIEWS::sized(::pool, rows.size(), window());
-  if (seats != ::pool.stood) ::build(seats);
-  VIEWS::light(::pool, ::segment, rows.size());
+  VIEWS::reborn(::pool());
+  const Whole seats = VIEWS::sized(::pool(), rows.size(), window());
+  if (seats != ::pool().stood) ::build(seats);
+  VIEWS::light(::pool(), ::segment, rows.size());
   const String skin = worn(::TREADED);
   for (Whole row = 0; row < rows.size(); ++row) {
     const String id = ::segment(row);

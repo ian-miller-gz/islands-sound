@@ -2,12 +2,15 @@
 #include <algorithm>
 
 #include "graph.browse.internal.hpp"
+#include "graph.keys.hpp"
 
 namespace {
 using namespace SOUND;
 using namespace SOUND::VIEWS::WIRED::BROWSE;
 namespace WIRED = SOUND::VIEWS::WIRED;
 
+constexpr Whole FIRST = '!';
+constexpr Whole LAST = '~';
 constexpr STRING::Hot ROSTERS[] = {WIRED::TRACKS,  WIRED::BUSES, WIRED::INPUTS,
                                    WIRED::SOURCES, WIRED::SINKS, WIRED::NOTED};
 
@@ -65,6 +68,16 @@ void SOUND::VIEWS::WIRED::BROWSE::sought(GUI::Handle page) {
 
 void SOUND::VIEWS::WIRED::BROWSE::seat(GUI::Handle page, Flag on) {
   if (!GUI::GET::text(page, FIND).empty()) ::clear(page);
-  if (on && !VIEWS::WIRED::browsing()) GUI::edit(page, FIND);
   if (!on && GUI::GET::editing(page) == FIND) GUI::edit(page, "");
+}
+
+void SOUND::VIEWS::WIRED::BROWSE::typed(
+  GUI::Handle page, const INPUT::KEYS::Event &key) {
+  if (key.control || key.codepoint < ::FIRST || key.codepoint > ::LAST) return;
+  const String run =
+    GUI::GET::text(page, FIND) + static_cast<char>(key.codepoint);
+  GUI::edit(page, FIND);
+  GUI::set(page, FIND, GUI::Text{run});
+  GUI::set(page, FIND, GUI::Caret{run.size(), run.size()});
+  GUI::set(page, ROWS, GUI::Cursor{0});
 }

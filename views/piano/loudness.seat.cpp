@@ -5,7 +5,7 @@
 #include <island/gui/nga.hpp>
 
 #include "piano.loudness.hpp"
-#include "piano.notation.hpp"
+#include "piano.modes.hpp"
 #include "piano.staff.hpp"
 
 namespace {
@@ -16,8 +16,8 @@ namespace STAFF = SOUND::VIEWS::ROLL::STAFF;
 
 constexpr Float ORIGIN = 0.0f;
 
-Float kept = ::ORIGIN;
-Whole born = 0;
+VIEWS::Sided<Float> kept;
+VIEWS::Sided<Whole> born;
 
 auto inked() -> Float {
   Float lowest = STAFF::deep();
@@ -27,7 +27,7 @@ auto inked() -> Float {
 }
 
 auto under(GUI::Handle page, const String &board) -> Float {
-  const Float tall = GUI::GET::measured(page, board.c_str()).h + ::kept;
+  const Float tall = GUI::GET::measured(page, board.c_str()).h + ::kept();
   const Float down = GUI::NGA::GET::zoom(page, board.c_str()).down;
   return std::max(LOUDNESS::deep(), std::floor(tall - ::inked() * down));
 }
@@ -41,10 +41,10 @@ auto wanted(GUI::Handle page, const String &board, Flag open) -> Float {
 }  // namespace
 
 void SOUND::VIEWS::ROLL::LOUDNESS::inset(GUI::Handle page, Flag open) {
-  if (VIEWS::reborn(::born)) ::kept = ::ORIGIN;
+  if (VIEWS::reborn(::born())) ::kept() = ::ORIGIN;
   const String board = ROLL::board();
   const Float inset = ::wanted(page, board, open);
-  if (inset == ::kept) return;
-  ::kept = inset;
+  if (inset == ::kept()) return;
+  ::kept() = inset;
   GUI::set(page, board.c_str(), GUI::Extent{::ORIGIN, inset});
 }

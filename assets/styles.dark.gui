@@ -1,6 +1,7 @@
 
 style ink color=#f3e9d8ff
 style muted color=#c9b59aff
+style crumbs color=#00000000 edge=#c9b59aff border=0 hover=#00000000 press=#00000000 glow=#f0a35aff
 style listening color=#f0a35aff
 style sheet color=#3a2c22ff edge=#5a4636ff border=1
 style box color=#241a14ff edge=#4a3a2eff border=1
@@ -11,16 +12,16 @@ style handlelit color=#f0a35aff border=0
 style region color=#241a14ff edge=#a08468ff border=1 hover=#241a14ff press=#241a14ff
 style bare color=#00000000 border=0 hover=#00000000 press=#00000000
 style entry color=#00000000 edge=#f3e9d8ff border=0 hover=#43352bff press=#a1652aff
-style knob style=entry edge=#c9b59aff press=#f0a35aff track=#806c57ff
+style knob style=entry color=#33261dff edge=#c9b59aff press=#f0a35aff track=#a08a70ff glow=#ffa33cff
 style hearing style=knob edge=#f0a35aff press=#f0a35aff
-style overruled style=knob press=#c9b59aff
+style overruled style=knob press=#c9b59aff glow=#c9b59aff
 style call color=#d9822bff edge=#2a1f18ff border=0 hover=#e8963fff press=#f0a35aff
 style selected color=#66411dff hover=#66411dff press=#a1652aff
 style dimmed color=#51371fff hover=#51371fff press=#a1652aff
 style focus color=#00000000 edge=#f0a35aff border=2
 style lanemark style=selected border=0
 style paper color=#1f1712ff edge=#c9b59aff border=1 hover=#66411dff
-style chrome color=#00000000 edge=#f3e9d8ff border=0 hover=#00000000 press=#00000000 glow=#f0a35aff
+style chrome color=#00000000 edge=#f3e9d8ff border=0 hover=#00000000 press=#00000000 glow=#ffbb5cff
 
 style row style=entry size=16 pad=6
 style icon style=chrome hover=#f3e9d81f press=#f3e9d833
@@ -31,6 +32,8 @@ style standingword style=entry edge=#f3e9d8ff hover=#00000000 press=#00000000
 style tabfoot color=#3a2c22ff border=0
 style rule color=#5a4636ff border=0
 style accent style=icon edge=#f0a35aff
+style arm style=icon edge=#a8352bff
+style arming style=icon edge=#ff3b2fff
 style exportchosen color=#f0a35aff
 style ring color=#f0a35a33 edge=#00000000 border=0
 style board style=box border=2
@@ -154,9 +157,9 @@ style boxlabel color=#f7f9fbff
 style fadeline style=boxlabel border=2
 style waveline style=ink border=2
 
-style pair color=#00000000 edge=#8a6d55ff border=1 hover=#00000000 press=#00000000
-style pairlit color=#f3e9d81f edge=#f3e9d8ff border=1 hover=#f3e9d81f press=#f3e9d81f
 style seamline color=#f0a35a99 border=0
+style endline color=#f4eee155 border=1
+style endhead color=#f4eee133 edge=#00000000 border=0 hover=#f0a35aaa press=#f0a35aff
 style staffpaper style=board color=#1f1712ff
 style staffline color=#7a6b5aff border=0
 style staffstem color=#3c954eff border=0

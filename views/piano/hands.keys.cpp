@@ -5,6 +5,7 @@
 
 #include "../../inventory.hpp"
 #include "piano.acts.hpp"
+#include "piano.hands.hpp"
 #include "piano.internal.hpp"
 
 #include <algorithm>
@@ -39,6 +40,12 @@ auto SOUND::VIEWS::ROLL::pluck(GUI::Handle page, Whole row) -> Flag {
   INVENTORY::score(drawn[row].stock, score);
   ::wrote(drawn[row].stock);
   return true;
+}
+
+void SOUND::VIEWS::ROLL::HANDS::erased(GUI::Handle page) {
+  const String board = VIEWS::ROLL::board();
+  if (!GUI::GET::activated(page, board.c_str())) return;
+  pluck(page, GUI::SAC::SEAT::selected(page, board.c_str()));
 }
 
 void SOUND::VIEWS::ROLL::plucked(GUI::Handle page) {

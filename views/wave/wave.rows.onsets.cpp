@@ -2,7 +2,8 @@
 #include <algorithm>
 #include <cmath>
 
-#include "wave.internal.hpp"
+#include "../lane/lane.face.hpp"
+#include "wave.placed.hpp"
 #include "wave.rows.hpp"
 
 namespace {
@@ -43,6 +44,18 @@ void write(Float value) { ::faced().sense = std::clamp(value, ::OFF, ::ON); }
 
 }  // namespace SENSE
 
+namespace NOTED {
+
+constexpr STRING::Hot NAME = "Notes";
+
+auto published() -> AUDIO::PLUGIN::Control { return ::FLAG::published(); }
+
+auto read() -> Float { return ::faced().notes != 0 ? ::ON : ::OFF; }
+
+void write(Float value) { ::faced().notes = Whole(std::lround(value)); }
+
+}  // namespace NOTED
+
 }  // namespace
 
 auto SOUND::VIEWS::WAVE::ONSETS::flag() -> RIG::Source {
@@ -59,4 +72,12 @@ auto SOUND::VIEWS::WAVE::ONSETS::sense() -> RIG::Source {
     .published = ::SENSE::published,
     .read = ::SENSE::read,
     .write = ::SENSE::write};
+}
+
+auto SOUND::VIEWS::WAVE::NOTES::flag() -> RIG::Source {
+  return {
+    .name = ::NOTED::NAME,
+    .published = ::NOTED::published,
+    .read = ::NOTED::read,
+    .write = ::NOTED::write};
 }

@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #pragma once
 #include "../rig/rig.hpp"
+#include "wave.placed.hpp"
 
 namespace SOUND::VIEWS::WAVE {
+
+constexpr STRING::Hot ROWS = "wave.rows";
 
 namespace STRETCH {
 
@@ -44,6 +47,19 @@ void commit();
 
 }  // namespace TUNE
 
+namespace FADES {
+
+auto sources() -> Vector<RIG::Source>;
+
+void doors(GUI::Handle page, Whole first);
+
+}  // namespace FADES
+
 void fit(GUI::Handle page, Whole rows);
+
+void rows();
+void rows(SHELL::Session &session);
+
+auto worded(const Clip &clip) -> String;
 
 }  // namespace SOUND::VIEWS::WAVE

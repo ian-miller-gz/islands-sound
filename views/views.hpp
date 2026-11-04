@@ -54,6 +54,8 @@ struct View {
 
   const View *(*faced)() = nullptr;
 
+  Flag (*twinned)() = nullptr;
+
   Overview (*overview)() = nullptr;
 
   void (*keep)(FIELDS::Map &face) = nullptr;
@@ -124,6 +126,17 @@ void built(Pool &pool, Whole count);
 void light(Pool &pool, Named named, Whole count);
 
 auto reborn(Pool &pool) -> Flag;
+
+constexpr Whole SIDES = 2;
+
+auto side() -> Whole;
+
+template <typename Held>
+struct Sided {
+  Held each[SIDES] = {};
+  auto operator()() -> Held & { return each[side()]; }
+  auto operator()() const -> const Held & { return each[side()]; }
+};
 
 constexpr Float EASE = 0.34f;
 constexpr Float SETTLE = 0.5f;

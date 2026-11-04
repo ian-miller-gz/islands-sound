@@ -3,9 +3,9 @@
 
 #include "../../inventory.hpp"
 #include "piano.heads.hpp"
-#include "piano.notation.hpp"
+#include "piano.modes.hpp"
 #include "piano.pips.hpp"
-#include "piano.staff.hpp"
+#include "piano.places.hpp"
 
 namespace {
 using namespace SOUND;

@@ -4,7 +4,7 @@
 
 #include <island/gui/nga.hpp>
 
-#include "../views.split.hpp"
+#include "../views.split.regions.hpp"
 #include "piano.internal.hpp"
 #include "piano.paper.hpp"
 

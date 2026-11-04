@@ -14,21 +14,21 @@ namespace {
 using namespace SOUND;
 
 Vector<VIEWS::ROLL::Loose> held;
-Vector<VIEWS::ROLL::Loose> afloat;
+VIEWS::Sided<Vector<VIEWS::ROLL::Loose>> afloat;
 
 constexpr STRING::Hot ADRIFT = "track lacks notes lane";
 constexpr STRING::Hot PASTED = "paste";
 
 auto pipped(Whole slot) -> VIEWS::ROLL::Pip {
-  const VIEWS::ROLL::Loose &one = ::afloat[slot];
+  const VIEWS::ROLL::Loose &one = ::afloat()[slot];
   return {NONE, slot, one.pitch, one.at, one.length, one.track};
 }
 
 auto facts(const VIEWS::ROLL::Pip &pip, VIEWS::ROLL::Loose &out) -> Flag {
   if (pip.index == NONE) return false;
   if (pip.stock == NONE) {
-    if (pip.index >= ::afloat.size()) return false;
-    out = ::afloat[pip.index];
+    if (pip.index >= ::afloat().size()) return false;
+    out = ::afloat()[pip.index];
     return true;
   }
   const Inventory &pool = INVENTORY::held();
@@ -64,10 +64,8 @@ auto grouped(Vector<::Fall> &falls, Whole stock) -> ::Fall & {
 }
 
 auto written(Vector<::Fall> &falls, const VIEWS::ROLL::Fallen &fall) -> Flag {
-  const VIEWS::ROLL::Loose &one = ::afloat[fall.slot];
-  const VIEWS::ROLL::Aim aim = one.track == NONE
-                                 ? VIEWS::ROLL::claimed(fall.at)
-                                 : VIEWS::ROLL::claimed(one.track, fall.at);
+  const VIEWS::ROLL::Loose &one = ::afloat()[fall.slot];
+  const VIEWS::ROLL::Aim aim = VIEWS::ROLL::claimed(fall.at);
   if (aim.stock == NONE) return false;
   ::Fall &filed = ::grouped(falls, aim.stock);
   const Whole at = VIEWS::ROLL::inside(aim, fall.at);
@@ -86,20 +84,21 @@ auto written(Vector<::Fall> &falls, const VIEWS::ROLL::Fallen &fall) -> Flag {
 void SOUND::VIEWS::ROLL::copy(GUI::Handle page) {
   const Vector<Loose> facts = ::taken(page);
   if (!facts.empty()) ::held = facts;
-  ::afloat.clear();
+  ::afloat().clear();
 }
 
-void SOUND::VIEWS::ROLL::paste(GUI::Handle) {
+void SOUND::VIEWS::ROLL::paste(GUI::Handle page) {
   if (::held.empty()) return;
-  ::afloat = ::held;
+  ::afloat() = ::held;
+  centred(page, ::afloat());
   Vector<Pip> marks;
-  for (Whole slot = 0; slot < ::afloat.size(); ++slot)
+  for (Whole slot = 0; slot < ::afloat().size(); ++slot)
     marks.push_back(::pipped(slot));
   follow(marks);
 }
 
 void SOUND::VIEWS::ROLL::grasped(GUI::Handle page) {
-  if (::afloat.empty()) return;
+  if (::afloat().empty()) return;
   const String board = VIEWS::ROLL::board();
   const GUI::NGA::Ask press = GUI::NGA::GET::pressed(page, board.c_str());
   if (press.target.empty()) return;
@@ -114,10 +113,10 @@ void SOUND::VIEWS::ROLL::grasped(GUI::Handle page) {
   GUI::SAC::CARRY::follow(page, marks);
 }
 
-auto SOUND::VIEWS::ROLL::loose() -> const Vector<Loose> & { return ::afloat; }
+auto SOUND::VIEWS::ROLL::loose() -> const Vector<Loose> & { return ::afloat(); }
 
 void SOUND::VIEWS::ROLL::loosed(Vector<Pip> &wanted) {
-  for (Whole slot = 0; slot < ::afloat.size(); ++slot)
+  for (Whole slot = 0; slot < ::afloat().size(); ++slot)
     wanted.push_back(::pipped(slot));
 }
 
@@ -127,7 +126,7 @@ auto SOUND::VIEWS::ROLL::land(GUI::Handle page, const Vector<Fallen> &fallen)
   Vector<Whole> gone;
   Whole refused = 0;
   for (const Fallen &fall : fallen) {
-    if (fall.slot >= ::afloat.size()) continue;
+    if (fall.slot >= ::afloat().size()) continue;
     if (::written(falls, fall))
       gone.push_back(fall.slot);
     else
@@ -151,19 +150,19 @@ auto SOUND::VIEWS::ROLL::land(GUI::Handle page, const Vector<Fallen> &fallen)
 }
 
 void SOUND::VIEWS::ROLL::stretched(Whole slot, Whole length) {
-  if (slot < ::afloat.size()) ::afloat[slot].length = length;
+  if (slot < ::afloat().size()) ::afloat()[slot].length = length;
 }
 
 void SOUND::VIEWS::ROLL::shifted(Whole slot, Whole at, Whole pitch) {
-  if (slot >= ::afloat.size()) return;
-  ::afloat[slot].at = at;
-  ::afloat[slot].pitch = pitch;
+  if (slot >= ::afloat().size()) return;
+  ::afloat()[slot].at = at;
+  ::afloat()[slot].pitch = pitch;
 }
 
 void SOUND::VIEWS::ROLL::discard(const Vector<Whole> &slots) {
   Vector<Whole> order = slots;
   std::sort(order.begin(), order.end(), std::greater<Whole>());
   for (const Whole slot : order)
-    if (slot < ::afloat.size())
-      ::afloat.erase(::afloat.begin() + static_cast<Integer>(slot));
+    if (slot < ::afloat().size())
+      ::afloat().erase(::afloat().begin() + static_cast<Integer>(slot));
 }

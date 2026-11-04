@@ -6,7 +6,7 @@
 #include "../boards.hpp"
 #include "views.controls.hpp"
 #include "views.internal.hpp"
-#include "views.split.hpp"
+#include "views.split.regions.hpp"
 
 namespace {
 using namespace SOUND;

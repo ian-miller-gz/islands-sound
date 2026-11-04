@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <algorithm>
 
+#include "views.hotkeys.hpp"
 #include "views.internal.hpp"
 #include "views.split.internal.hpp"
 
@@ -10,7 +11,7 @@ using VIEWS::SPLIT::SHUT;
 namespace KEYS = INPUT::KEYS;
 
 constexpr Float STEP = 8.0f, LARGE = 80.0f;
-constexpr STRING::Hot LIST = "split.keys", FIRST = "split.arranger";
+constexpr STRING::Hot FIRST = "split.arranger";
 
 Float from = SHUT;
 
@@ -18,6 +19,7 @@ struct Held {
   VIEWS::Chord chord;
   auto (*act)(Float by) -> Flag = nullptr;
   Float by = SHUT;
+  STRING::Hot name = "";
 };
 
 auto least(const VIEWS::SPLIT::Seat &seat) -> Float {
@@ -57,15 +59,18 @@ auto passed(Float) -> Flag {
 }
 
 constexpr Held HELD[] = {
-  {{.action = KEYS::UP}, ::moved, ::STEP},
-  {{.action = KEYS::UP, .shift = true}, ::moved, ::LARGE},
-  {{.action = KEYS::DOWN}, ::moved, -::STEP},
-  {{.action = KEYS::DOWN, .shift = true}, ::moved, -::LARGE},
-  {{.action = KEYS::HOME}, ::most},
-  {{.action = KEYS::END}, ::floored},
-  {{.action = KEYS::ENTER}, ::toggled},
-  {{.code = KEYS::ESCAPE}, ::back},
-  {{.code = KEYS::TAB}, ::passed}};
+  {{.action = KEYS::UP}, ::moved, ::STEP, "grow"},
+  {{.action = KEYS::UP, .shift = true}, ::moved, ::LARGE, "grow"},
+  {{.action = KEYS::DOWN}, ::moved, -::STEP, "shrink"},
+  {{.action = KEYS::DOWN, .shift = true}, ::moved, -::LARGE, "shrink"},
+  {{.action = KEYS::HOME}, ::most, SHUT, "fill"},
+  {{.action = KEYS::END}, ::floored, SHUT, "fold"},
+  {{.action = KEYS::ENTER}, ::toggled, SHUT, "split"},
+  {{.code = KEYS::ESCAPE}, ::back, SHUT, "cancel"},
+  {{.code = KEYS::TAB}, ::passed, SHUT, "leave"}};
+
+[[maybe_unused]] const Flag listed =
+  VIEWS::HOTKEYS::offer(VIEWS::HOTKEYS::FAMILY::SPLIT, ::HELD);
 
 auto own(const String &id) -> Flag {
   return id == VIEWS::SPLIT::BAR || id == VIEWS::SPLIT::HANDLE;
@@ -90,10 +95,4 @@ auto SOUND::VIEWS::SPLIT::HOLD::keyed() -> Flag {
   for (const ::Held &row : ::HELD)
     if (chorded(row.chord)) return row.act(row.by);
   return true;
-}
-
-void SOUND::VIEWS::SPLIT::HOLD::shown(Flag on) {
-  const GUI::Handle page = sheet();
-  if (GUI::GET::visibility(page, ::LIST) != on)
-    GUI::set(page, ::LIST, GUI::Visibility{on});
 }

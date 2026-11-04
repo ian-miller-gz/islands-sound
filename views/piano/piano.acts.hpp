@@ -14,6 +14,7 @@ struct Act {
   Flag control = false;
   Flag shift = false;
   void (*act)(GUI::Handle page) = nullptr;
+  STRING::Hot name = "";
 };
 
 auto acted(GUI::Handle page, const INPUT::KEYS::Event &key) -> Flag;
@@ -44,5 +45,9 @@ void moved(GUI::Handle page, const Step &step);
 void shifted(Whole slot, Whole at, Whole pitch);
 void doubled(GUI::Handle page);
 void quantized(GUI::Handle page);
+void inverted(GUI::Handle page);
+void reversed(GUI::Handle page);
+
+void mirrors(GUI::Handle page);
 
 }  // namespace SOUND::VIEWS::ROLL

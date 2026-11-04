@@ -14,16 +14,16 @@ constexpr STRING::Hot WESTED = "endwest";
 constexpr STRING::Hot EASTED = "endeast";
 constexpr STRING::Hot GRIPPED = "grip";
 
-Vector<Flag> stood;
-Whole born = 0;
+VIEWS::Sided<Vector<Flag>> stood;
+VIEWS::Sided<Whole> born;
 
 void stand(GUI::Handle page, const String &id, Whole row) {
-  if (::stood[row]) return;
+  if (::stood()[row]) return;
   for (const String &end : {id + "." + ::WESTED, id + "." + ::EASTED}) {
     BOARDS::place(page, id.c_str(), "node", end, {}, {});
     GUI::set(page, end.c_str(), GUI::Depth{VIEWS::ARRANGEMENT::RAISED});
   }
-  ::stood[row] = true;
+  ::stood()[row] = true;
 }
 
 void handed(GUI::Handle page, Whole row) {
@@ -58,9 +58,9 @@ auto SOUND::VIEWS::ARRANGEMENT::gripped(const Box &box) -> String {
 
 void SOUND::VIEWS::ARRANGEMENT::ends() {
   const GUI::Handle page = VIEWS::document();
-  if (VIEWS::reborn(::born)) ::stood.clear();
+  if (VIEWS::reborn(::born())) ::stood().clear();
   const Vector<Box> &laid = boxes();
-  if (::stood.size() > laid.size()) ::stood.resize(laid.size());
-  ::stood.resize(laid.size(), false);
+  if (::stood().size() > laid.size()) ::stood().resize(laid.size());
+  ::stood().resize(laid.size(), false);
   for (Whole row = 0; row < laid.size(); ++row) ::handed(page, row);
 }

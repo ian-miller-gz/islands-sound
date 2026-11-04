@@ -22,7 +22,7 @@ constexpr Float MARGIN = 5.0f;
 constexpr Float WIDE = 44.0f;
 constexpr Float HAIR = 2.0f;
 
-VIEWS::Pool pool;
+VIEWS::Sided<VIEWS::Pool> pool;
 
 auto tick(Whole at) -> String {
   return std::format("{}.{}", WAVE::strip(), at);
@@ -37,9 +37,9 @@ void seat(
 
 void build(GUI::Handle page, Whole count) {
   const String strip = WAVE::strip();
-  for (Whole at = count; at < ::pool.stood; ++at)
+  for (Whole at = count; at < ::pool().stood; ++at)
     GUI::NODES::remove(page, ::tick(at).c_str());
-  for (Whole at = ::pool.stood; at < count; ++at) {
+  for (Whole at = ::pool().stood; at < count; ++at) {
     const String id = ::tick(at);
     ::seat(page, strip, ::BUTTON, id, ::CELL);
     ::seat(page, id, WAVE::PANEL, id + "." + ::HAIRLINE, ::INK);
@@ -49,7 +49,7 @@ void build(GUI::Handle page, Whole count) {
     GUI::set(page, said.c_str(), GUI::Extent{::WIDE, ::LETTER});
     GUI::set(page, said.c_str(), GUI::Size{::LETTER});
   }
-  VIEWS::built(::pool, count);
+  VIEWS::built(::pool(), count);
 }
 
 void written(
@@ -73,19 +73,21 @@ void written(
 }  // namespace
 
 void SOUND::VIEWS::WAVE::SHED::ruler() {
-  VIEWS::reborn(::pool);
+  VIEWS::reborn(::pool());
   ::build(document(), 0);
+  VIEWS::CHANGES::shed(tape());
 }
 
 void SOUND::VIEWS::WAVE::ruler() {
   const GUI::Handle page = document();
   const Vector<GUI::SAC::LADDER::Mark> dressed = marks();
-  VIEWS::reborn(::pool);
-  const Whole seats = VIEWS::sized(::pool, dressed.size(), window());
-  if (seats != ::pool.stood) ::build(page, seats);
-  VIEWS::light(::pool, ::tick, dressed.size());
+  VIEWS::reborn(::pool());
+  const Whole seats = VIEWS::sized(::pool(), dressed.size(), window());
+  if (seats != ::pool().stood) ::build(page, seats);
+  VIEWS::light(::pool(), ::tick, dressed.size());
   const Whole step = rung();
   for (Whole at = 0; at < dressed.size(); ++at)
     ::written(page, at, dressed, step);
   VIEWS::asked(strip(), dressed, step, VIEWS::pulsed, VIEWS::OFFER::WAVE);
+  VIEWS::CHANGES::lay(tape());
 }

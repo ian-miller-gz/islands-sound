@@ -20,8 +20,8 @@ constexpr STRING::Hot INK = "fadeline";
 constexpr STRING::Hot KIND = "stroke";
 constexpr STRING::Hot LINE = "fade {} {} shape {} bend {:g}";
 
-Vector<Flag> stood;
-Whole born = 0;
+VIEWS::Sided<Vector<Flag>> stood;
+VIEWS::Sided<Whole> born;
 
 auto boxed(Whole row) -> String {
   return GUI::SAC::SEAT::named(VIEWS::ARRANGEMENT::board().c_str(), row);
@@ -68,10 +68,10 @@ void shaded(GUI::Handle page, Whole row) {
   const Box box = VIEWS::ARRANGEMENT::drawn(row);
   FADE::Clip span = ::clip(VIEWS::ARRANGEMENT::boxes()[row]);
   span.frames = box.frames;
-  if (span.in.frames == 0 && span.out.frames == 0 && !::stood[row]) return;
+  if (span.in.frames == 0 && span.out.frames == 0 && !::stood()[row]) return;
   const String id = ::boxed(row);
-  if (!::stood[row]) ::placed(page, id);
-  ::stood[row] = true;
+  if (!::stood()[row]) ::placed(page, id);
+  ::stood()[row] = true;
   const Float deep = VIEWS::ARRANGEMENT::inlaid(box.band);
   for (const FADE::End &end : FADE::ENDS)
     ::written(page, ::named(id, end), end, span, deep);
@@ -81,17 +81,17 @@ void shaded(GUI::Handle page, Whole row) {
 
 void SOUND::VIEWS::ARRANGEMENT::fades() {
   const GUI::Handle page = VIEWS::document();
-  if (VIEWS::reborn(::born)) ::stood.clear();
-  ::stood.resize(boxes().size(), false);
-  for (Whole row = 0; row < ::stood.size(); ++row) ::shaded(page, row);
+  if (VIEWS::reborn(::born())) ::stood().clear();
+  ::stood().resize(boxes().size(), false);
+  for (Whole row = 0; row < ::stood().size(); ++row) ::shaded(page, row);
 }
 
 void SOUND::VIEWS::ARRANGEMENT::fades(SHELL::Session &session) {
   const GUI::Handle page = VIEWS::document();
-  for (Whole row = 0; row < ::stood.size(); ++row)
+  for (Whole row = 0; row < ::stood().size(); ++row)
     for (const FADE::End &end : FADE::ENDS) {
       const String id = ::named(::boxed(row), end);
-      if (!::stood[row] || !GUI::GET::visibility(page, id.c_str())) continue;
+      if (!::stood()[row] || !GUI::GET::visibility(page, id.c_str())) continue;
       session.print(std::format(
         ::LINE, row, end.word,
         VIEWS::spoken(GUI::GET::shape(page, id.c_str()).run),

@@ -2,6 +2,7 @@
 #include <format>
 
 #include "../../control.hpp"
+#include "../views.attention.hpp"
 #include "trace.internal.hpp"
 
 namespace {
@@ -28,9 +29,10 @@ void SOUND::VIEWS::TRACE::aimed(GUI::Handle page) {
   const Whole cursor = GUI::GET::cursor(page, ROWS);
   if (::taken(page) && cursor < steps.size()) {
     CONTROL::aim(steps[cursor].node);
+    ATTENTION::current().node = steps[cursor].node;
     ::mirrored = steps[cursor].node;
   }
-  const String aim = CONTROL::aimed();
+  const String aim = ATTENTION::aimed(ATTENTION::current());
   if (aim == ::mirrored) return;
   ::mirrored = aim;
   const Whole at = ::row(steps, aim);

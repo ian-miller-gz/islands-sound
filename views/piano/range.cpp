@@ -21,8 +21,8 @@ constexpr Float PAD = 3.0f;
 constexpr Float NAMED = 180.0f;
 constexpr Float NORTH = 0.0f;
 
-Whole stood = 0;
-Whole born = 0;
+VIEWS::Sided<Whole> stood;
+VIEWS::Sided<Whole> born;
 
 auto ground() -> String { return VIEWS::ROLL::board() + "." + ::GROUND; }
 
@@ -40,10 +40,10 @@ auto held(const Span &span) -> Float {
 
 void build(GUI::Handle page, Whole count) {
   const String bed = ::ground();
-  if (::stood == 0 && count != 0)
+  if (count != 0 && !GUI::GET::visibility(page, bed.c_str()))
     BOARDS::place(page, VIEWS::ROLL::board().c_str(), "panel", bed, {}, {});
-  BOARDS::sweep(page, bed.c_str(), count, ::stood);
-  for (Whole span = ::stood; span < count; ++span) {
+  BOARDS::sweep(page, bed.c_str(), count, ::stood());
+  for (Whole span = ::stood(); span < count; ++span) {
     const String id = GUI::SAC::SEAT::named(bed.c_str(), span);
     BOARDS::place(page, bed.c_str(), "panel", id, {}, {});
     GUI::set(page, id.c_str(), GUI::Style{::GROUND});
@@ -57,15 +57,15 @@ void build(GUI::Handle page, Whole count) {
     GUI::NGA::set(
       page, name.c_str(), GUI::NGA::Pinned{GUI::NGA::Pinned::ACROSS});
   }
-  ::stood = count;
+  ::stood() = count;
 }
 
 }  // namespace
 
 void SOUND::VIEWS::ROLL::SHED::range() {
   const GUI::Handle page = document();
-  if (VIEWS::reborn(::born)) ::stood = 0;
-  if (::stood == 0) return;
+  if (VIEWS::reborn(::born())) ::stood() = 0;
+  if (::stood() == 0) return;
   ::build(page, 0);
   BOARDS::drop(page, ::ground());
 }
@@ -73,8 +73,8 @@ void SOUND::VIEWS::ROLL::SHED::range() {
 void SOUND::VIEWS::ROLL::range() {
   const GUI::Handle page = document();
   const Vector<Span> lit = spans();
-  if (VIEWS::reborn(::born)) ::stood = 0;
-  if (lit.size() != ::stood) ::build(page, lit.size());
+  if (VIEWS::reborn(::born())) ::stood() = 0;
+  if (lit.size() != ::stood()) ::build(page, lit.size());
   const String bed = ::ground();
   for (Whole span = 0; span < lit.size(); ++span) {
     const String id = GUI::SAC::SEAT::named(bed.c_str(), span);

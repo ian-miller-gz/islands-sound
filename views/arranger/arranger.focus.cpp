@@ -21,23 +21,14 @@ constexpr Head HEADS[] = {
   {"signals", VIEWS::LANE::face},
   {"wave", VIEWS::LANE::face}};
 
-auto seated(const VIEWS::View &face) -> Whole {
-  return &face == &VIEWS::ARRANGER::lowered() ? BELOW : UPPER;
-}
-
 }  // namespace
 
 auto SOUND::VIEWS::ARRANGER::own() -> Flag {
-  for (const ::Head &head : ::HEADS)
-    SPLIT::owned(head.word, NAME, ::seated(head.face()));
+  const Flag lowered = SPLIT::shared() ? paged(BELOW) != NONE : false;
+  const Flag raised = SPLIT::shared() ? paged(UPPER) == NONE : true;
+  for (const ::Head &head : ::HEADS) {
+    const Flag lane = head.face == VIEWS::LANE::face;
+    SPLIT::owned(head.word, NAME, lane ? (lowered ? BELOW : UPPER) : (raised ? UPPER : BELOW));
+  }
   return true;
-}
-
-void SOUND::VIEWS::ARRANGER::focus(const View &face) {
-  SPLIT::focus(::seated(face));
-}
-
-auto SOUND::VIEWS::ARRANGER::focused() -> const View * {
-  if (SPLIT::focused() == BELOW) return &lowered();
-  return &raised();
 }

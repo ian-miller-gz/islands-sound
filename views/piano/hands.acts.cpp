@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include <island/gui/carry.hpp>
-#include <island/gui/seat.hpp>
 #include <island/input.hpp>
 
+#include "../views.hotkeys.hpp"
 #include "piano.acts.hpp"
 #include "piano.internal.hpp"
 
 namespace {
 using namespace SOUND::VIEWS::ROLL;
 namespace KEYS = INPUT::KEYS;
+namespace HOTKEYS = SOUND::VIEWS::HOTKEYS;
 
 constexpr Whole COPY = 'C';
 constexpr Whole PASTE = 'V';
@@ -16,9 +16,13 @@ constexpr Whole DRAW = 'D';
 constexpr Whole PICK = 'S';
 constexpr Whole ALL = 'A';
 constexpr Whole SNAP = 'Q';
+constexpr Whole INVERT = 'I';
+constexpr Whole REVERSE = 'R';
 constexpr Whole CASED = 'a' - 'A';
 constexpr Integer FORTH = 1;
 constexpr Integer BACK = -1;
+constexpr STRING::Hot NUDGE = "nudge";
+constexpr STRING::Hot DELETES = "delete";
 
 void draw(GUI::Handle) { drawn(true); }
 
@@ -29,28 +33,40 @@ void nudge(GUI::Handle page) {
   moved(page, step);
 }
 
+constexpr auto RAISE = ::nudge<Step{.rows = ::FORTH}>;
+constexpr auto LOWER = ::nudge<Step{.rows = ::BACK}>;
+constexpr auto ABOVE = ::nudge<Step{.octaves = ::FORTH}>;
+constexpr auto BELOW = ::nudge<Step{.octaves = ::BACK}>;
+constexpr auto LATER = ::nudge<Step{.grains = ::FORTH}>;
+constexpr auto EARLIER = ::nudge<Step{.grains = ::BACK}>;
+constexpr auto AFTER = ::nudge<Step{.bars = ::FORTH}>;
+constexpr auto BEFORE = ::nudge<Step{.bars = ::BACK}>;
+
 constexpr Act ACTS[] = {
-  {.action = KEYS::TEXT, .letter = ::COPY, .control = true, .act = copy},
-  {.action = KEYS::TEXT, .letter = ::PASTE, .control = true, .act = paste},
-  {.action = KEYS::TEXT, .letter = ::ALL, .control = true, .act = all},
-  {.action = KEYS::TEXT, .letter = ::DRAW, .act = ::draw},
-  {.action = KEYS::TEXT, .letter = ::PICK, .act = ::pick},
-  {.action = KEYS::DELETE, .act = plucked},
-  {.action = KEYS::ERASE, .act = plucked},
-  {.action = KEYS::TEXT, .letter = KEYS::ESCAPE, .act = dropped},
-  {.action = KEYS::UP, .act = ::nudge<Step{.rows = ::FORTH}>},
-  {.action = KEYS::DOWN, .act = ::nudge<Step{.rows = ::BACK}>},
-  {.action = KEYS::UP, .shift = true, .act = ::nudge<Step{.octaves = ::FORTH}>},
-  {.action = KEYS::DOWN,
-   .shift = true,
-   .act = ::nudge<Step{.octaves = ::BACK}>},
-  {.action = KEYS::RIGHT, .act = ::nudge<Step{.grains = ::FORTH}>},
-  {.action = KEYS::LEFT, .act = ::nudge<Step{.grains = ::BACK}>},
-  {.action = KEYS::RIGHT, .shift = true, .act = ::nudge<Step{.bars = ::FORTH}>},
-  {.action = KEYS::LEFT, .shift = true, .act = ::nudge<Step{.bars = ::BACK}>},
-  {.action = KEYS::TEXT, .letter = ::DRAW, .control = true, .act = doubled},
-  {.action = KEYS::TEXT, .letter = ::SNAP, .act = quantized},
+  {.letter = ::COPY, .control = true, .act = copy, .name = "copy"},
+  {.letter = ::PASTE, .control = true, .act = paste, .name = "paste"},
+  {.letter = ::ALL, .control = true, .act = all, .name = "all"},
+  {.letter = ::DRAW, .act = ::draw, .name = "draw"},
+  {.letter = ::PICK, .act = ::pick, .name = "select"},
+  {.action = KEYS::DELETE, .act = plucked, .name = ::DELETES},
+  {.action = KEYS::ERASE, .act = plucked, .name = ::DELETES},
+  {.letter = KEYS::ESCAPE, .act = dropped, .name = "cancel"},
+  {.action = KEYS::UP, .act = ::RAISE, .name = ::NUDGE},
+  {.action = KEYS::DOWN, .act = ::LOWER, .name = ::NUDGE},
+  {.action = KEYS::UP, .shift = true, .act = ::ABOVE, .name = ::NUDGE},
+  {.action = KEYS::DOWN, .shift = true, .act = ::BELOW, .name = ::NUDGE},
+  {.action = KEYS::RIGHT, .act = ::LATER, .name = ::NUDGE},
+  {.action = KEYS::LEFT, .act = ::EARLIER, .name = ::NUDGE},
+  {.action = KEYS::RIGHT, .shift = true, .act = ::AFTER, .name = ::NUDGE},
+  {.action = KEYS::LEFT, .shift = true, .act = ::BEFORE, .name = ::NUDGE},
+  {.letter = ::DRAW, .control = true, .act = doubled, .name = "duplicate"},
+  {.letter = ::SNAP, .act = quantized, .name = "quantize"},
+  {.letter = ::INVERT, .act = inverted, .name = "invert"},
+  {.letter = ::REVERSE, .act = reversed, .name = "reverse"},
 };
+
+[[maybe_unused]] const Flag listed =
+  HOTKEYS::offer(HOTKEYS::FAMILY::ROLL, ::ACTS);
 
 auto folded(Whole code) -> Whole {
   return code >= 'a' && code <= 'z' ? code - ::CASED : code;
@@ -73,14 +89,4 @@ auto SOUND::VIEWS::ROLL::acted(GUI::Handle page, const INPUT::KEYS::Event &key)
     return true;
   }
   return false;
-}
-
-void SOUND::VIEWS::ROLL::all(GUI::Handle page) {
-  const String board = VIEWS::ROLL::board();
-  const Vector<Pip> &shown = plates();
-  Vector<String> marks;
-  for (Whole row = 0; row < shown.size(); ++row)
-    if (shown[row].stock != NONE && shown[row].index != NONE)
-      marks.push_back(GUI::SAC::SEAT::named(board.c_str(), row));
-  GUI::SAC::CARRY::follow(page, marks);
 }

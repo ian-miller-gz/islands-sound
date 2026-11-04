@@ -44,6 +44,8 @@ void flagged(const Vector<Beam> &beams);
 void hang(const String &id, const Stem &stem, Scale scale);
 void bow(const String &id, const Stem &stem, Whole rank, Scale scale);
 
+void valued(Vector<Stem> &stems);
+
 auto rested(const Vector<Stem> &stems) -> Vector<Rest>;
 void rested(Flag moved);
 

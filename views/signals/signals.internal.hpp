@@ -7,6 +7,7 @@
 #include "../../history.hpp"
 #include "../../score.hpp"
 #include "../../shape.hpp"
+#include "../views.changes.hpp"
 #include "../views.marks.hpp"
 #include "signals.face.hpp"
 
@@ -47,6 +48,7 @@ constexpr auto valued(Integer row) -> Float {
 auto board() -> String;
 
 auto scaled() -> Float;
+auto tape() -> VIEWS::CHANGES::Tape;
 
 auto sunk() -> Float;
 
@@ -128,6 +130,8 @@ auto seen() -> Span;
 
 void range();
 void range(SHELL::Session &session);
+
+void ends();
 
 void bench();
 void bench(SHELL::Session &session);
@@ -253,6 +257,7 @@ void head();
 void rail();
 void range();
 void ruler();
+void ends();
 
 }  // namespace SHED
 

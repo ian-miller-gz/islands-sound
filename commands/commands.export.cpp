@@ -5,6 +5,7 @@
 #include <format>
 
 #include "../graph.hpp"
+#include "../inventory.hpp"
 #include "../kind.hpp"
 #include "../master.hpp"
 #include "../render.hpp"
@@ -80,7 +81,7 @@ auto SOUND::COMMANDS::exported(Whole track, const String &path) -> Export {
   std::error_code error;
   std::filesystem::create_directories(
     std::filesystem::path(where).parent_path(), error);
-  if (!MASTER::WAVE::write(where, RATE, lanes))
+  if (!INVENTORY::RIFF::write(where, RATE, lanes))
     return {.refusal = std::format("{} would not take the file", where)};
   return {.path = where, .frames = span.to - span.from};
 }

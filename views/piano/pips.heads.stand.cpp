@@ -3,7 +3,6 @@
 
 #include "../../boards.hpp"
 #include "piano.pips.hpp"
-#include "piano.staff.hpp"
 #include "piano.weights.hpp"
 
 namespace {
@@ -25,6 +24,9 @@ constexpr Glyph HEADED = ::inked(ROLL::INK);
 constexpr Glyph MARKED = {24.0f, 12.4f, 6.2f, 13.1f};
 constexpr Glyph STRESSED = ::inked({0.05f, 0.416f, -0.146f});
 constexpr Glyph BRACKETED = ::inked({0.05f, 0.513f, 0.1425f});
+constexpr Glyph SIGNED = {
+  ROLL::EM, 0.28f * ROLL::EM, (0.45f + 0.14f) * ROLL::EM,
+  (ROLL::BASELINE - 0.135f) * ROLL::EM};
 
 constexpr Float MIDDLE = ROLL::HALF * ROLL::SPACE, SIDES = 2.0f;
 constexpr Float INKED = ROLL::INK.wide * ROLL::EM;
@@ -51,6 +53,8 @@ const SOUND::VIEWS::ROLL::HEADS::Child SOUND::VIEWS::ROLL::HEADS::ACCENT =
   ::lettered("accent", ::STRESSED);
 const SOUND::VIEWS::ROLL::HEADS::Child SOUND::VIEWS::ROLL::HEADS::GHOST =
   ::lettered("ghost", ::BRACKETED);
+const SOUND::VIEWS::ROLL::HEADS::Child SOUND::VIEWS::ROLL::HEADS::SIGN =
+  ::lettered("sign", ::SIGNED);
 const SOUND::VIEWS::ROLL::HEADS::Child SOUND::VIEWS::ROLL::HEADS::LEDGER = {
   "ledger",
   "panel",
@@ -59,8 +63,9 @@ const SOUND::VIEWS::ROLL::HEADS::Child SOUND::VIEWS::ROLL::HEADS::LEDGER = {
 
 namespace {
 
-const HEADS::Child *const CHILDREN[] = {
-  &HEADS::HEAD, &HEADS::MARK, &HEADS::LEDGER, &HEADS::ACCENT, &HEADS::GHOST};
+const HEADS::Child *const CHILDREN[] = {&HEADS::HEAD,   &HEADS::MARK,
+                                        &HEADS::LEDGER, &HEADS::ACCENT,
+                                        &HEADS::GHOST,  &HEADS::SIGN};
 
 }  // namespace
 

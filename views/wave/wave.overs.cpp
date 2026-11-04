@@ -12,11 +12,11 @@ constexpr STRING::Hot LINE = "wave overs {} {}";
 constexpr STRING::Hot WORN[] = {WAVE::PEAK, WAVE::OVER};
 constexpr Whole LEAST = 1;
 
-Vector<Flag> worn;
+VIEWS::Sided<Vector<Flag>> worn;
 
 void wear(GUI::Handle page, const String &id, Whole at, Flag over) {
-  if (at >= ::worn.size()) ::worn.resize(at + 1, false);
-  ::worn[at] = over;
+  if (at >= ::worn().size()) ::worn().resize(at + 1, false);
+  ::worn()[at] = over;
   GUI::set(page, id.c_str(), GUI::Style{::WORN[over]});
 }
 
@@ -43,7 +43,7 @@ void SOUND::VIEWS::WAVE::dressed(GUI::Handle page, const String &id, Whole at) {
 void SOUND::VIEWS::WAVE::dressed(
   GUI::Handle page, const String &id, Whole at, const PEAKS::Peak &peak) {
   const Flag over = clipped(peak.least, peak.most);
-  if (at < ::worn.size() && ::worn[at] == over) return;
+  if (at < ::worn().size() && ::worn()[at] == over) return;
   ::wear(page, id, at, over);
 }
 

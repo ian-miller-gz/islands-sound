@@ -4,7 +4,7 @@
 #include <island/gui/nga.hpp>
 
 #include "piano.pips.hpp"
-#include "piano.staff.hpp"
+#include "piano.places.hpp"
 
 namespace {
 using namespace SOUND;
@@ -13,6 +13,7 @@ namespace ROLL = SOUND::VIEWS::ROLL;
 constexpr Float FULL = ROLL::SPACE * ROLL::STAFF::SCALE;
 constexpr Float MIDDLE = ROLL::HALF * ROLL::SPACE;
 constexpr Float STILL = 0.0f;
+constexpr Whole SIXTEENTH = PULSES / 4;
 
 auto zoomed() -> GUI::NGA::Zoom {
   return GUI::NGA::GET::zoom(VIEWS::document(), ROLL::board().c_str());
@@ -34,7 +35,7 @@ auto gap(const Vector<ROLL::Pip> &pips) -> Whole {
 
 auto SOUND::VIEWS::ROLL::HEADS::side(const Vector<Pip> &pips) -> Float {
   const Whole nearest = ::gap(pips);
-  if (nearest == NONE) return ::FULL;
+  if (nearest == NONE || nearest >= ::SIXTEENTH) return ::FULL;
   return std::clamp(across(nearest) * ::zoomed().value, LEAST, ::FULL);
 }
 
@@ -53,6 +54,17 @@ void SOUND::VIEWS::ROLL::HEADS::sized(
   GUI::set(
     page, id.c_str(), GUI::Extent{HEAD.size.w * wide, HEAD.size.h * tall});
   GUI::set(page, id.c_str(), GUI::Size{HEAD.letter * wide});
+  const String sign = named(row, SIGN);
+  if (GUI::GET::visibility(page, sign.c_str())) {
+    GUI::set(
+      page, sign.c_str(),
+      GUI::Position{
+        ::MIDDLE - (::MIDDLE - SIGN.at.x) * wide + aside,
+        ::MIDDLE - (::MIDDLE - SIGN.at.y) * tall});
+    GUI::set(
+      page, sign.c_str(), GUI::Extent{SIGN.size.w * wide, SIGN.size.h * tall});
+    GUI::set(page, sign.c_str(), GUI::Size{SIGN.letter * wide});
+  }
   if (GUI::GET::visibility(page, named(row, LEDGER).c_str()))
     ruled(page, row, wide, aside);
 }

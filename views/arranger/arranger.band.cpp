@@ -2,14 +2,13 @@
 #include <algorithm>
 #include <utility>
 
-#include "../views.split.hpp"
+#include "../views.split.regions.hpp"
 #include "arranger.internal.hpp"
 
 namespace {
 using namespace SOUND;
 
 constexpr STRING::Hot GRIP = "arranger.handle";
-constexpr STRING::Hot PLATE = "arranger.palette";
 constexpr Float ORIGIN = 0.0f;
 
 GUI::Position places[std::size(VIEWS::SPLIT::REGIONS)];
@@ -21,18 +20,8 @@ auto top(Whole region) -> Float {
   return region == VIEWS::SPLIT::BELOW ? VIEWS::SPLIT::top() : ::ORIGIN;
 }
 
-auto foot(GUI::Handle page, Whole region) -> Float {
-  const Float field = GUI::GET::measured(page, VIEWS::ARRANGER::NAME).h;
-  return region == VIEWS::SPLIT::BELOW ? field : field - VIEWS::SPLIT::height();
-}
-
-auto seated(GUI::Handle page, Whole region) -> GUI::Position {
-  const Float deep =
-    GUI::GET::position(page, ::PLATE).y + GUI::GET::measured(page, ::PLATE).h;
-  const Float least = ::top(region);
-  const Float most = std::max(least, ::foot(page, region) - deep);
-  return {
-    ::places[region].x, std::clamp(least + ::places[region].y, least, most)};
+auto seated(Whole region) -> GUI::Position {
+  return {::places[region].x, ::top(region) + ::places[region].y};
 }
 
 void heard(GUI::Handle page, Whole region) {
@@ -50,7 +39,7 @@ void SOUND::VIEWS::ARRANGER::TOOLS::seat(GUI::Handle page) {
     std::ranges::fill(::places, GUI::GET::position(page, ::GRIP));
   const Whole at = SPLIT::shared() ? SPLIT::focused() : SPLIT::UPPER;
   ::heard(page, at);
-  const GUI::Position wanted = ::seated(page, at);
+  const GUI::Position wanted = ::seated(at);
   if (!::stale && wanted == ::written) return;
   GUI::set(page, ::GRIP, wanted);
   ::written = wanted;

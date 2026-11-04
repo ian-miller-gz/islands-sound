@@ -6,7 +6,6 @@
 #include "piano.beams.hpp"
 #include "piano.heads.hpp"
 #include "piano.internal.hpp"
-#include "piano.notation.hpp"
 
 namespace {
 using namespace SOUND;
@@ -20,8 +19,11 @@ struct Hit {
   auto operator==(const Hit &) const -> Bool = default;
 };
 
-Vector<Hit> kept;
-Vector<STAFF::Stem> stood;
+constexpr Integer MIDDLE = 4;
+
+VIEWS::Sided<Vector<Hit>> kept;
+VIEWS::Sided<Vector<STAFF::Stem>> stood;
+VIEWS::Sided<Whole> way = {{NONE, NONE}};
 
 auto before(const Hit &one, const Hit &two) -> Flag {
   return std::tie(one.foot, one.at, one.place) <
@@ -30,12 +32,15 @@ auto before(const Hit &one, const Hit &two) -> Flag {
 
 auto hits() -> Vector<Hit> {
   Vector<Hit> found;
-  if (ROLL::GET::notation() != ROLL::PERCUSSION) return found;
+  if (!ROLL::GET::staffed()) return found;
+  const Flag pitched = ROLL::GET::pitched();
   for (const ROLL::Pip &pip : ROLL::plates()) {
     const Integer place = STAFF::placed(pip.pitch);
     const ROLL::Drum *drum = ROLL::GET::drum(pip.pitch);
-    if (place != STAFF::NOWHERE)
-      found.push_back({pip.at, place, drum != nullptr && drum->foot});
+    if (place == STAFF::NOWHERE) continue;
+    const Flag foot =
+      pitched ? place < ::MIDDLE : drum != nullptr && drum->foot;
+    found.push_back({pip.at, place, foot});
   }
   std::ranges::sort(found, ::before);
   return found;
@@ -57,43 +62,30 @@ auto grouped(const Vector<Hit> &hits) -> Vector<STAFF::Stem> {
   return stems;
 }
 
-auto valued(Whole gap) -> Whole {
-  for (const STAFF::Value &value : STAFF::VALUES)
-    if (gap * value.part >= PULSES) return value.beams;
-  return std::rbegin(STAFF::VALUES)->beams;
-}
-
-void valued(Vector<STAFF::Stem> &stems) {
-  for (Whole stem = 0; stem < stems.size(); ++stem) {
-    Whole close = STAFF::beaten(stems[stem].at) + PULSES;
-    const Whole next = stem + 1;
-    if (next < stems.size() && stems[next].foot == stems[stem].foot)
-      close = std::min(close, stems[next].at);
-    stems[stem].beams = ::valued(close - stems[stem].at);
-  }
-}
-
 }  // namespace
 
 auto SOUND::VIEWS::ROLL::STAFF::GET::stems() -> const Vector<Stem> & {
-  return ::stood;
+  return ::stood();
 }
 
 void SOUND::VIEWS::ROLL::STAFF::stemmed() {
   Vector<Hit> hits = ::hits();
-  const Flag moved = hits != ::kept;
+  const Whole way = ROLL::GET::presentation();
+  const Flag moved = hits != ::kept() || way != ::way();
   if (moved) {
-    ::kept = std::move(hits);
-    ::stood = ::grouped(::kept);
-    ::valued(::stood);
-    sloped(::stood, joined(::stood));
+    ::way() = way;
+    ::kept() = std::move(hits);
+    ::stood() = ::grouped(::kept());
+    valued(::stood());
+    sloped(::stood(), joined(::stood()));
   }
   beamed(moved);
 }
 
 void SOUND::VIEWS::ROLL::STAFF::SHED::stemmed() {
-  ::kept.clear();
-  ::stood.clear();
-  sloped(::stood, {});
+  ::way() = NONE;
+  ::kept().clear();
+  ::stood().clear();
+  sloped(::stood(), {});
   beamed();
 }

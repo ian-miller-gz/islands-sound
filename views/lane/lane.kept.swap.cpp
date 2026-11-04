@@ -12,14 +12,31 @@ namespace LANE = SOUND::VIEWS::LANE;
 struct Held {
   String track, lane;
   Whole kind = NONE;
+  auto operator==(const Held &) const -> bool = default;
 };
 
-Held held;
+struct Stood {
+  GUI::Handle page = GUI::NONE;
+  Held held;
+};
+
+VIEWS::Sided<Held> held;
+Vector<Stood> stood;
 Whole born = 0;
+auto arrived(GUI::Handle page) -> Flag {
+  for (Stood &one : ::stood)
+    if (one.page == page) {
+      if (one.held == ::held()) return false;
+      one.held = ::held();
+      return true;
+    }
+  ::stood.push_back({page, ::held()});
+  return true;
+}
 
 auto found() -> LANE::Face * {
   for (LANE::Face &one : LANE::records())
-    if (one.track == ::held.track && one.lane == ::held.lane) return &one;
+    if (one.track == ::held().track && one.lane == ::held().lane) return &one;
   return nullptr;
 }
 
@@ -55,11 +72,12 @@ void SOUND::VIEWS::LANE::record() {
   const Flag fresh = VIEWS::reborn(::born);
   Face *one = ::found();
   if (one == nullptr) return;
-  if (fresh) return ::write(*one, ::held.kind);
-  ::read(*one, ::held.kind);
+  if (fresh || ::arrived(VIEWS::document()))
+    return ::write(*one, ::held().kind);
+  ::read(*one, ::held().kind);
 }
 
-void SOUND::VIEWS::LANE::forget() { ::held = {}; }
+void SOUND::VIEWS::LANE::forget() { ::held = VIEWS::Sided<::Held>{}; }
 
 auto SOUND::VIEWS::LANE::held() -> Face * { return ::found(); }
 
@@ -73,9 +91,9 @@ void SOUND::VIEWS::LANE::swap(Whole kind) {
   const Mark mark = edited(kind);
   if (mark.lane == NONE) return;
   const Face &one = faced(mark);
-  if (one.track == ::held.track && one.lane == ::held.lane) return;
-  ::cleared(::held.kind);
-  ::held = {one.track, one.lane, mark.kind};
+  if (one.track == ::held().track && one.lane == ::held().lane) return;
+  ::cleared(::held().kind);
+  ::held() = {one.track, one.lane, mark.kind};
   ::write(one, mark.kind);
   ::cleared(mark.kind);
 }

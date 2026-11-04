@@ -7,6 +7,7 @@
 
 #include "../../boards.hpp"
 #include "../../timeline.hpp"
+#include "../views.attention.hpp"
 #include "piano.seams.hpp"
 
 namespace {
@@ -14,14 +15,13 @@ using namespace SOUND;
 using VIEWS::ROLL::SEAMS::Seam;
 
 constexpr STRING::Hot BED = "seam";
-constexpr STRING::Hot LIST = "tracks";
 
-Whole stood = 0;
-Whole edged = 0;
-Whole born = 0;
+VIEWS::Sided<Whole> stood;
+VIEWS::Sided<Whole> edged;
+VIEWS::Sided<Whole> born;
 
 auto attended() -> Whole {
-  const Whole track = VIEWS::cursor(::LIST);
+  const Whole track = VIEWS::ATTENTION::attended();
   return track < TIMELINE::held().tracks.size() ? track : NONE;
 }
 
@@ -81,21 +81,21 @@ auto pressed(GUI::Handle page, const Vector<::Seam> &seams) -> Flag {
 
 void SOUND::VIEWS::ROLL::SHED::seams() {
   const GUI::Handle page = document();
-  if (VIEWS::reborn(::born)) {
-    ::stood = ::edged = 0;
+  if (VIEWS::reborn(::born())) {
+    ::stood() = ::edged() = 0;
     return;
   }
-  SEAMS::bared(page, ::bed(), ::stood);
-  SEAMS::bared(page, board() + "." + SEAMS::EDGE, ::edged);
+  SEAMS::bared(page, ::bed(), ::stood());
+  SEAMS::bared(page, board() + "." + SEAMS::EDGE, ::edged());
 }
 
 void SOUND::VIEWS::ROLL::seams() {
   const GUI::Handle page = document();
-  if (VIEWS::reborn(::born)) ::stood = ::edged = 0;
+  if (VIEWS::reborn(::born())) ::stood() = ::edged() = 0;
   const Vector<::Seam> seams = ::seamed();
   if (::pressed(page, seams)) return;
-  VIEWS::ROLL::SEAMS::lined(page, ::flushed(seams), ::edged);
-  SEAMS::crossed(page, ::bed(), seams, ::stood);
+  VIEWS::ROLL::SEAMS::lined(page, ::flushed(seams), ::edged());
+  SEAMS::crossed(page, ::bed(), seams, ::stood());
 }
 
 void SOUND::VIEWS::ROLL::seams(SHELL::Session &session) {

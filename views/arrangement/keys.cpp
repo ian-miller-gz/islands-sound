@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <island/input.hpp>
 
+#include "../views.hotkeys.hpp"
 #include "arrangement.internal.hpp"
 #include "arrangement.opened.hpp"
 #include "keys.internal.hpp"
@@ -8,6 +9,8 @@
 namespace {
 using namespace SOUND;
 namespace KEYS = INPUT::KEYS;
+namespace ARRANGEMENT = SOUND::VIEWS::ARRANGEMENT;
+namespace HOTKEYS = SOUND::VIEWS::HOTKEYS;
 
 constexpr Whole COPY = 'C';
 constexpr Whole PASTE = 'V';
@@ -33,16 +36,26 @@ struct Act {
   Whole letter = 0;
   Flag control = false;
   void (*act)(GUI::Handle page) = nullptr;
+  STRING::Hot name = "";
 };
 
 constexpr Act ACTS[] = {
-  {.action = KEYS::DELETE, .act = ::axed},
-  {.letter = ::COPY, .control = true, .act = VIEWS::ARRANGEMENT::copy},
-  {.letter = ::PASTE, .control = true, .act = VIEWS::ARRANGEMENT::paste},
-  {.letter = ::OPEN, .control = true, .act = ::edit},
-  {.letter = ::SPLIT, .act = VIEWS::ARRANGEMENT::divide},
-  {.letter = ::RENAME, .control = true, .act = VIEWS::ARRANGEMENT::rename},
+  {.action = KEYS::DELETE, .act = ::axed, .name = "delete"},
+  {.letter = ::COPY, .control = true, .act = ARRANGEMENT::copy, .name = "copy"},
+  {.letter = ::PASTE,
+   .control = true,
+   .act = ARRANGEMENT::paste,
+   .name = "paste"},
+  {.letter = ::OPEN, .control = true, .act = ::edit, .name = "edit"},
+  {.letter = ::SPLIT, .act = ARRANGEMENT::divide, .name = "split"},
+  {.letter = ::RENAME,
+   .control = true,
+   .act = ARRANGEMENT::rename,
+   .name = "rename"},
 };
+
+[[maybe_unused]] const Flag listed =
+  HOTKEYS::offer(HOTKEYS::FAMILY::ARRANGEMENT, ::ACTS);
 
 auto matched(const Act &act, const KEYS::Event &key) -> Flag {
   if (act.action != key.action) return false;

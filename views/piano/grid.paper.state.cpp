@@ -2,11 +2,11 @@
 #include <format>
 
 #include "piano.grid.hpp"
-#include "piano.notation.hpp"
+#include "piano.modes.hpp"
 #include "piano.paper.hpp"
 
 void SOUND::VIEWS::ROLL::PAPER::state(SHELL::Session &session) {
-  if (GET::notation() != PERCUSSION) return;
+  if (!GET::staffed()) return;
   const Vector<GUI::SAC::LADDER::Mark> marks = GRID::dressed();
   Whole bars = 0, beats = 0;
   for (Whole at = 0; at < GRID::lit() && at < marks.size(); ++at)

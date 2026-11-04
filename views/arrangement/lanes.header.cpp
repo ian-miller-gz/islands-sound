@@ -2,7 +2,7 @@
 #include <island/gui/nga.hpp>
 
 #include "../../boards.hpp"
-#include "../lane/lane.face.hpp"
+#include "../lane/lane.mark.hpp"
 #include "lanes.internal.hpp"
 
 namespace {
@@ -15,8 +15,8 @@ constexpr STRING::Hot INK = "muted";
 constexpr STRING::Hot MARK = "lanemark";
 constexpr Float LETTER = 12.0f;
 
-Vector<String> stood;
-Whole born = 0;
+VIEWS::Sided<Vector<String>> stood;
+VIEWS::Sided<Whole> born;
 
 auto cell(const String &id) -> String { return id + "." + ::LABELED; }
 
@@ -60,10 +60,11 @@ void naming(const String &id) {
 
 void build(const Vector<VIEWS::ARRANGEMENT::Stand> &stands) {
   const GUI::Handle page = VIEWS::document();
-  for (Whole row = stands.size(); row < ::stood.size(); ++row)
-    for (const String &part : {::header(::stood[row]), ::cell(::stood[row])})
+  for (Whole row = stands.size(); row < ::stood().size(); ++row)
+    for (const String &part :
+         {::header(::stood()[row]), ::cell(::stood()[row])})
       GUI::NODES::remove(page, part.c_str());
-  for (Whole row = ::stood.size(); row < stands.size(); ++row) {
+  for (Whole row = ::stood().size(); row < stands.size(); ++row) {
     ::heading(stands[row].id);
     ::naming(stands[row].id);
   }
@@ -73,10 +74,10 @@ void build(const Vector<VIEWS::ARRANGEMENT::Stand> &stands) {
 
 void SOUND::VIEWS::ARRANGEMENT::cells(const Vector<Stand> &stands) {
   const GUI::Handle page = VIEWS::document();
-  if (VIEWS::reborn(::born)) ::stood.clear();
-  if (stands.size() != ::stood.size()) ::build(stands);
-  ::stood.clear();
-  for (const Stand &stand : stands) ::stood.push_back(stand.id);
+  if (VIEWS::reborn(::born())) ::stood().clear();
+  if (stands.size() != ::stood().size()) ::build(stands);
+  ::stood().clear();
+  for (const Stand &stand : stands) ::stood().push_back(stand.id);
   const LANE::Mark mark = LANE::marked();
   for (Whole row = 0; row < stands.size(); ++row) {
     const String head = ::header(stands[row].id);

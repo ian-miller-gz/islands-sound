@@ -8,6 +8,7 @@ void SOUND::VIEWS::SIGNALS::shed() {
   SHED::head();
   SHED::rail();
   SHED::range();
+  SHED::ends();
   SHED::ruler();
   SHED::restore();
 }

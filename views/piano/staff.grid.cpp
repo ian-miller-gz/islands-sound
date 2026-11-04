@@ -27,6 +27,10 @@ auto staffed() -> Vector<Integer> {
 
 auto gridded() -> Vector<Integer> { return ::places(STAFF::GET::lines()); }
 
+auto grand() -> Vector<Integer> {
+  return {std::begin(STAFF::GRAND), std::end(STAFF::GRAND)};
+}
+
 constexpr auto (*RULES[])() -> Vector<Integer> = {::gridded, ::staffed};
 
 }  // namespace
@@ -37,6 +41,7 @@ auto SOUND::VIEWS::ROLL::GET::presentation() -> Whole {
 }
 
 auto SOUND::VIEWS::ROLL::STAFF::GET::rules() -> Vector<Integer> {
+  if (ROLL::GET::pitched()) return ::grand();
   return ::RULES[ROLL::GET::presentation()]();
 }
 

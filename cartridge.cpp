@@ -11,10 +11,12 @@ auto initialize(STRING::Hot assets) -> Status {
 
 void frame() {
   SOUND::COMMANDS::tend();
+  SOUND::COMMANDS::checkpoint();
   SOUND::VIEWS::frame();
 }
 
 void close() {
+  SOUND::SESSION::forget(SOUND::SESSION::held().name);
   SOUND::RENDER::VOICE::drop();
   SOUND::VIEWS::close();
   SOUND::CONTROL::close();

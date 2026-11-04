@@ -14,6 +14,7 @@ constexpr STRING::Hot DOOR = "piano.bench.presentation";
 constexpr STRING::Hot WHOSE = "piano.presentation";
 constexpr STRING::Hot LINE = "bench presentation {}";
 constexpr Whole COUNT = std::size(ROLL::PRESENTATIONS);
+constexpr STRING::Hot GLYPHS[] = {"\u25A6", "\U0001D11E"};
 
 void raise() {
   Vector<String> rows;
@@ -25,21 +26,25 @@ void raise() {
   VIEWS::MENU::raise(rows, ::WHOSE, ::DOOR, ticks);
 }
 
-auto struck() -> Flag { return ROLL::GET::notation() == ROLL::PERCUSSION; }
-
 }  // namespace
+
+auto SOUND::VIEWS::ROLL::GET::pitched() -> Flag {
+  return notation() == TONAL && presentation() == PRESENTATION::STAFF;
+}
+
+auto SOUND::VIEWS::ROLL::GET::staffed() -> Flag {
+  return notation() == PERCUSSION || pitched();
+}
 
 void SOUND::VIEWS::ROLL::present() {
   const GUI::Handle page = document();
   const Whole row = MENU::taken(::WHOSE);
   if (row < ::COUNT) faced().presentation = row;
   if (GUI::GET::clicked(page, ::DOOR)) ::raise();
-  const String word = PRESENTATIONS[GET::presentation()];
-  GUI::set(page, ::DOOR, GUI::Text{word});
-  GUI::set(page, ::DOOR, GUI::Visibility{::struck()});
+  GUI::set(page, ::DOOR, GUI::Text{String(::GLYPHS[GET::presentation()])});
 }
 
 void SOUND::VIEWS::ROLL::present(SHELL::Session &session) {
-  if (!::struck()) return;
+  if (!GET::staffed()) return;
   session.print(std::format(::LINE, PRESENTATIONS[GET::presentation()]));
 }

@@ -15,8 +15,8 @@ struct Key {
   auto operator==(const Key &other) const -> Flag = default;
 };
 
-Key key;
-Vector<VIEWS::SIGNALS::Point> kept;
+VIEWS::Sided<Key> key;
+VIEWS::Sided<Vector<VIEWS::SIGNALS::Point>> kept;
 
 auto keyed() -> Key {
   const VIEWS::SIGNALS::Span lit = VIEWS::SIGNALS::seen();
@@ -39,8 +39,8 @@ auto keyed() -> Key {
 
 auto SOUND::VIEWS::SIGNALS::points() -> Vector<Point> {
   ::Key now = ::keyed();
-  if (now == ::key) return ::kept;
-  ::key = std::move(now);
-  ::kept = gather({NONE, ::key.opens, ::key.closes});
-  return ::kept;
+  if (now == ::key()) return ::kept();
+  ::key() = std::move(now);
+  ::kept() = gather({NONE, ::key().opens, ::key().closes});
+  return ::kept();
 }

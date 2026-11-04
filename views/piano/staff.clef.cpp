@@ -12,21 +12,21 @@ namespace ROLL = SOUND::VIEWS::ROLL;
 namespace PAPER = SOUND::VIEWS::ROLL::PAPER;
 namespace SIGNS = SOUND::VIEWS::ROLL::STAFF::SIGNS;
 
-constexpr STRING::Hot CLEF = "\U0001D125";
 constexpr STRING::Hot INK = "staffstem", GROUND = "staffpaper";
-constexpr STRING::Hot SIGN = "clef", PLATE = "paper";
-constexpr Float WIDE = 0.295f, AIR = ROLL::HALF * ROLL::SPACE;
+constexpr STRING::Hot PLATE = "paper";
+constexpr Float AIR = ROLL::HALF * ROLL::SPACE;
 constexpr Float BARE = 0.0f, NORTH = ROLL::STEP;
 
-Flag stood = false;
-Whole born = 0;
-Float east = ROLL::RAILED;
+VIEWS::Sided<Flag> stood;
+VIEWS::Sided<Whole> born;
+VIEWS::Sided<Float> east = {{ROLL::RAILED, ROLL::RAILED}};
 
 auto named(STRING::Hot stem) -> String { return ROLL::board() + "." + stem; }
 
 void build(GUI::Handle page, Flag wanted) {
   const String plate = ::named(::PLATE);
-  const String inks[] = {::named(::SIGN), SIGNS::named(0), SIGNS::named(1)};
+  const String inks[] = {
+    SIGNS::clef(0), SIGNS::clef(1), SIGNS::named(0), SIGNS::named(1)};
   if (!wanted) {
     for (const String &id : inks) BOARDS::drop(page, id);
     ROLL::STAFF::lined(page, plate, ::BARE, 0);
@@ -42,15 +42,13 @@ void seat(GUI::Handle page) {
   const Float down = GUI::NGA::GET::zoom(page, ROLL::board().c_str()).down;
   const GUI::Extent span = ROLL::STAFF::spanned();
   const Float lines[] = {span.w + ROLL::HALF * span.h, span.w + span.h};
-  const Float west = ROLL::RAILED + ::AIR, clef = ::WIDE * ROLL::EM * down;
-  const GUI::Position at = {
-    west, lines[0] + (ROLL::HALF - ROLL::BASELINE) * ROLL::EM};
-  SIGNS::lettered(page, ::named(::SIGN), ::CLEF, {at, clef, ROLL::EM}, down);
+  const Float west = ROLL::RAILED + ::AIR;
+  const Float clef = SIGNS::clefed(page, west, lines, down);
   const Float column = west + clef + ::AIR;
   const Float wide =
     column + SIGNS::metred(page, column, lines, down) + ::AIR - ROLL::RAILED;
   const String plate = ::named(::PLATE);
-  ::east = ROLL::RAILED + wide;
+  ::east() = ROLL::RAILED + wide;
   GUI::set(page, plate.c_str(), GUI::Position{ROLL::RAILED, ::NORTH});
   GUI::set(
     page, plate.c_str(), GUI::Extent{wide, ROLL::STAFF::deep() - ::NORTH});
@@ -61,17 +59,19 @@ void seat(GUI::Handle page) {
 
 void SOUND::VIEWS::ROLL::STAFF::clef() {
   const GUI::Handle page = document();
-  if (VIEWS::reborn(::born)) ::stood = false;
+  if (VIEWS::reborn(::born())) ::stood() = false;
   const Flag wanted = papered();
-  if (wanted != ::stood) ::build(page, wanted);
-  ::stood = wanted;
+  if (wanted != ::stood()) ::build(page, wanted);
+  ::stood() = wanted;
   if (wanted) ::seat(page);
 }
 
-auto SOUND::VIEWS::ROLL::margin() -> Float { return ::stood ? ::east : RAILED; }
+auto SOUND::VIEWS::ROLL::margin() -> Float {
+  return ::stood() ? ::east() : RAILED;
+}
 
 void SOUND::VIEWS::ROLL::STAFF::SHED::clef() {
-  if (VIEWS::reborn(::born) || !::stood) return;
+  if (VIEWS::reborn(::born()) || !::stood()) return;
   ::build(document(), false);
-  ::stood = false;
+  ::stood() = false;
 }

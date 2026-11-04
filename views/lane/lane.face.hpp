@@ -3,36 +3,15 @@
 #include "../../onset.hpp"
 #include "../../score.hpp"
 #include "../views.hpp"
-
-namespace SOUND::ARRANGEMENT::TRACK::LANE {
-
-struct Clip;
-
-}  // namespace SOUND::ARRANGEMENT::TRACK::LANE
+#include "lane.mark.hpp"
 
 namespace SOUND::VIEWS::LANE {
 
-using Clip = SOUND::ARRANGEMENT::TRACK::LANE::Clip;
-
 auto face() -> const View &;
-
-void paged(Whole kind);
-
-auto editable(Whole kind) -> Flag;
-
-struct Mark {
-  Whole track = NONE, lane = NONE, kind = NONE;
-};
-
-void mark(Whole track, Whole lane);
-
-auto marked() -> Mark;
 
 void marked(SHELL::Session &session);
 
 auto marked(const FIELDS::Map &face) -> Flag;
-
-auto edited(Whole kind) -> Mark;
 
 constexpr Float UNSEEN = 0.0f;
 
@@ -66,18 +45,6 @@ void keep(FIELDS::Map &face);
 
 void restore(const FIELDS::Map &face);
 
-auto scope(Whole clip) -> Flag;
-
 auto words() -> Vector<SHELL::Command>;
-
-namespace GET {
-
-auto seen() -> Flag;
-
-auto scoped() -> const Clip *;
-
-auto admitted(Whole at) -> Flag;
-
-}  // namespace GET
 
 }  // namespace SOUND::VIEWS::LANE

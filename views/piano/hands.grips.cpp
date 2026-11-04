@@ -4,8 +4,9 @@
 #include <island/gui/seat.hpp>
 
 #include "../../boards.hpp"
+#include "piano.acts.hpp"
 #include "piano.hands.hpp"
-#include "piano.notation.hpp"
+#include "piano.modes.hpp"
 
 namespace {
 using namespace SOUND;
@@ -18,14 +19,14 @@ constexpr Float RAISED = 1.0f;
 constexpr Float ORIGIN = 0.0f;
 
 struct Worn {
-  Flag tonal = false;
+  Flag seen = false;
   Float at = 0.0f, wide = 0.0f;
   auto operator==(const Worn &) const -> Bool = default;
 };
 
-Whole stood = 0;
-Whole born = 0;
-Vector<Worn> worn;
+VIEWS::Sided<Whole> stood;
+VIEWS::Sided<Whole> born;
+VIEWS::Sided<Vector<Worn>> worn;
 
 auto plate(Whole row) -> String {
   return GUI::SAC::SEAT::named(VIEWS::ROLL::board().c_str(), row);
@@ -40,12 +41,12 @@ void stand(GUI::Handle page, Whole row) {
   BOARDS::place(page, ::plate(row).c_str(), "node", id, {}, {});
   GUI::set(page, id.c_str(), GUI::Style{::MARKED});
   GUI::set(page, id.c_str(), GUI::Depth{::RAISED});
-  ::worn.push_back({});
+  ::worn().push_back({});
 }
 
 void wear(GUI::Handle page, Whole row, const Worn &now) {
   const String id = VIEWS::ROLL::HANDS::handle(row);
-  GUI::set(page, id.c_str(), GUI::Visibility{now.tonal});
+  GUI::set(page, id.c_str(), GUI::Visibility{now.seen});
   GUI::set(page, id.c_str(), GUI::Position{now.at, ::ORIGIN});
   GUI::set(page, id.c_str(), GUI::Extent{now.wide, VIEWS::ROLL::TALL});
 }
@@ -62,24 +63,31 @@ auto SOUND::VIEWS::ROLL::HANDS::resting(Whole length) -> Float {
 
 void SOUND::VIEWS::ROLL::HANDS::grip(
   GUI::Handle page, const Vector<Pip> &drawn) {
-  if (VIEWS::reborn(::born)) ::stood = 0;
-  ::stood = std::min<Whole>(::stood, drawn.size());
-  ::worn.resize(::stood);
-  for (; ::stood < drawn.size(); ++::stood) ::stand(page, ::stood);
-  const Flag tonal = GET::notation() == TONAL;
+  if (VIEWS::reborn(::born())) ::stood() = 0;
+  ::stood() = std::min<Whole>(::stood(), drawn.size());
+  ::worn().resize(::stood());
+  for (; ::stood() < drawn.size(); ++::stood()) ::stand(page, ::stood());
+  const Flag seen = GET::notation() == TONAL && !ROLL::drawn();
   for (Whole row = 0; row < drawn.size(); ++row) {
     const Worn now = {
-      tonal, resting(drawn[row].length), ::gripped(drawn[row].length)};
-    if (now == ::worn[row]) continue;
+      seen, resting(drawn[row].length), ::gripped(drawn[row].length)};
+    const String id = HANDS::handle(row);
+    const Flag strayed = GUI::GET::position(page, id.c_str()).y != ::ORIGIN;
+    if (now == ::worn()[row] && !strayed) continue;
     ::wear(page, row, now);
-    ::worn[row] = now;
+    ::worn()[row] = now;
   }
+}
+
+auto SOUND::VIEWS::ROLL::HANDS::strayed(
+  GUI::Handle page, Whole row, GUI::Position at) -> Flag {
+  return drawn() && GUI::GET::position(page, ::plate(row).c_str()) != at;
 }
 
 void SOUND::VIEWS::ROLL::SHED::hands() {
   const GUI::Handle page = document();
-  if (VIEWS::reborn(::born)) ::stood = 0;
-  for (Whole row = 0; row < ::stood; ++row)
+  if (VIEWS::reborn(::born())) ::stood() = 0;
+  for (Whole row = 0; row < ::stood(); ++row)
     BOARDS::drop(page, HANDS::handle(row));
-  ::stood = 0;
+  ::stood() = 0;
 }

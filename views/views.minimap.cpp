@@ -26,8 +26,8 @@ struct Seat {
   Flag stood = false;
 };
 
-Vector<Seat> seats;
-Whole born = 0;
+VIEWS::Sided<Vector<Seat>> seats;
+VIEWS::Sided<Whole> born;
 
 auto numbered(const String &map, STRING::Hot word, Whole at) -> String {
   return std::format("{}.{}.{}.{}", map, ::MARKS, word, at);
@@ -46,11 +46,11 @@ void place(const String &map, const String &id, STRING::Hot dress) {
 }
 
 auto seated(const String &map) -> Seat & {
-  if (VIEWS::reborn(::born)) ::seats.clear();
-  for (Seat &one : ::seats)
+  if (VIEWS::reborn(::born())) ::seats().clear();
+  for (Seat &one : ::seats())
     if (one.map == map) return one;
-  ::seats.push_back(Seat{map});
-  return ::seats.back();
+  ::seats().push_back(Seat{map});
+  return ::seats().back();
 }
 
 void counted(

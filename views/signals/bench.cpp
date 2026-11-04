@@ -18,8 +18,8 @@ constexpr Float BEAT = 3.0f;
 constexpr Whole LEAST = 1;
 constexpr GUI::Dial::Graphic LETTERED = GUI::Dial::NONE;
 
-Flag stood = false;
-Whole born = 0;
+VIEWS::Sided<Flag> stood;
+VIEWS::Sided<Whole> born;
 
 auto rung(Whole index) -> Whole {
   return PULSES * ::WHOLE / ::RUNGS[std::min(index, ::CLIMBED)];
@@ -40,18 +40,18 @@ auto climbed(Whole denominator) -> Float {
 }
 
 auto pulsed() -> Whole {
-  if (!::stood) return ::rung(Whole(::BEAT));
+  if (!::stood()) return ::rung(Whole(::BEAT));
   return ::rung(Whole(GUI::GET::value(VIEWS::document(), ::SNAP)));
 }
 
 void shaped(GUI::Handle page) {
-  if (VIEWS::reborn(::born)) ::stood = false;
+  if (VIEWS::reborn(::born())) ::stood() = false;
   GUI::set(
     page, ::SNAP,
     GUI::Dial{::FINEST, Float(::CLIMBED), ::BEAT, ::CLIMBED, ::LETTERED});
-  if (::stood) return;
+  if (::stood()) return;
   GUI::set(page, ::SNAP, GUI::Value{::BEAT});
-  ::stood = true;
+  ::stood() = true;
 }
 
 void taken(GUI::Handle page) {

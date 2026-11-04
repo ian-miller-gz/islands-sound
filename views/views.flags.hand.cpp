@@ -11,7 +11,7 @@ using namespace SOUND;
 String carrying;
 String seating;
 String dragging;
-Whole born = 0;
+VIEWS::Sided<Whole> born;
 
 void arced(const String &strip, Flag moving) {
   if (moving && ::dragging.empty()) {
@@ -99,7 +99,7 @@ auto SOUND::VIEWS::carried() -> String & { return ::carrying; }
 void SOUND::VIEWS::handled(
   const String &strip, Float west, Float scale, Unfold unfold) {
   const GUI::Handle page = document();
-  if (reborn(::born)) ::carrying.clear();
+  if (reborn(::born())) ::carrying.clear();
   const Vector<Post> standing = posts(strip);
   const String editing = String(GUI::GET::editing(page));
   ::pressing(standing);

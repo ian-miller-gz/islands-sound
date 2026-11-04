@@ -12,30 +12,30 @@ using namespace SOUND;
 constexpr STRING::Hot GROUND = "range";
 constexpr STRING::Hot PANEL = "panel";
 
-Whole stood = 0;
-Whole born = 0;
+VIEWS::Sided<Whole> stood;
+VIEWS::Sided<Whole> born;
 
 auto ground() -> String { return VIEWS::SIGNALS::board() + "." + ::GROUND; }
 
 void build(GUI::Handle page, Whole count) {
   const String bed = ::ground();
-  if (::stood == 0 && count != 0)
+  if (count != 0 && !GUI::GET::visibility(page, bed.c_str()))
     BOARDS::place(page, VIEWS::SIGNALS::board().c_str(), ::PANEL, bed, {}, {});
-  BOARDS::sweep(page, bed.c_str(), count, ::stood);
-  for (Whole span = ::stood; span < count; ++span) {
+  BOARDS::sweep(page, bed.c_str(), count, ::stood());
+  for (Whole span = ::stood(); span < count; ++span) {
     const String id = GUI::SAC::SEAT::named(bed.c_str(), span);
     BOARDS::place(page, bed.c_str(), ::PANEL, id, {}, {});
     GUI::set(page, id.c_str(), GUI::Depth{VIEWS::SIGNALS::LAID});
   }
-  ::stood = count;
+  ::stood() = count;
 }
 
 }  // namespace
 
 void SOUND::VIEWS::SIGNALS::SHED::range() {
   const GUI::Handle page = document();
-  if (VIEWS::reborn(::born)) ::stood = 0;
-  if (::stood == 0) return;
+  if (VIEWS::reborn(::born())) ::stood() = 0;
+  if (::stood() == 0) return;
   ::build(page, 0);
   BOARDS::drop(page, ::ground());
 }
@@ -43,8 +43,8 @@ void SOUND::VIEWS::SIGNALS::SHED::range() {
 void SOUND::VIEWS::SIGNALS::range() {
   const GUI::Handle page = document();
   const Vector<Span> lit = spans();
-  if (VIEWS::reborn(::born)) ::stood = 0;
-  if (lit.size() != ::stood) ::build(page, lit.size());
+  if (VIEWS::reborn(::born())) ::stood() = 0;
+  if (lit.size() != ::stood()) ::build(page, lit.size());
   const String bed = ::ground();
   const String skin = dressed(::GROUND);
   for (Whole span = 0; span < lit.size(); ++span) {

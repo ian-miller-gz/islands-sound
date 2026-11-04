@@ -53,7 +53,7 @@ auto haired(const Vector<Whole> &flush) -> Vector<::Hair> {
 void SOUND::VIEWS::ROLL::SEAMS::built(
   GUI::Handle page, const String &bed, Whole count, Whole &stood,
   STRING::Hot kind, STRING::Hot dress) {
-  if (stood == 0 && count != 0)
+  if (count != 0 && !GUI::GET::visibility(page, bed.c_str()))
     BOARDS::place(page, VIEWS::ROLL::board().c_str(), "panel", bed, {}, {});
   BOARDS::sweep(page, bed.c_str(), count, stood);
   for (Whole row = stood; row < count; ++row) {

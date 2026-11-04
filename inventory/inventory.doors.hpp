@@ -16,6 +16,10 @@ void settled();
 
 auto length(const Stock &stock) -> Whole;
 
+auto carried(const Stock &stock) -> Whole;
+
+auto length(Whole stock, Whole length) -> Flag;
+
 void adopt(const Inventory &pool);
 
 auto refuses(Whole kind) -> STRING::Hot;
@@ -53,6 +57,15 @@ auto shape(Whole stock, Whole row) -> Whole;
 auto bend(Whole stock, Whole row, Float bend) -> Flag;
 
 auto take(Whole stock, const Vector<Vector<Float>> &lanes) -> STRING::Hot;
+
+auto house(const String &session) -> Whole;
+
+namespace RIFF {
+
+auto write(const String &path, Whole rate, const Vector<Vector<Float>> &lanes)
+  -> Flag;
+
+}  // namespace RIFF
 
 void close();
 

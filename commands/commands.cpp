@@ -20,6 +20,7 @@ const Vector<SHELL::Command> rows = {
   {"locate", "", COMMANDS::locate},
   {"chase", "", COMMANDS::chase},
   {"settings", "", COMMANDS::settings},
+  {"scan", "", COMMANDS::scan},
   {"tempo",
    ""
    "[at <pulses>] | tempo off at <pulses>",

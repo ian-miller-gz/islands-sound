@@ -6,7 +6,7 @@
 #include "../../boards.hpp"
 #include "../../kind.hpp"
 #include "../../timeline.hpp"
-#include "piano.notation.hpp"
+#include "piano.modes.hpp"
 #include "piano.pips.hpp"
 
 namespace {
@@ -18,8 +18,8 @@ constexpr STRING::Hot PANEL = "panel";
 constexpr STRING::Hot DRESS = "ghost";
 constexpr STRING::Hot LINE = "ghosts {}";
 
-VIEWS::Pool pool;
-Vector<ROLL::Box> laid;
+VIEWS::Sided<VIEWS::Pool> pool;
+VIEWS::Sided<Vector<ROLL::Box>> laid;
 
 auto named(Whole at) -> String {
   return std::format("{}.{}.{}", ROLL::board(), ::BED, at);
@@ -48,15 +48,15 @@ auto others(Whole track, Whole edited) -> Vector<ROLL::Pip> {
 
 void build(GUI::Handle page, Whole count) {
   const String board = ROLL::board();
-  for (Whole at = count; at < ::pool.stood; ++at)
+  for (Whole at = count; at < ::pool().stood; ++at)
     BOARDS::drop(page, ::named(at));
-  for (Whole at = ::pool.stood; at < count; ++at) {
+  for (Whole at = ::pool().stood; at < count; ++at) {
     const String id = ::named(at);
     BOARDS::place(page, board.c_str(), ::PANEL, id, {}, {});
     GUI::set(page, id.c_str(), GUI::Style{::DRESS});
     GUI::set(page, id.c_str(), GUI::Depth{ROLL::GHOST});
   }
-  VIEWS::built(::pool, count);
+  VIEWS::built(::pool(), count);
 }
 
 }  // namespace
@@ -73,27 +73,27 @@ auto SOUND::VIEWS::ROLL::ghosts() -> Vector<Pip> {
 }
 
 void SOUND::VIEWS::ROLL::ghosts(GUI::Handle page) {
-  const Flag again = VIEWS::reborn(::pool);
+  const Flag again = VIEWS::reborn(::pool());
   Vector<Box> boxes;
   for (const Pip &pip : ghosts()) boxes.push_back(boxed(pip));
-  if (!again && boxes == ::laid) return;
-  const Whole seats = VIEWS::sized(::pool, boxes.size(), window().w);
-  if (again || seats != ::pool.stood) ::build(page, seats);
-  VIEWS::light(::pool, ::named, boxes.size());
+  if (!again && boxes == ::laid()) return;
+  const Whole seats = VIEWS::sized(::pool(), boxes.size(), window().w);
+  if (again || seats != ::pool().stood) ::build(page, seats);
+  VIEWS::light(::pool(), ::named, boxes.size());
   for (Whole at = 0; at < boxes.size(); ++at) {
     const String id = ::named(at);
     GUI::set(page, id.c_str(), boxes[at].at);
     GUI::set(page, id.c_str(), boxes[at].size);
   }
-  ::laid = boxes;
+  ::laid() = boxes;
 }
 
 void SOUND::VIEWS::ROLL::ghosts(SHELL::Session &session) {
-  if (!::laid.empty()) session.print(std::format(::LINE, ::laid.size()));
+  if (!::laid().empty()) session.print(std::format(::LINE, ::laid().size()));
 }
 
 void SOUND::VIEWS::ROLL::SHED::ghosts() {
   const GUI::Handle page = document();
-  if (!VIEWS::reborn(::pool)) ::build(page, 0);
-  ::laid.clear();
+  if (!VIEWS::reborn(::pool())) ::build(page, 0);
+  ::laid().clear();
 }

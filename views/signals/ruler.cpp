@@ -19,7 +19,7 @@ constexpr Float LETTER = 12.0f;
 constexpr Float MARGIN = 5.0f;
 constexpr Float WORD = 44.0f;
 
-VIEWS::Pool pool;
+VIEWS::Sided<VIEWS::Pool> pool;
 
 auto tick(Whole at) -> String {
   return std::format("{}.{}", VIEWS::SIGNALS::strip(), at);
@@ -36,9 +36,9 @@ void place(
 void build(Whole count) {
   const GUI::Handle page = VIEWS::document();
   const String strip = VIEWS::SIGNALS::strip();
-  for (Whole at = count; at < ::pool.stood; ++at)
+  for (Whole at = count; at < ::pool().stood; ++at)
     GUI::NODES::remove(page, ::tick(at).c_str());
-  for (Whole at = ::pool.stood; at < count; ++at) {
+  for (Whole at = ::pool().stood; at < count; ++at) {
     const String id = ::tick(at);
     ::place(page, strip, ::BUTTON, id, {}, {});
     GUI::set(page, id.c_str(), GUI::Style{::CELL});
@@ -50,7 +50,7 @@ void build(Whole count) {
     GUI::set(page, said.c_str(), GUI::Style{::INK});
     GUI::set(page, said.c_str(), GUI::Size{::LETTER});
   }
-  VIEWS::built(::pool, count);
+  VIEWS::built(::pool(), count);
 }
 
 void written(Whole step, const Vector<GUI::SAC::LADDER::Mark> &dressed) {
@@ -84,24 +84,26 @@ void written(Whole step, const Vector<GUI::SAC::LADDER::Mark> &dressed) {
 }  // namespace
 
 void SOUND::VIEWS::SIGNALS::SHED::ruler() {
-  VIEWS::reborn(::pool);
+  VIEWS::reborn(::pool());
   ::build(0);
+  VIEWS::CHANGES::shed(tape());
 }
 
 void SOUND::VIEWS::SIGNALS::ruler() {
   const Vector<GUI::SAC::LADDER::Mark> dressed = marks();
-  VIEWS::reborn(::pool);
-  const Whole seats = VIEWS::sized(::pool, dressed.size(), window());
-  if (seats != ::pool.stood) ::build(seats);
-  VIEWS::light(::pool, ::tick, dressed.size());
+  VIEWS::reborn(::pool());
+  const Whole seats = VIEWS::sized(::pool(), dressed.size(), window());
+  if (seats != ::pool().stood) ::build(seats);
+  VIEWS::light(::pool(), ::tick, dressed.size());
   ::written(rung(), dressed);
+  VIEWS::CHANGES::lay(tape());
 }
 
 void SOUND::VIEWS::SIGNALS::ruler(SHELL::Session &session) {
   const Whole step = rung();
   const Vector<GUI::SAC::LADDER::Mark> dressed = marks();
   session.print(std::format(
-    "ruler marks {} span {} first {} beat {} bar {}", ::pool.lit, step,
+    "ruler marks {} span {} first {} beat {} bar {}", ::pool().lit, step,
     dressed.empty() || step == 0 ? 0 : Whole(dressed.front().at) / step, beat(),
     opening().numerator));
 }

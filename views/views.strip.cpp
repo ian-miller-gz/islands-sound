@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include "views.attention.hpp"
+#include "views.crumbs.hpp"
 #include "views.internal.hpp"
 #include "views.lit.hpp"
 #include "views.split.hpp"
@@ -32,6 +34,8 @@ void SOUND::VIEWS::show() {
 void SOUND::VIEWS::doors() {
   for (const View &unit : registry())
     if (unit.door != nullptr) unit.door();
+  ATTENTION::doors();
+  CRUMBS::frame();
 }
 
 void SOUND::VIEWS::chose() {

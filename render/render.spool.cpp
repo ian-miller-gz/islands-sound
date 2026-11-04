@@ -8,6 +8,7 @@
 #include "../kind.hpp"
 #include "../plugin.hpp"
 #include "../transport.hpp"
+#include "render.governs.hpp"
 #include "render.internal.hpp"
 
 namespace {
@@ -35,11 +36,20 @@ void fed(const Vector<TIMELINE::Laid> &run) {
     GRAPH::develop(stretch.root, stretch.lane, stretch.at, stretch.lanes);
 }
 
+void aimed(const TIMELINE::Sent &edge) {
+  const AUDIO::PLUGIN::Event event = RENDER::edged(edge, edge.at);
+  const String node =
+    edge.kind == KIND::CONTROL ? RENDER::governs(edge.track, edge.lane) : "";
+  if (node.empty())
+    GRAPH::develop(edge.root, edge.lane, event);
+  else
+    GRAPH::dial(node, edge.at, edge.number, event.value);
+}
+
 void fed(const Vector<TIMELINE::Sent> &run) {
   const Flag marked = !CONTROL::overrides().empty();
   for (const TIMELINE::Sent &edge : run)
-    if (!marked || !RENDER::overridden(edge))
-      GRAPH::develop(edge.root, edge.lane, RENDER::edged(edge, edge.at));
+    if (!marked || !RENDER::overridden(edge)) ::aimed(edge);
 }
 
 void fed(const Vector<TIMELINE::Dialled> &run) {
@@ -50,21 +60,6 @@ void fed(const Vector<TIMELINE::Dialled> &run) {
 }
 
 }  // namespace
-
-auto SOUND::RENDER::edged(const TIMELINE::Sent &edge, Whole at)
-  -> AUDIO::PLUGIN::Event {
-  if (edge.kind == KIND::CONTROL)
-    return {
-      AUDIO::PLUGIN::Event::CONTROLLER, at, edge.number,
-      worded(edge.track, edge.lane, edge.number, edge.value)};
-  return {AUDIO::PLUGIN::Event::PROGRAM, at, edge.number, 0};
-}
-
-auto SOUND::RENDER::walk(Whole start, Whole frames) -> Walk {
-  const Span cycle =
-    TRANSPORT::held().looping ? TRANSPORT::cycled(start) : Span{};
-  return walk(start, frames, cycle);
-}
 
 auto SOUND::RENDER::threaded() -> Whole & { return ::stamp; }
 
@@ -83,6 +78,7 @@ auto SOUND::RENDER::threading() -> Flag {
   ::fed(TIMELINE::lay(pool, 0, frames, owed));
   ::fed(sent(pool, 0, frames, owed));
   ::fed(TIMELINE::dial(pool, 0, frames, RENDER::BLOCK, owed));
+  rested(owed);
   GRAPH::sort(owed);
   for (const String &node : owed) GRAPH::threaded(node);
   return true;

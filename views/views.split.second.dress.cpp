@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include <algorithm>
 #include <sstream>
 
 #include "views.internal.hpp"
@@ -31,9 +32,10 @@ void seated(GUI::Handle page) {
   const Float inset = GUI::GET::style(sheet, ::FRAME).border;
   const GUI::Position at = GUI::GET::position(sheet, MAIN);
   const GUI::Extent margin = GUI::GET::extent(sheet, MAIN);
+  const Float top = VIEWS::SPLIT::top();
   ::laid(
-    page, MAIN, {at.x + inset, at.y + VIEWS::SPLIT::top() + inset},
-    {margin.w + inset, margin.h + inset});
+    page, MAIN, {at.x + inset, at.y + top + inset},
+    {margin.w + inset, std::max(margin.h - top, 0.0f) + inset});
 }
 
 void grounded(GUI::Handle page) {

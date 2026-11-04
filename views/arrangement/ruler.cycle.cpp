@@ -5,7 +5,6 @@
 
 #include "../views.internal.hpp"
 #include "arrangement.internal.hpp"
-#include "ruler.changes.hpp"
 
 namespace {
 using namespace SOUND;
@@ -13,7 +12,7 @@ using namespace SOUND;
 constexpr STRING::Hot CELL = "entry";
 constexpr Float OVER = 1.0f;
 
-VIEWS::Pool pool;
+VIEWS::Sided<VIEWS::Pool> pool;
 
 auto cell(Whole at) -> String {
   return std::format("{}.{}.{}", VIEWS::ARRANGEMENT::strip(), VIEWS::CYCLE, at);
@@ -39,15 +38,15 @@ auto unplaced(Float place, Float west, Float scale) -> Whole {
 void build(Whole count) {
   const GUI::Handle page = VIEWS::document();
   const String strip = VIEWS::ARRANGEMENT::strip();
-  for (Whole at = count; at < ::pool.stood; ++at)
+  for (Whole at = count; at < ::pool().stood; ++at)
     GUI::NODES::remove(page, ::cell(at).c_str());
-  for (Whole at = ::pool.stood; at < count; ++at) {
+  for (Whole at = ::pool().stood; at < count; ++at) {
     const String id = ::cell(at);
     GUI::NODES::create(page, strip.c_str(), "button", id.c_str());
     GUI::set(page, id.c_str(), GUI::Style{::CELL});
     GUI::set(page, id.c_str(), GUI::Depth{::OVER});
   }
-  VIEWS::built(::pool, count);
+  VIEWS::built(::pool(), count);
 }
 
 void cells(
@@ -74,10 +73,10 @@ void SOUND::VIEWS::ARRANGEMENT::cycle(
   const GUI::SAC::LADDER::Rung &step,
   const Vector<GUI::SAC::LADDER::Mark> &dressed) {
   const GUI::Handle page = document();
-  VIEWS::reborn(::pool);
-  const Whole seats = VIEWS::sized(::pool, dressed.size(), window());
-  if (seats != ::pool.stood) ::build(seats);
-  VIEWS::light(::pool, ::cell, dressed.size());
+  VIEWS::reborn(::pool());
+  const Whole seats = VIEWS::sized(::pool(), dressed.size(), window());
+  if (seats != ::pool().stood) ::build(seats);
+  VIEWS::light(::pool(), ::cell, dressed.size());
   const Float scale = GUI::NGA::GET::zoom(page, board().c_str()).value;
   const Float west = GUI::NGA::GET::pan(page, board().c_str()).x;
   ::cells(step, dressed, west, scale);
@@ -85,12 +84,13 @@ void SOUND::VIEWS::ARRANGEMENT::cycle(
   VIEWS::flagged(strip(), west, scale, ::down(), ::placed);
   VIEWS::asked(
     strip(), dressed, step.span, VIEWS::pulsed, VIEWS::OFFER::ARRANGEMENT);
-  changes();
+  VIEWS::CHANGES::lay(tape());
 }
 
 void SOUND::VIEWS::ARRANGEMENT::cycle(SHELL::Session &session) {
   const GUI::Handle page = document();
   const Float scale = GUI::NGA::GET::zoom(page, board().c_str()).value;
   const Float west = GUI::NGA::GET::pan(page, board().c_str()).x;
-  VIEWS::flagged(session, ::pool.lit, west, scale, ::placed);
+  VIEWS::flagged(session, ::pool().lit, west, scale, ::placed);
+  VIEWS::CHANGES::state(session, tape());
 }

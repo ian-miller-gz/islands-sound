@@ -21,8 +21,8 @@ constexpr Float SHARE = 0.7f;
 constexpr Float HALF = 0.5f;
 constexpr Float ORIGIN = 0.0f;
 
-Whole stood = 0;
-Whole born = 0;
+VIEWS::Sided<Whole> stood;
+VIEWS::Sided<Whole> born;
 
 auto ground() -> String { return VIEWS::ARRANGEMENT::map() + "." + ::GROUND; }
 
@@ -54,17 +54,17 @@ auto reach() -> Float {
 
 void build(GUI::Handle page, Whole count) {
   const String bed = ::ground();
-  if (::stood == 0 && count != 0)
+  if (::stood() == 0 && count != 0)
     BOARDS::place(
       page, VIEWS::ARRANGEMENT::map().c_str(), "panel", bed, {}, {});
-  BOARDS::sweep(page, bed.c_str(), count, ::stood);
-  for (Whole line = ::stood; line < count; ++line) {
+  BOARDS::sweep(page, bed.c_str(), count, ::stood());
+  for (Whole line = ::stood(); line < count; ++line) {
     const String id = GUI::SAC::SEAT::named(bed.c_str(), line);
     BOARDS::place(page, bed.c_str(), "panel", id, {}, {});
     GUI::set(page, id.c_str(), GUI::Style{::TRACED});
     GUI::NGA::set(page, id.c_str(), GUI::NGA::Pinned{GUI::NGA::Pinned::DOWN});
   }
-  ::stood = count;
+  ::stood() = count;
 }
 
 void derive(GUI::Handle page, const String &id, Float wide) {
@@ -106,11 +106,11 @@ void SOUND::VIEWS::ARRANGEMENT::minimap() {
   const GUI::Handle page = document();
   const String id = map();
   const Float wide = GUI::GET::measured(page, id.c_str()).w;
-  if (VIEWS::reborn(::born)) ::stood = 0;
+  if (VIEWS::reborn(::born())) ::stood() = 0;
   ::strolled(page, id);
   ::derive(page, id, wide);
   const Vector<::Trace> lines = ::traces();
-  if (lines.size() != ::stood) ::build(page, lines.size());
+  if (lines.size() != ::stood()) ::build(page, lines.size());
   const String bed = ::ground();
   const Float row = stride();
   for (Whole line = 0; line < lines.size(); ++line) {
@@ -130,7 +130,7 @@ void SOUND::VIEWS::ARRANGEMENT::minimap(SHELL::Session &session) {
   const GUI::Handle page = document();
   const String id = map();
   session.print(std::format(
-    "minimap lines {} reach {:g} ratio {:g}", ::stood, ::reach(), RATIO));
+    "minimap lines {} reach {:g} ratio {:g}", ::stood(), ::reach(), RATIO));
   session.print(std::format(
     "minimap zoom {:g} pan {:g}", GUI::NGA::GET::zoom(page, id.c_str()).value,
     GUI::NGA::GET::pan(page, id.c_str()).x));

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include "piano.hands.hpp"
-#include "piano.notation.hpp"
+#include "piano.modes.hpp"
 #include "piano.pips.hpp"
-#include "piano.staff.hpp"
+#include "piano.places.hpp"
 
 namespace {
 using namespace SOUND;

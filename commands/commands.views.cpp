@@ -32,17 +32,21 @@ auto standing(const VIEWS::View &unit) -> STRING::Hot {
   return !unit.panel && ::lowered(unit) ? VIEWS::SPLIT::LOWER : "hidden";
 }
 
-void stated(SHELL::Session &session, const VIEWS::View &unit) {
+void stated(
+  SHELL::Session &session, const VIEWS::View &unit,
+  Whole region = VIEWS::SPLIT::UPPER) {
   session.print(std::format(
     "view {} {} {} controls {}", unit.name, unit.panel ? "panel" : "main",
     ::standing(unit), ::controls(unit)));
+  VIEWS::ATTENTION::stand(unit.panel ? NONE : region);
   if (unit.state != nullptr) unit.state(session);
+  VIEWS::ATTENTION::stand(NONE);
 }
 
 void lower(SHELL::Session &session, const VIEWS::View &unit) {
   if (!VIEWS::SPLIT::open()) return session.print("view refused: split shut");
   VIEWS::SPLIT::choose(unit.name);
-  ::stated(session, unit);
+  ::stated(session, unit, VIEWS::SPLIT::BELOW);
 }
 
 }  // namespace

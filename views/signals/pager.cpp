@@ -18,19 +18,19 @@ constexpr Float RESTING = 1.0f;
 constexpr GUI::Dial::Graphic LETTERED = GUI::Dial::NONE;
 
 Whole paging = KIND::CONTROL;
-Flag stood = false;
-Whole born = 0;
+VIEWS::Sided<Flag> stood;
+VIEWS::Sided<Whole> born;
 
 void shaped(GUI::Handle page) {
-  if (VIEWS::reborn(::born)) ::stood = false;
+  if (VIEWS::reborn(::born())) ::stood() = false;
   GUI::set(
     page, ::NUMBER,
     GUI::Dial{
       ::LEAST, Float(VIEWS::SIGNALS::FULL), ::RESTING, VIEWS::SIGNALS::FULL,
       ::LETTERED});
-  if (::stood) return;
+  if (::stood()) return;
   GUI::set(page, ::NUMBER, GUI::Value{::RESTING});
-  ::stood = true;
+  ::stood() = true;
 }
 
 void pages(GUI::Handle page) {
@@ -76,7 +76,7 @@ void SOUND::VIEWS::SIGNALS::paged(Whole kind) { ::paging = kind; }
 
 auto SOUND::VIEWS::SIGNALS::number() -> Whole {
   if (::paging != KIND::CONTROL) return NONE;
-  return ::stood ? ::dialled(document()) : Whole(::RESTING);
+  return ::stood() ? ::dialled(document()) : Whole(::RESTING);
 }
 
 void SOUND::VIEWS::SIGNALS::number(Whole paged) {

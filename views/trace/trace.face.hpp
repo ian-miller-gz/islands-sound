@@ -10,6 +10,10 @@ constexpr STRING::Hot CLIPS = "trace.clips";
 
 auto faced() -> Whole;
 
+auto crumbs(Whole region) -> Vector<String>;
+
+void unscope(Whole region);
+
 namespace GET {
 
 auto list() -> STRING::Hot;

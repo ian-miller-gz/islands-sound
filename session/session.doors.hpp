@@ -19,6 +19,19 @@ auto save(
 
 auto open(const String &name) -> STRING::Hot;
 
+auto recovered(const String &name) -> Flag;
+
+auto recover(
+  const String &name, const Setting &setting, const Arrangement &tracks,
+  const Inventory &pool, const Graph &wiring, const Vector<Value> &values,
+  const History &history) -> Flag;
+
+auto restore(const String &name) -> STRING::Hot;
+
+void primed();
+
+void forget(const String &name);
+
 auto rewritten() -> Whole;
 
 auto husks() -> Vector<Husk>;
@@ -28,6 +41,10 @@ auto names() -> Vector<String>;
 void keep(const String &name, const FIELDS::Map &face);
 
 auto kept(const String &name, FIELDS::Map &face) -> Flag;
+
+void settle(const String &key, const FIELDS::Map &row);
+
+auto settled(const String &key, FIELDS::Map &row) -> Flag;
 
 void close();
 

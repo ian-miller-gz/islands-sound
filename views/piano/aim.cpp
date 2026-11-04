@@ -4,16 +4,14 @@
 #include "../../inventory.hpp"
 #include "../../timeline.hpp"
 #include "../../transport.hpp"
-#include "../lane/lane.face.hpp"
+#include "../lane/lane.mark.hpp"
 #include "piano.internal.hpp"
 
 namespace {
 using namespace SOUND;
 
-constexpr STRING::Hot LIST = "tracks";
-
 auto attended() -> Whole {
-  const Whole track = VIEWS::cursor(::LIST);
+  const Whole track = VIEWS::ATTENTION::attended();
   return track < TIMELINE::held().tracks.size() ? track : NONE;
 }
 
@@ -78,6 +76,8 @@ auto SOUND::VIEWS::ROLL::claimed(Whole track, Whole pulse) -> Aim {
       "{}{}", KIND::spoken(KIND::NOTES), INVENTORY::held().stocks.size()),
     KIND::NOTES);
   if (stock == NONE) return {};
+  INVENTORY::length(
+    stock, SCORE::pulsed(closes, tempos) - SCORE::pulsed(opens, tempos));
   TIMELINE::place(
     INVENTORY::held(), track, lane,
     {.stock = stock, .at = opens, .from = 0, .frames = closes - opens});

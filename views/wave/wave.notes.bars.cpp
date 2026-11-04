@@ -25,7 +25,7 @@ struct Look {
   Float scale = 0.0f, deep = 0.0f, depth = 0.0f, size = 0.0f;
 };
 
-VIEWS::Pool pool;
+VIEWS::Sided<VIEWS::Pool> pool;
 
 auto bar(Whole at) -> String { return std::format("{}.{}", WAVE::NOTE, at); }
 
@@ -33,9 +33,9 @@ auto name(const String &bar) -> String { return bar + "." + ::LEAF; }
 
 void build(GUI::Handle page, Whole count) {
   const String board = WAVE::board();
-  for (Whole at = count; at < ::pool.stood; ++at)
+  for (Whole at = count; at < ::pool().stood; ++at)
     GUI::NODES::remove(page, ::bar(at).c_str());
-  for (Whole at = ::pool.stood; at < count; ++at) {
+  for (Whole at = ::pool().stood; at < count; ++at) {
     const String id = ::bar(at), name = ::name(id);
     GUI::NODES::create(page, board.c_str(), WAVE::PANEL, id.c_str());
     GUI::set(page, id.c_str(), GUI::Style{::INK});
@@ -44,7 +44,7 @@ void build(GUI::Handle page, Whole count) {
     GUI::set(page, name.c_str(), GUI::Style{::LETTER});
     WAVE::tie(page, id);
   }
-  VIEWS::built(::pool, count);
+  VIEWS::built(::pool(), count);
 }
 
 void written(
@@ -65,7 +65,7 @@ void written(
 }  // namespace
 
 void SOUND::VIEWS::WAVE::SHED::notes() {
-  VIEWS::reborn(::pool);
+  VIEWS::reborn(::pool());
   ::build(document(), 0);
 }
 
@@ -75,10 +75,10 @@ void SOUND::VIEWS::WAVE::notes() {
   if (scale <= ORIGIN) return;
   const Float west = GUI::NGA::GET::pan(page, board().c_str()).x;
   const Vector<Bar> laid = bars(west, west + window());
-  VIEWS::reborn(::pool);
-  const Whole seats = VIEWS::sized(::pool, laid.size(), window());
-  if (seats != ::pool.stood) ::build(page, seats);
-  VIEWS::light(::pool, ::bar, laid.size());
+  VIEWS::reborn(::pool());
+  const Whole seats = VIEWS::sized(::pool(), laid.size(), window());
+  if (seats != ::pool().stood) ::build(page, seats);
+  VIEWS::light(::pool(), ::bar, laid.size());
   const String named = ::name(NOTE);
   const ::Look look = {
     scale, deep(), GUI::GET::extent(page, NOTE).h,
@@ -89,7 +89,7 @@ void SOUND::VIEWS::WAVE::notes() {
 
 void SOUND::VIEWS::WAVE::notes(SHELL::Session &session) {
   if (LANE::faced(laned()).notes == 0) return;
-  session.print(std::format(::LINE, ::pool.lit));
+  session.print(std::format(::LINE, ::pool().lit));
 }
 
 auto SOUND::VIEWS::WAVE::spelled(Whole pitch) -> String {

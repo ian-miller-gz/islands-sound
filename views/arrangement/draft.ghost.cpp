@@ -12,18 +12,18 @@ constexpr STRING::Hot STEM = "arrangement.board.draft";
 constexpr STRING::Hot PLATED = "plate";
 constexpr Float HELD = 2.0f;
 
-Flag stood = false;
-Whole born = 0;
+VIEWS::Sided<Flag> stood;
+VIEWS::Sided<Whole> born;
 
 }  // namespace
 
 void SOUND::VIEWS::ARRANGEMENT::ghost() {
   const GUI::Handle page = VIEWS::document();
-  if (VIEWS::reborn(::born)) ::stood = false;
-  if (!::stood) {
+  if (VIEWS::reborn(::born())) ::stood() = false;
+  if (!::stood()) {
     BOARDS::place(page, board().c_str(), "panel", String(::STEM), {}, {});
     GUI::set(page, ::STEM, GUI::Depth{::HELD});
-    ::stood = true;
+    ::stood() = true;
   }
   const Draft drawing = drafting();
   const Flag showing = drawing.track != NONE && drawing.frames > 0;

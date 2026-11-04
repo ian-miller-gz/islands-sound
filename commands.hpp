@@ -3,6 +3,7 @@
 #include <cartridge/interface.hpp>
 
 #include "commands/commands.aim.hpp"
+#include "commands/commands.split.hpp"
 #include "graph.hpp"
 
 namespace SOUND::COMMANDS {
@@ -20,6 +21,13 @@ auto open(const String &name) -> String;
 void fresh();
 void fresh(SHELL::Session &session);
 
+void settled();
+void checkpoint();
+void checkpoint(SHELL::Session &session);
+void recovery(SHELL::Session &session);
+auto recover(const String &name) -> String;
+void recover(SHELL::Session &session);
+
 void stand(SHELL::Session &session, const Graph &plan);
 
 void tend();
@@ -32,6 +40,7 @@ void locate(SHELL::Session &session);
 void chase(SHELL::Session &session);
 
 void settings(SHELL::Session &session);
+void scan(SHELL::Session &session);
 void tempo(SHELL::Session &session);
 void metre(SHELL::Session &session);
 void cycle(SHELL::Session &session);
@@ -130,6 +139,8 @@ auto homed(const String &node, const String &page, Float across, Float down)
   -> Flag;
 
 auto dialled(const String &node, Whole parameter, Float value) -> Flag;
+
+auto lengthened(Whole stock, Whole length) -> Flag;
 void overrule(const String &node, Whole parameter);
 
 auto paced(Whole at, Float tempo) -> Flag;
@@ -151,6 +162,7 @@ auto ended(Whole from, Whole to) -> Flag;
 
 void stocks(SHELL::Session &session);
 void stock(SHELL::Session &session);
+void length(SHELL::Session &session);
 void take(SHELL::Session &session);
 
 void author(SHELL::Session &session);
@@ -177,6 +189,8 @@ void roll(SHELL::Session &session);
 void beat(SHELL::Session &session);
 void drive(SHELL::Session &session);
 void strike(SHELL::Session &session);
+
+void cc(SHELL::Session &session);
 void hear(SHELL::Session &session);
 void record(SHELL::Session &session);
 

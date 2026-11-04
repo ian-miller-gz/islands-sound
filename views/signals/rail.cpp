@@ -19,8 +19,8 @@ constexpr Float LETTER = 12.0f;
 constexpr Float MARGIN = 5.0f;
 constexpr Float WORD = 26.0f;
 
-Whole stood = 0;
-Whole born = 0;
+VIEWS::Sided<Whole> stood;
+VIEWS::Sided<Whole> born;
 
 auto marked() -> Vector<Whole> {
   Vector<Whole> values;
@@ -51,31 +51,31 @@ void seat(GUI::Handle page, const Vector<Whole> &values) {
     GUI::set(page, number.c_str(), GUI::Style{::INK});
     GUI::set(page, number.c_str(), GUI::Size{::LETTER});
   }
-  ::stood = values.size();
+  ::stood() = values.size();
 }
 
 }  // namespace
 
 void SOUND::VIEWS::SIGNALS::SHED::rail() {
   const GUI::Handle page = document();
-  if (VIEWS::reborn(::born)) ::stood = 0;
-  for (Whole at = 0; at < ::stood; ++at) {
+  if (VIEWS::reborn(::born())) ::stood() = 0;
+  for (Whole at = 0; at < ::stood(); ++at) {
     const String id = ::mark(at);
     BOARDS::drop(page, id + "." + ::LABEL);
     BOARDS::drop(page, id);
   }
-  ::stood = 0;
+  ::stood() = 0;
 }
 
 void SOUND::VIEWS::SIGNALS::rail() {
   const GUI::Handle page = document();
   const Vector<Whole> values = ::marked();
-  if (VIEWS::reborn(::born)) ::stood = 0;
-  if (::stood != values.size()) ::seat(page, values);
+  if (VIEWS::reborn(::born())) ::stood() = 0;
+  if (::stood() != values.size()) ::seat(page, values);
   const Float north = GUI::NGA::GET::pan(page, board().c_str()).y;
   const Float scale = sunk();
   const Float run = GUI::GET::measured(page, column().c_str()).w;
-  for (Whole at = 0; at < ::stood; ++at) {
+  for (Whole at = 0; at < ::stood(); ++at) {
     const String id = ::mark(at);
     const Float line = (down(Float(values[at])) - north) * scale;
     GUI::set(page, id.c_str(), GUI::Position{ORIGIN, line});
@@ -91,7 +91,7 @@ void SOUND::VIEWS::SIGNALS::rail(SHELL::Session &session) {
   for (const Whole value : ::marked())
     numbered += ::said(value).empty() ? 0 : 1;
   session.print(std::format(
-    "rail marks {} numbered {} stride {} span {}", ::stood, numbered, ::STRIDE,
+    "rail marks {} numbered {} stride {} span {}", ::stood(), numbered, ::STRIDE,
     FULL));
   const String suffix = unit();
   session.print(std::format(

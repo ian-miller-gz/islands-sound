@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include "views.hotkeys.hpp"
 #include "views.internal.hpp"
 
 namespace {
@@ -16,12 +17,18 @@ constexpr STRING::Hot OWNS = "Own theme";
 constexpr STRING::Hot LIGHT = "Light";
 constexpr STRING::Hot DARK = "Dark";
 constexpr Whole SUMMON = ',';
+constexpr STRING::Hot SUMMONS = "settings";
+constexpr VIEWS::Chord SUMMONED = {.code = ::SUMMON, .control = true};
+
+[[maybe_unused]] const Flag listed = VIEWS::HOTKEYS::take(
+  {VIEWS::HOTKEYS::FAMILY::SESSION, ::SUMMONS, ::SUMMONED});
 
 GUI::Theme pending = GUI::LIGHT;
 Flag flipping = false;
 
 void raised(GUI::Handle page, Flag on) {
   GUI::set(page, ::ASK, GUI::Visibility{on});
+  if (on) VIEWS::HOTKEYS::paged(page, false);
 }
 
 void summoned(GUI::Handle page, Flag on) {
@@ -72,11 +79,11 @@ void SOUND::VIEWS::settings() {
   const GUI::Handle page = document();
   const Flag standing = GUI::GET::visibility(page, ::ASK);
   if (GUI::GET::clicked(page, ::DOOR)) return ::raised(page, !standing);
-  if (VIEWS::chorded({.code = ::SUMMON, .control = true}))
-    return ::summoned(page, !standing);
+  if (VIEWS::chorded(::SUMMONED)) return ::summoned(page, !standing);
   if (!standing) return;
   ::pressed(page);
   ::worded(page);
+  VIEWS::HOTKEYS::turned(page);
   if (GUI::GET::clicked(page, ::CLOSE) || VIEWS::elsewhere(::DOOR, ::ASK))
     ::raised(page, false);
 }

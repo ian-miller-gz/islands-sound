@@ -16,9 +16,10 @@ void SOUND::VIEWS::ROLL::shed() {
   SHED::plus();
   SHED::range();
   SHED::cycle();
-  SHED::changes();
+  VIEWS::CHANGES::shed(tape());
   SHED::ruler();
   SHED::seams();
+  SHED::ends();
   SHED::loudness();
   STAFF::SHED::clef();
   STAFF::SHED::drawn();

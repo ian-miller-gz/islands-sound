@@ -28,10 +28,10 @@ void read();
 void nodes();
 
 struct Clipped {
-  Whole clip = NONE;
+  Whole clip = NONE, lane = NONE, kind = NONE, at = 0;
   String name, place;
   Float bars = 0.0f;
-  Flag scoped = false;
+  Flag scoped = false, marked = false;
 };
 
 auto clipped() -> Vector<Clipped>;

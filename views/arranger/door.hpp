@@ -6,7 +6,7 @@
 namespace SOUND::VIEWS::ARRANGER {
 
 struct Pair {
-  String icon, door, plate;
+  String icon, door;
   Whole region = NONE;
 };
 
@@ -26,7 +26,5 @@ void light(GUI::Handle page, const Pair &pair);
 namespace SOUND::VIEWS::ARRANGER::BAND {
 
 void door(GUI::Handle page);
-
-void opened();
 
 }  // namespace SOUND::VIEWS::ARRANGER::BAND

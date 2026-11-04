@@ -29,7 +29,8 @@ auto row(const String &name) -> Whole {
 
 auto region(Whole at, Whole own) -> Whole {
   if (at == NONE) return NONE;
-  if (VIEWS::SPLIT::shared() && at == VIEWS::chosen()) return own;
+  const Flag twin = VIEWS::SPLIT::doubled();
+  if (VIEWS::SPLIT::shared() && !twin && at == VIEWS::chosen()) return own;
   if (at == VIEWS::chosen()) return UPPER;
   return at == VIEWS::SPLIT::lower() ? BELOW : NONE;
 }

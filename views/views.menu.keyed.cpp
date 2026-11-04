@@ -4,7 +4,6 @@
 namespace {
 using namespace SOUND;
 
-constexpr STRING::Hot ROWS = "menu.rows";
 String parked;
 
 }  // namespace
@@ -12,7 +11,6 @@ String parked;
 void SOUND::VIEWS::MENU::park(GUI::Handle page, const String &cell) {
   ::parked = cell;
   GUI::edit(page, "");
-  GUI::set(page, ::ROWS, GUI::Cursor{0});
 }
 
 auto SOUND::VIEWS::MENU::GET::door() -> String { return ::parked; }

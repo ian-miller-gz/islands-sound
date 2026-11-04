@@ -24,29 +24,29 @@ struct Worn {
   auto operator==(const Worn &) const -> Bool = default;
 };
 
-VIEWS::Pool pool;
-Vector<Worn> worn;
-Vector<LOUDNESS::Stem> shown;
+VIEWS::Sided<VIEWS::Pool> pool;
+VIEWS::Sided<Vector<Worn>> worn;
+VIEWS::Sided<Vector<LOUDNESS::Stem>> shown;
 
 auto named(Whole at) -> String {
   return GUI::SAC::SEAT::named(LOUDNESS::STEMS, at);
 }
 
 void built(GUI::Handle page, Whole count) {
-  BOARDS::sweep(page, LOUDNESS::STEMS, count, ::pool.stood);
-  for (Whole at = ::pool.stood; at < count; ++at)
+  BOARDS::sweep(page, LOUDNESS::STEMS, count, ::pool().stood);
+  for (Whole at = ::pool().stood; at < count; ++at)
     BOARDS::place(page, LOUDNESS::STRIP, ::KIND, ::named(at), {}, {});
-  VIEWS::built(::pool, count);
-  ::worn.resize(count);
+  VIEWS::built(::pool(), count);
+  ::worn().resize(count);
 }
 
 void dressed(GUI::Handle page, Whole at, const Worn &now) {
-  if (::worn[at] == now) return;
+  if (::worn()[at] == now) return;
   const String id = ::named(at);
   const String tint = ROLL::tinted(::NOTE, now.tier);
   GUI::set(page, id.c_str(), GUI::Style{tint.c_str()});
   if (now.chosen) GUI::set(page, id.c_str(), GUI::Style{::CHOSEN});
-  ::worn[at] = now;
+  ::worn()[at] = now;
 }
 
 void placed(
@@ -62,11 +62,11 @@ void placed(
 
 void SOUND::VIEWS::ROLL::LOUDNESS::seat(
   GUI::Handle page, const Vector<Stem> &stems) {
-  if (VIEWS::reborn(::pool)) ::worn.clear();
+  if (VIEWS::reborn(::pool())) ::worn().clear();
   const Whole seats =
-    VIEWS::sized(::pool, stems.size(), GUI::GET::measured(page, STRIP).w);
-  if (seats != ::pool.stood) ::built(page, seats);
-  VIEWS::light(::pool, ::named, stems.size());
+    VIEWS::sized(::pool(), stems.size(), GUI::GET::measured(page, STRIP).w);
+  if (seats != ::pool().stood) ::built(page, seats);
+  VIEWS::light(::pool(), ::named, stems.size());
   const Float scale = GUI::NGA::GET::zoom(page, STRIP).value;
   const Float wide = scale > ::ORIGIN ? WIDE / scale : WIDE;
   const Vector<Whole> chosen = ROLL::chosen(page);
@@ -78,15 +78,15 @@ void SOUND::VIEWS::ROLL::LOUDNESS::seat(
       {tier(pip), std::ranges::find(chosen, stems[at].row) != chosen.end()});
     ::placed(page, at, stems[at], wide, deep());
   }
-  ::shown = stems;
+  ::shown() = stems;
 }
 
 void SOUND::VIEWS::ROLL::LOUDNESS::bare(GUI::Handle page) {
-  if (VIEWS::reborn(::pool)) ::worn.clear();
-  if (::pool.stood != 0) ::built(page, 0);
-  ::shown.clear();
+  if (VIEWS::reborn(::pool())) ::worn().clear();
+  if (::pool().stood != 0) ::built(page, 0);
+  ::shown().clear();
 }
 
 auto SOUND::VIEWS::ROLL::LOUDNESS::stems() -> const Vector<Stem> & {
-  return ::shown;
+  return ::shown();
 }

@@ -1,6 +1,4 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include <algorithm>
-
 #include "../inventory.hpp"
 #include "../kind.hpp"
 #include "../plugin.hpp"
@@ -24,9 +22,9 @@ auto turned(
   Whole begun = 0;
   for (const ARRANGEMENT::TRACK::LANE::Clip &span : lane.clips) {
     if (span.stock >= pool.stocks.size() || span.frames == 0) continue;
-    if (span.at > at || (found && span.at < begun)) continue;
-    const Whole reached = std::min(at, span.at + span.frames - 1);
-    const Whole elapsed = span.from + (reached - span.at);
+    if (span.at > at || at >= span.at + span.frames) continue;
+    if (found && span.at < begun) continue;
+    const Whole elapsed = span.from + (at - span.at);
     const Vector<Turn> &turns = pool.stocks[span.stock].turns;
     if (!::standing(turns, number, elapsed)) continue;
     found = true;
@@ -73,7 +71,10 @@ auto SOUND::RENDER::governed(const Address &address, Whole at)
     if (tracks[track].root.empty()) continue;
     for (Whole lane = 0; lane < tracks[track].lanes.size(); ++lane) {
       if (tracks[track].lanes[lane].kind != KIND::CONTROL) continue;
-      if (!wired(tracks[track].root, lane, address.node)) continue;
+      if (
+        governs(track, lane) != address.node &&
+        !wired(tracks[track].root, lane, address.node))
+        continue;
       Float value = 0.0f;
       if (!::turned(tracks[track].lanes[lane], address.parameter, at, value))
         continue;

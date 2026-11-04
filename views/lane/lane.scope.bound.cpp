@@ -67,6 +67,7 @@ void SOUND::VIEWS::LANE::bound() {
   Face *one = held();
   if (one != nullptr && one->clip != NONE && GET::scoped() == nullptr)
     scope(NONE);
+  ATTENTION::viewed().clip = one == nullptr ? NONE : one->clip;
   const Clip *clip = GET::scoped();
   GUI::set(page, door.c_str(), GUI::Visibility{clip != nullptr});
   const Overview read = clip == nullptr ? Overview{} : faced()->overview();

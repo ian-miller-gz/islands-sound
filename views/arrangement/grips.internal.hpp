@@ -20,11 +20,6 @@ struct Carry {
   Box cut;
 };
 
-struct Travel {
-  Flag stood = false;
-  Integer by = 0;
-};
-
 auto framed(Float across) -> Whole;
 
 auto clip(const Box &cut, const Box &was)
@@ -42,9 +37,7 @@ auto travelled(
   const Claim &claim, const GUI::SAC::STROKE::Gesture &gesture,
   Flag settle) -> Vector<Carry>;
 
-auto roomed(
-  const Vector<Whole> &group, const Box &lead, Integer asked,
-  Integer hand) -> Travel;
+auto crowded(const Vector<Carry> &carried) -> Flag;
 
 auto walled(const Claim &claim, Whole landed) -> Whole;
 

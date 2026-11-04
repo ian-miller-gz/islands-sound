@@ -28,13 +28,15 @@ void SOUND::SESSION::hung(
 
 auto SOUND::SESSION::spoken(const String &tag) -> Flag {
   return tag == "w" || tag == "n" || tag == "a" || tag == "v" || tag == "u" ||
-         tag == "g";
+         tag == "g" || tag == "s";
 }
 
 void SOUND::SESSION::hung(
   const String &tag, std::istringstream &line, Stock &stock) {
   if (tag == "w") {
     stock.take.path = SESSION::rest(line);
+  } else if (tag == "s") {
+    line >> stock.length;
   } else if (tag == "n") {
     Note note;
     line >> note.pitch >> note.at >> note.length >> note.velocity;
@@ -89,6 +91,7 @@ auto SOUND::SESSION::written(const Inventory &pool) -> String {
   String text;
   for (const Stock &stock : pool.stocks) {
     text += std::format("c {} {}\n", stock.kind, stock.name);
+    if (stock.length != 0) text += std::format("s {}\n", stock.length);
     if (!stock.take.path.empty())
       text += std::format("w {}\n", stock.take.path);
     for (const Note &note : stock.score.notes)

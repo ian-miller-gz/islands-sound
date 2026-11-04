@@ -13,8 +13,8 @@ constexpr STRING::Hot STEM = "ribbon";
 constexpr STRING::Hot INK = "ink";
 constexpr Float LETTER = 15.0f;
 
-Whole stood = 0;
-Whole born = 0;
+VIEWS::Sided<Whole> stood;
+VIEWS::Sided<Whole> born;
 
 auto ribbon(Whole track) -> String {
   return std::format("{}.{}.{}", VIEWS::ARRANGEMENT::board(), ::STEM, track);
@@ -22,9 +22,9 @@ auto ribbon(Whole track) -> String {
 
 void build(Whole count) {
   const GUI::Handle page = VIEWS::document();
-  for (Whole track = count; track < ::stood; ++track)
+  for (Whole track = count; track < ::stood(); ++track)
     GUI::NODES::remove(page, ::ribbon(track).c_str());
-  for (Whole track = ::stood; track < count; ++track) {
+  for (Whole track = ::stood(); track < count; ++track) {
     const String id = ::ribbon(track);
     BOARDS::place(
       page, VIEWS::ARRANGEMENT::board().c_str(), "label", id, {},
@@ -34,7 +34,7 @@ void build(Whole count) {
     GUI::set(page, id.c_str(), GUI::Depth{VIEWS::ARRANGEMENT::CREST});
     GUI::NGA::set(page, id.c_str(), GUI::NGA::Pinned{GUI::NGA::Pinned::ACROSS});
   }
-  ::stood = count;
+  ::stood() = count;
 }
 
 }  // namespace
@@ -42,8 +42,8 @@ void build(Whole count) {
 void SOUND::VIEWS::ARRANGEMENT::names() {
   const GUI::Handle page = VIEWS::document();
   const Vector<Ribbon> runs = ribbons();
-  if (VIEWS::reborn(::born)) ::stood = 0;
-  if (runs.size() != ::stood) ::build(runs.size());
+  if (VIEWS::reborn(::born())) ::stood() = 0;
+  if (runs.size() != ::stood()) ::build(runs.size());
   for (Whole track = 0; track < runs.size(); ++track) {
     const String id = ::ribbon(track);
     GUI::set(

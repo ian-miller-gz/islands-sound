@@ -3,6 +3,7 @@
 
 #include "../../boards.hpp"
 #include "piano.beams.hpp"
+#include "piano.modes.hpp"
 
 namespace {
 using namespace SOUND;
@@ -21,9 +22,9 @@ constexpr Ink INKS[] = {
   {0.312f, 0.181f, 0.4995f},
   {0.38f, 0.215f, 0.4995f}};
 
-VIEWS::Pool pool;
-Vector<STAFF::Rest> kept;
-STAFF::Scale held;
+VIEWS::Sided<VIEWS::Pool> pool;
+VIEWS::Sided<Vector<STAFF::Rest>> kept;
+VIEWS::Sided<STAFF::Scale> held;
 
 auto named(Whole at) -> String {
   return std::format("{}.{}.{}", ROLL::board(), ::NAME, at);
@@ -31,14 +32,14 @@ auto named(Whole at) -> String {
 
 void build(Whole count) {
   const GUI::Handle page = VIEWS::document();
-  for (Whole at = count; at < ::pool.stood; ++at)
+  for (Whole at = count; at < ::pool().stood; ++at)
     BOARDS::drop(page, ::named(at));
-  for (Whole at = ::pool.stood; at < count; ++at) {
+  for (Whole at = ::pool().stood; at < count; ++at) {
     const String id = ::named(at);
     BOARDS::place(page, ROLL::board().c_str(), ::LABEL, id, {}, {});
     GUI::set(page, id.c_str(), GUI::Style{::INK});
   }
-  VIEWS::built(::pool, count);
+  VIEWS::built(::pool(), count);
 }
 
 void seat(Whole at, const STAFF::Rest &rest, STAFF::Scale scale) {
@@ -57,25 +58,27 @@ void seat(Whole at, const STAFF::Rest &rest, STAFF::Scale scale) {
 }
 
 auto rescaled(STAFF::Scale scale) -> Flag {
-  const Flag moved = scale.across != ::held.across || scale.down != ::held.down;
-  ::held = scale;
+  const Flag moved =
+    scale.across != ::held().across || scale.down != ::held().down;
+  ::held() = scale;
   return moved;
 }
 
 }  // namespace
 
 void SOUND::VIEWS::ROLL::STAFF::rested(Flag moved) {
-  const Flag fresh = VIEWS::reborn(::pool);
+  const Flag fresh = VIEWS::reborn(::pool());
   const Scale scale = scaled();
   if (!::rescaled(scale) && !fresh && !moved) return;
-  ::kept = rested(GET::stems());
-  ::build(VIEWS::sized(::pool, ::kept.size(), window().w));
-  VIEWS::light(::pool, ::named, ::kept.size());
-  for (Whole at = 0; at < ::kept.size(); ++at) ::seat(at, ::kept[at], scale);
+  ::kept() = rested(GET::stems());
+  ::build(VIEWS::sized(::pool(), ::kept().size(), window().w));
+  VIEWS::light(::pool(), ::named, ::kept().size());
+  for (Whole at = 0; at < ::kept().size(); ++at)
+    ::seat(at, ::kept()[at], scale);
 }
 
 void SOUND::VIEWS::ROLL::STAFF::SHED::rested() {
-  VIEWS::reborn(::pool);
-  ::kept.clear();
+  VIEWS::reborn(::pool());
+  ::kept().clear();
   ::build(0);
 }

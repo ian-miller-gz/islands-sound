@@ -9,6 +9,7 @@
 namespace SOUND::HISTORY::WORD {
 
 constexpr STRING::Hot DIAL = "dial";
+constexpr STRING::Hot LENGTH = "length";
 
 }  // namespace SOUND::HISTORY::WORD
 
@@ -49,6 +50,9 @@ auto ended(const Change &change, const String &value) -> Flag;
 auto dialled(const Change &change) -> String;
 auto dialled(const Change &change, const String &value) -> Flag;
 
+auto lengthened(const Change &change) -> String;
+auto lengthened(const Change &change, const String &value) -> Flag;
+
 }  // namespace CHANGE
 
 auto stated(const Change &change) -> String;
@@ -58,6 +62,10 @@ auto state(const Change &change, const String &value) -> Flag;
 auto kept(Change change, const String &said = String()) -> Flag;
 
 void landed(const CONTROL::Take &take);
+
+void dialled(const CONTROL::Take &take);
+
+auto reeled() -> String;
 
 void loops(SHELL::Session &session);
 

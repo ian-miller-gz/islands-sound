@@ -2,9 +2,9 @@
 #include <island/gui/nga.hpp>
 
 #include "piano.grid.hpp"
-#include "piano.notation.hpp"
+#include "piano.modes.hpp"
 #include "piano.paper.hpp"
-#include "piano.staff.hpp"
+#include "piano.places.hpp"
 #include "piano.weights.hpp"
 
 namespace {
@@ -14,7 +14,7 @@ namespace WEIGHTS = SOUND::VIEWS::ROLL::WEIGHTS;
 
 constexpr STRING::Hot INK = "staffstem";
 
-Flag hidden = false;
+VIEWS::Sided<Flag> hidden;
 
 auto shown(GUI::Handle page, const String &id, Float pan) -> Flag {
   const Float x = GUI::GET::position(page, id.c_str()).x;
@@ -24,15 +24,14 @@ auto shown(GUI::Handle page, const String &id, Float pan) -> Flag {
 }  // namespace
 
 auto SOUND::VIEWS::ROLL::papered() -> Flag {
-  return GET::notation() == PERCUSSION &&
-         GET::presentation() == PRESENTATION::STAFF;
+  return GET::staffed() && GET::presentation() == PRESENTATION::STAFF;
 }
 
 void SOUND::VIEWS::ROLL::PAPER::grid(
   const Vector<GUI::SAC::LADDER::Mark> &marks) {
   const GUI::Handle page = document();
   const Flag laid = papered();
-  if (!laid && !::hidden) return;
+  if (!laid && !::hidden()) return;
   const GUI::Extent bar = {
     WEIGHTS::drawn(WEIGHTS::Across{WEIGHTS::BAR}), STAFF::spanned().h};
   const Float pan = GUI::NGA::GET::pan(page, board().c_str()).x;
@@ -44,5 +43,5 @@ void SOUND::VIEWS::ROLL::PAPER::grid(
     GUI::set(page, id.c_str(), bar);
     GUI::set(page, id.c_str(), GUI::Style{::INK});
   }
-  ::hidden = laid;
+  ::hidden() = laid;
 }

@@ -7,25 +7,29 @@
 #include "../../boards.hpp"
 #include "../../inventory.hpp"
 #include "../../timeline.hpp"
-#include "../lane/lane.face.hpp"
-#include "piano.notation.hpp"
+#include "../lane/lane.mark.hpp"
+#include "piano.hands.hpp"
+#include "piano.modes.hpp"
 #include "piano.pips.hpp"
+#include "piano.rows.get.hpp"
 
 namespace {
 using namespace SOUND;
 
-auto boxed(const VIEWS::ROLL::Pip &pip, Flag struck) -> VIEWS::ROLL::Box {
+auto boxed(
+  const VIEWS::ROLL::Pip &pip, Flag struck,
+  const VIEWS::ROLL::ROWS::Ladder &ladder) -> VIEWS::ROLL::Box {
   const Float x = VIEWS::ROLL::across(pip.at);
-  const Float lane = VIEWS::ROLL::ROWS::lane(pip.pitch, pip.at);
+  const Float lane = ladder.lane(pip.pitch, pip.at);
   if (struck)
     return {
       {x, lane + VIEWS::ROLL::LIFT}, {VIEWS::ROLL::SPACE, VIEWS::ROLL::SPACE}};
   return {{x, lane}, {VIEWS::ROLL::wide(pip.length), VIEWS::ROLL::TALL}};
 }
 
-Vector<VIEWS::ROLL::Box> laid;
-Flag carried = false;
-Whole born = 0;
+VIEWS::Sided<Vector<VIEWS::ROLL::Box>> laid;
+VIEWS::Sided<Flag> carried;
+VIEWS::Sided<Whole> born;
 
 void lay(GUI::Handle page, const String &id, const VIEWS::ROLL::Box &box) {
   if (!GUI::SAC::CARRY::GET::dragged(page, id.c_str()))
@@ -36,17 +40,19 @@ void lay(GUI::Handle page, const String &id, const VIEWS::ROLL::Box &box) {
 void placed(
   GUI::Handle page, const Vector<VIEWS::ROLL::Pip> &wanted, Whole kept) {
   const String board = VIEWS::ROLL::board();
-  const Flag struck = VIEWS::ROLL::GET::notation() == VIEWS::ROLL::PERCUSSION;
+  const Flag struck = VIEWS::ROLL::GET::staffed();
+  const VIEWS::ROLL::ROWS::Ladder &ladder = VIEWS::ROLL::ROWS::GET::ladder();
   const Flag carrying = !GUI::SAC::CARRY::GET::carried(page).empty();
-  if (VIEWS::reborn(::born) || (::carried && !carrying)) ::laid.clear();
-  ::carried = carrying;
-  ::laid.resize(std::min(::laid.size(), kept));
-  ::laid.resize(wanted.size());
+  if (VIEWS::reborn(::born()) || (::carried() && !carrying)) ::laid().clear();
+  ::carried() = carrying;
+  ::laid().resize(std::min(::laid().size(), kept));
+  ::laid().resize(wanted.size());
   for (Whole row = 0; row < wanted.size(); ++row) {
-    const VIEWS::ROLL::Box box = ::boxed(wanted[row], struck);
-    if (box == ::laid[row]) continue;
+    const VIEWS::ROLL::Box box = ::boxed(wanted[row], struck, ladder);
+    const Flag unchanged = box == ::laid()[row];
+    if (unchanged && !VIEWS::ROLL::HANDS::strayed(page, row, box.at)) continue;
     ::lay(page, GUI::SAC::SEAT::named(board.c_str(), row), box);
-    ::laid[row] = box;
+    ::laid()[row] = box;
   }
 }
 
@@ -69,7 +75,7 @@ void SOUND::VIEWS::ROLL::gathered(
 }
 
 auto SOUND::VIEWS::ROLL::boxed(const Pip &pip) -> Box {
-  return ::boxed(pip, GET::notation() == PERCUSSION);
+  return ::boxed(pip, GET::staffed(), ROWS::GET::ladder());
 }
 
 auto SOUND::VIEWS::ROLL::pips() -> Vector<Pip> {

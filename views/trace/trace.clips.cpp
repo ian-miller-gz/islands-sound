@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <algorithm>
 #include <format>
-#include <numeric>
+#include <tuple>
 
 #include "../../inventory.hpp"
+#include "../../kind.hpp"
 #include "../../timeline.hpp"
 #include "../../transport.hpp"
-#include "../lane/lane.face.hpp"
+#include "../lane/lane.mark.hpp"
 #include "../views.marks.hpp"
+#include "../views.split.regions.hpp"
 #include "trace.internal.hpp"
 
 namespace {
@@ -17,7 +19,7 @@ namespace LANE = SOUND::VIEWS::LANE;
 using Lane = ARRANGEMENT::TRACK::Lane;
 
 constexpr STRING::Hot COUNT = "clips {}";
-constexpr STRING::Hot LINE = "clip {} {} {} bars {}{}";
+constexpr STRING::Hot LINE = "clip {} {} {} {} {} bars {}{}";
 constexpr STRING::Hot MARKED = " marked";
 constexpr STRING::Hot UNMARKED = "";
 constexpr STRING::Hot PLACE = "{}.{}";
@@ -25,18 +27,10 @@ constexpr Whole FIRST = 1;
 constexpr Whole LEAST = 1;
 constexpr Float UNBARRED = 0.0f;
 
-auto lane() -> const Lane * {
-  const LANE::Mark mark = LANE::marked();
-  if (mark.lane == NONE) return nullptr;
-  return &TIMELINE::held().tracks[mark.track].lanes[mark.lane];
-}
-
-auto ordered(const Lane &lane) -> Vector<Whole> {
-  Vector<Whole> rows(lane.clips.size());
-  std::iota(rows.begin(), rows.end(), Whole(0));
-  std::ranges::stable_sort(
-    rows, {}, [&lane](Whole clip) { return lane.clips[clip].at; });
-  return rows;
+auto lanes() -> const Vector<Lane> * {
+  const Whole track = TRACE::attended();
+  if (track == NONE) return nullptr;
+  return &TIMELINE::held().tracks[track].lanes;
 }
 
 auto section(Whole at) -> TRANSPORT::Section {
@@ -64,18 +58,32 @@ auto named(const LANE::Clip &clip) -> String {
   return clip.stock < stocks.size() ? stocks[clip.stock].name : String();
 }
 
+auto before(const TRACE::Clipped &one, const TRACE::Clipped &two) -> Flag {
+  return std::tuple(!one.marked, one.lane, one.at, one.clip) <
+         std::tuple(!two.marked, two.lane, two.at, two.clip);
+}
+
+auto marked(Whole lane) -> Flag {
+  const LANE::Mark mark = LANE::marked();
+  return mark.track == TRACE::attended() && mark.lane == lane;
+}
+
 }  // namespace
 
 auto SOUND::VIEWS::TRACE::clipped() -> Vector<Clipped> {
-  const Lane *lane = ::lane();
-  if (lane == nullptr) return {};
+  const SPLIT::Turn turn(SPLIT::turned());
+  const Vector<Lane> *lanes = ::lanes();
+  if (lanes == nullptr) return {};
   const LANE::Clip *scoped = LANE::GET::scoped();
   Vector<Clipped> rows;
-  for (Whole clip : ::ordered(*lane)) {
-    const LANE::Clip &one = lane->clips[clip];
-    rows.push_back(
-      {clip, ::named(one), ::placed(one), ::bars(one), &one == scoped});
-  }
+  for (Whole lane = 0; lane < lanes->size(); ++lane)
+    for (Whole clip = 0; clip < (*lanes)[lane].clips.size(); ++clip) {
+      const LANE::Clip &one = (*lanes)[lane].clips[clip];
+      rows.push_back(
+        {clip, lane, (*lanes)[lane].kind, one.at, ::named(one), ::placed(one),
+         ::bars(one), &one == scoped, ::marked(lane)});
+    }
+  std::ranges::stable_sort(rows, ::before);
   return rows;
 }
 
@@ -84,6 +92,6 @@ void SOUND::VIEWS::TRACE::clips(SHELL::Session &session) {
   session.print(std::format(::COUNT, rows.size()));
   for (const Clipped &row : rows)
     session.print(std::format(
-      ::LINE, row.clip, row.name, row.place, row.bars,
-      row.scoped ? ::MARKED : ::UNMARKED));
+      ::LINE, row.clip, row.lane, KIND::spoken(row.kind), row.name, row.place,
+      row.bars, row.scoped ? ::MARKED : ::UNMARKED));
 }

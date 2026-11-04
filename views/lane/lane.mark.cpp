@@ -9,11 +9,10 @@ namespace {
 using namespace SOUND;
 namespace LANE = SOUND::VIEWS::LANE;
 
-constexpr STRING::Hot ATTENDED = "tracks";
 constexpr STRING::Hot LINE = "mark track {} lane {} kind {}";
 
 auto attended() -> Whole {
-  const Whole track = VIEWS::cursor(::ATTENDED);
+  const Whole track = VIEWS::ATTENTION::attended();
   return track < TIMELINE::held().tracks.size() ? track : NONE;
 }
 
@@ -33,10 +32,7 @@ auto first(Whole track, Whole kind) -> LANE::Mark {
 
 }  // namespace
 
-auto SOUND::VIEWS::LANE::stored() -> Mark & {
-  static Mark held;
-  return held;
-}
+auto SOUND::VIEWS::LANE::stored() -> Mark & { return ATTENTION::viewed().mark; }
 
 void SOUND::VIEWS::LANE::mark(Whole track, Whole lane) {
   const Whole kind = ::kind(track, lane);

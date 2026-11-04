@@ -4,6 +4,20 @@
 
 #include "arrangement.internal.hpp"
 
+namespace {
+
+constexpr Float STILL = 0.0f;
+
+}  // namespace
+
+auto SOUND::VIEWS::ARRANGEMENT::seen() -> Seen {
+  const Float wide = window();
+  if (wide <= ::STILL) return {};
+  const Float west = GUI::NGA::GET::pan(document(), board().c_str()).x;
+  const Float from = west > ::STILL ? west : ::STILL;
+  return {Whole(from * Float(GRAIN)), Whole((from + wide) * Float(GRAIN))};
+}
+
 auto SOUND::VIEWS::ARRANGEMENT::window() -> Float {
   const GUI::Handle page = document();
   const String board = VIEWS::ARRANGEMENT::board();

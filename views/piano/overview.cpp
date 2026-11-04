@@ -3,15 +3,15 @@
 
 #include "../../transport.hpp"
 #include "piano.internal.hpp"
+#include "piano.rows.get.hpp"
 
 namespace {
 using namespace SOUND;
 
 constexpr Float ORIGIN = 0.0f;
 
-auto folded(Whole pitch, Whole at) -> Float {
-  const Float lane = VIEWS::ROLL::ROWS::lane(pitch, at);
-  return std::max(lane, ::ORIGIN) / VIEWS::ROLL::ROWS::deep();
+auto folded(Float lane, Float deep) -> Float {
+  return std::max(lane, ::ORIGIN) / deep;
 }
 
 }  // namespace
@@ -28,10 +28,13 @@ auto SOUND::VIEWS::ROLL::overview() -> VIEWS::Overview {
   Overview read;
   read.placed = ::placed;
   read.reach = PULSES * TRANSPORT::metred().numerator;
+  const ROWS::Ladder &ladder = ROWS::GET::ladder();
+  const Float deep = ladder.deep();
   for (const Pip &note : plates()) {
     read.reach = std::max(read.reach, note.at + note.length);
+    const Float lane = ladder.lane(note.pitch, note.at);
     read.dashes.push_back(
-      {across(note.at), across(note.length), ::folded(note.pitch, note.at)});
+      {across(note.at), across(note.length), ::folded(lane, deep)});
   }
   return read;
 }

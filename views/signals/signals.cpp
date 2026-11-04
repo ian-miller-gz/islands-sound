@@ -33,6 +33,7 @@ void run() {
   VIEWS::SIGNALS::rail();
   VIEWS::SIGNALS::grid();
   VIEWS::SIGNALS::range();
+  VIEWS::SIGNALS::ends();
   VIEWS::SIGNALS::head();
   VIEWS::SIGNALS::plates();
   VIEWS::SIGNALS::restore();

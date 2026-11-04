@@ -1,16 +1,23 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #pragma once
-#include <limits>
-
 #include "../../graph.hpp"
 #include "../views.hpp"
+#include "piano.places.hpp"
 
 namespace SOUND::VIEWS::ROLL::STAFF {
 
-constexpr Integer TOP = -6, FOOT = 13, STRAYS = 14;
-constexpr Integer NOWHERE = std::numeric_limits<Integer>::min();
-constexpr Integer LINES[] = {0, 2, 4, 6, 8};
-constexpr Float SCALE = 1.0f;
+namespace SIGN {
+constexpr Whole SHARP = 0, FLAT = 1, NATURAL = 2, DOUBLE_SHARP = 3,
+                DOUBLE_FLAT = 4;
+constexpr STRING::Hot GLYPHS[] = {
+  "\u266F", "\u266D", "\u266E", "\U0001D12A", "\U0001D12B"};
+}  // namespace SIGN
+
+struct Spelt {
+  Integer place = 0;
+  Whole sign = NONE;
+  String name;
+};
 constexpr Float LENGTH = 3.5f, SHORTEST = 2.5f, CAP = 1.0f;
 
 struct Line {
@@ -50,9 +57,9 @@ auto stems() -> const Vector<Stem> &;
 
 }  // namespace GET
 
-auto placed(Whole pitch) -> Integer;
-
-auto stepped(Whole pitch, Integer by) -> Whole;
+auto spelled(const Key &key, Whole pitch) -> Spelt;
+auto pitched(const Key &key) -> Vector<Line>;
+auto accidental(Whole pitch) -> Whole;
 
 auto placed(
   const Vector<AUDIO::PLUGIN::Voice> &voices,
@@ -63,16 +70,8 @@ auto relined() -> Flag;
 
 void lined(SHELL::Session &session);
 
-auto lane(Whole pitch, Whole at) -> Float;
-
-auto pitch(Float y, Whole at) -> Whole;
-
-auto deep() -> Float;
-
 void drawn();
 void ruled(const Vector<Integer> &rules);
-
-auto spanned() -> GUI::Extent;
 
 auto beaten(Whole pulse) -> Whole;
 

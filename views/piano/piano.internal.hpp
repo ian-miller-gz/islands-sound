@@ -6,8 +6,10 @@
 
 #include "../../history.hpp"
 #include "../../score.hpp"
+#include "../views.changes.hpp"
 #include "../views.marks.hpp"
 #include "piano.face.hpp"
+#include "piano.modes.hpp"
 
 namespace SOUND::VIEWS::ROLL {
 
@@ -76,8 +78,7 @@ auto marked() -> Whole;
 void doors();
 void doors(SHELL::Session &session);
 
-void changes();
-void changes(SHELL::Session &session);
+auto tape() -> VIEWS::CHANGES::Tape;
 
 auto degreed(Whole pitch, Whole at) -> Whole;
 
@@ -123,6 +124,8 @@ auto laned(Whole track) -> Whole;
 
 void seams();
 void seams(SHELL::Session &session);
+
+void ends();
 
 namespace SEAMS {
 constexpr Float MARK = 32.0f;
@@ -176,6 +179,7 @@ void walk(GUI::Handle page);
 
 void copy(GUI::Handle page);
 void paste(GUI::Handle page);
+void centred(GUI::Handle page, Vector<Loose> &notes);
 
 void grasped(GUI::Handle page);
 
@@ -252,8 +256,8 @@ void rail();
 void range();
 void ruler();
 void cycle();
-void changes();
 void seams();
+void ends();
 
 }  // namespace SHED
 

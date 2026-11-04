@@ -19,7 +19,7 @@ struct Bar {
   PEAKS::Peak peak;
 };
 
-VIEWS::Pool pool;
+VIEWS::Sided<VIEWS::Pool> pool;
 
 auto column(Whole at) -> String {
   return std::format("{}.{}.{}", WAVE::NAME, ::LEAF, at);
@@ -38,15 +38,15 @@ auto bar(const Vector<WAVE::Clip> &seated, Float at, Float step) -> Bar {
 
 void build(GUI::Handle page, Whole count) {
   const String board = WAVE::board();
-  for (Whole at = count; at < ::pool.stood; ++at)
+  for (Whole at = count; at < ::pool().stood; ++at)
     GUI::NODES::remove(page, ::column(at).c_str());
-  for (Whole at = ::pool.stood; at < count; ++at) {
+  for (Whole at = ::pool().stood; at < count; ++at) {
     const String id = ::column(at);
     GUI::NODES::create(page, board.c_str(), WAVE::PANEL, id.c_str());
     WAVE::dressed(page, id, at);
     GUI::set(page, id.c_str(), GUI::Depth{::RAISED});
   }
-  VIEWS::built(::pool, count);
+  VIEWS::built(::pool(), count);
 }
 
 void written(GUI::Handle page, Whole at, const Bar &bar, Float deep) {
@@ -62,7 +62,7 @@ void written(GUI::Handle page, Whole at, const Bar &bar, Float deep) {
 }  // namespace
 
 void SOUND::VIEWS::WAVE::SHED::peaks() {
-  VIEWS::reborn(::pool);
+  VIEWS::reborn(::pool());
   ::build(document(), 0);
 }
 
@@ -79,10 +79,10 @@ void SOUND::VIEWS::WAVE::peaks() {
     const ::Bar one = ::bar(seated, west + Float(at) * step, step);
     if (one.run > ORIGIN) bars.push_back(one);
   }
-  VIEWS::reborn(::pool);
-  const Whole seats = VIEWS::sized(::pool, count, window());
-  if (seats != ::pool.stood) ::build(page, seats);
-  VIEWS::light(::pool, ::column, bars.size());
+  VIEWS::reborn(::pool());
+  const Whole seats = VIEWS::sized(::pool(), count, window());
+  if (seats != ::pool().stood) ::build(page, seats);
+  VIEWS::light(::pool(), ::column, bars.size());
   const Float down = deep();
   for (Whole at = 0; at < bars.size(); ++at)
     ::written(page, at, bars[at], down);

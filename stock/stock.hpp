@@ -57,6 +57,7 @@ struct Touched {
 struct Stock {
   Whole kind = KIND::NOTES;
   String name;
+  Whole length = 0;
   Score score;
   Take take;
   Curve curve;

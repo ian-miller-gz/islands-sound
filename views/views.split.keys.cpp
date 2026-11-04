@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include "views.hotkeys.hpp"
 #include "views.internal.hpp"
 #include "views.split.internal.hpp"
 
@@ -19,6 +20,7 @@ String asked;
 struct Key {
   VIEWS::Chord chord;
   void (*act)(Whole code) = nullptr;
+  STRING::Hot name = "";
 };
 
 void cycled(Whole) {
@@ -67,14 +69,17 @@ void chosen(Whole code) {
 }
 
 constexpr Key KEYS[] = {
-  {{.action = HOTKEY, .code = ::CYCLE}, ::cycled},
-  {{.action = HOTKEY, .code = ::TAKE}, ::taken},
-  {{.code = ::PANEL, .control = true}, ::toggled},
-  {{.code = ::FIRST, .control = true}, ::chosen},
-  {{.code = ::SECOND, .control = true}, ::chosen},
-  {{.code = ::THIRD, .control = true}, ::chosen},
-  {{.code = ::FOURTH, .control = true}, ::chosen},
-  {{.code = ::PANEL, .control = true, .shift = true}, ::widened}};
+  {{.action = HOTKEY, .code = ::CYCLE}, ::cycled, "focus"},
+  {{.action = HOTKEY, .code = ::TAKE}, ::taken, "grip"},
+  {{.code = ::PANEL, .control = true}, ::toggled, "split"},
+  {{.code = ::FIRST, .control = true}, ::chosen, "view"},
+  {{.code = ::SECOND, .control = true}, ::chosen, "view"},
+  {{.code = ::THIRD, .control = true}, ::chosen, "view"},
+  {{.code = ::FOURTH, .control = true}, ::chosen, "view"},
+  {{.code = ::PANEL, .control = true, .shift = true}, ::widened, "widen"}};
+
+[[maybe_unused]] const Flag listed =
+  VIEWS::HOTKEYS::offer(VIEWS::HOTKEYS::FAMILY::SPLIT, ::KEYS);
 
 }  // namespace
 

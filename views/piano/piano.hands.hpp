@@ -25,4 +25,8 @@ auto resting(Whole length) -> Float;
 
 void grip(GUI::Handle page, const Vector<Pip> &drawn);
 
+void erased(GUI::Handle page);
+
+auto strayed(GUI::Handle page, Whole row, GUI::Position at) -> Flag;
+
 }  // namespace SOUND::VIEWS::ROLL::HANDS

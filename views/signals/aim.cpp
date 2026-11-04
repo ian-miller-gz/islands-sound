@@ -3,18 +3,16 @@
 
 #include "../../timeline.hpp"
 #include "../../transport.hpp"
-#include "../lane/lane.face.hpp"
+#include "../lane/lane.mark.hpp"
 #include "signals.internal.hpp"
 
 namespace {
 using namespace SOUND;
 
-constexpr STRING::Hot LIST = "tracks";
-
 }  // namespace
 
 auto SOUND::VIEWS::SIGNALS::attended() -> Whole {
-  const Whole track = VIEWS::cursor(::LIST);
+  const Whole track = VIEWS::ATTENTION::attended();
   return track < TIMELINE::held().tracks.size() ? track : NONE;
 }
 

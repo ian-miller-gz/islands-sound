@@ -4,6 +4,7 @@
 #include "../../boards.hpp"
 #include "../../control.hpp"
 #include "../../graph.hpp"
+#include "../views.attention.hpp"
 #include "graph.internal.hpp"
 
 namespace SOUND::VIEWS::WIRED {
@@ -21,6 +22,7 @@ auto face(Whole node) -> String {
 void open(const String &node) {
   if (node.empty() || GRAPH::offered(node) == nullptr) return;
   CONTROL::aim(node);
+  VIEWS::ATTENTION::viewed().node = node;
   VIEWS::choose("params");
 }
 
@@ -47,6 +49,19 @@ void opened(GUI::Handle page) {
   open(standing(GUI::SAC::SEAT::selected(page, deck.c_str())));
 }
 
+Whole marked = NONE;
+
+void followed(GUI::Handle page) {
+  const String deck = VIEWS::WIRED::board();
+  const Whole row = GUI::SAC::SEAT::selected(page, deck.c_str());
+  if (row == marked) return;
+  marked = row;
+  const String node = standing(row);
+  if (node.empty() || GRAPH::offered(node) == nullptr) return;
+  CONTROL::aim(node);
+  VIEWS::ATTENTION::viewed().node = node;
+}
+
 }  // namespace
 
 void acts() {
@@ -60,6 +75,7 @@ void acts() {
     knobbed(page, row, GRAPH::held().nodes[row]);
   }
   opened(page);
+  followed(page);
 }
 
 }  // namespace SOUND::VIEWS::WIRED

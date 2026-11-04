@@ -43,8 +43,11 @@ auto SOUND::RENDER::block(const Walk &walk, Whole frames) -> Flag {
   for (const Whole node : plan.order) {
     gather(node, pass);
     const Node &held = plan.nodes[node];
-    if (held.quiet) continue;
-    if (held.seat == Node::PLUGIN) plugged(node, frames);
+    if (held.seat != Node::PLUGIN) continue;
+    if (held.quiet)
+      passed(node);
+    else
+      plugged(node, frames);
   }
   if (walk.start != NONE) TAP::fed(walk.start, frames);
   return true;

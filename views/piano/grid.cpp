@@ -9,7 +9,7 @@
 #include "../../transport.hpp"
 #include "piano.grid.hpp"
 #include "piano.paper.hpp"
-#include "piano.staff.hpp"
+#include "piano.places.hpp"
 
 namespace {
 using namespace SOUND;
@@ -21,7 +21,7 @@ constexpr Float HAIR = 2.0f;
 constexpr Float CROWD = 20.0f;
 constexpr Whole COARSER = 2;
 
-VIEWS::Pool pool;
+VIEWS::Sided<VIEWS::Pool> pool;
 
 auto dress(Flag opens) -> String {
   return String(::STEM) + (opens ? ::BARRED : ::BEATEN);
@@ -34,29 +34,29 @@ auto place(Integer at) -> Float {
 
 void build(Whole count) {
   const GUI::Handle page = VIEWS::document();
-  for (Whole at = count; at < ::pool.stood; ++at)
+  for (Whole at = count; at < ::pool().stood; ++at)
     BOARDS::drop(page, VIEWS::ROLL::GRID::named(at));
-  for (Whole at = ::pool.stood; at < count; ++at)
+  for (Whole at = ::pool().stood; at < count; ++at)
     BOARDS::place(
       page, VIEWS::ROLL::board().c_str(), "panel", VIEWS::ROLL::GRID::named(at),
       {}, {::HAIR, VIEWS::ROLL::STAFF::spanned().h});
-  VIEWS::built(::pool, count);
+  VIEWS::built(::pool(), count);
 }
 
 }  // namespace
 
 void SOUND::VIEWS::ROLL::SHED::grid() {
-  VIEWS::reborn(::pool);
+  VIEWS::reborn(::pool());
   ::build(0);
 }
 
 void SOUND::VIEWS::ROLL::grid() {
   const GUI::Handle page = document();
   const Vector<GUI::SAC::LADDER::Mark> marks = GRID::dressed();
-  VIEWS::reborn(::pool);
-  const Whole seats = VIEWS::sized(::pool, marks.size(), window().w);
-  if (seats != ::pool.stood) ::build(seats);
-  VIEWS::light(::pool, GRID::named, marks.size());
+  VIEWS::reborn(::pool());
+  const Whole seats = VIEWS::sized(::pool(), marks.size(), window().w);
+  if (seats != ::pool().stood) ::build(seats);
+  VIEWS::light(::pool(), GRID::named, marks.size());
   const Float scale = scaled();
   const GUI::Extent extent = STAFF::spanned();
   const Flag laid = papered();
@@ -87,10 +87,10 @@ auto SOUND::VIEWS::ROLL::GRID::dressed() -> Vector<GUI::SAC::LADDER::Mark> {
     ::CROWD, west * grain, VIEWS::ROLL::window().w * grain);
 }
 
-auto SOUND::VIEWS::ROLL::GRID::lit() -> Whole { return ::pool.lit; }
+auto SOUND::VIEWS::ROLL::GRID::lit() -> Whole { return ::pool().lit; }
 
 auto SOUND::VIEWS::ROLL::GRID::hair() -> Float {
-  return ::pool.stood == 0
+  return ::pool().stood == 0
            ? 0.0f
            : GUI::GET::measured(VIEWS::document(), named(0).c_str()).w;
 }

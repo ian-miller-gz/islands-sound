@@ -6,7 +6,7 @@
 namespace SOUND::CONTROL {
 
 struct Live {
-  Whole track = NONE;
+  Whole track = NONE, lane = NONE;
   String aim;
   Vector<AUDIO::PLUGIN::Event> arrived;
   Whole position = 0;
@@ -29,7 +29,7 @@ auto standing() -> Live &;
 
 auto values() -> Vector<Value> &;
 
-auto same(const Address &one, const Address &two) -> Flag;
+auto rests() -> Vector<Value> &;
 
 auto reached(const Live &live) -> Whole;
 

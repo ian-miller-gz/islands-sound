@@ -4,6 +4,7 @@
 #include <island/input.hpp>
 
 #include "../commands.hpp"
+#include "views.hotkeys.hpp"
 #include "views.internal.hpp"
 
 namespace {
@@ -36,12 +37,16 @@ auto real(const VIEWS::Chord &chord) -> Flag {
 struct Journal {
   VIEWS::Chord chord;
   auto (*act)() -> String = nullptr;
+  STRING::Hot name = "";
 };
 
 constexpr Journal JOURNALS[] = {
-  {{.code = ::UNDO, .control = true}, COMMANDS::undo},
-  {{.code = ::UNDO, .control = true, .shift = true}, COMMANDS::redo},
-  {{.code = ::REDO, .control = true}, COMMANDS::redo}};
+  {{.code = ::UNDO, .control = true}, COMMANDS::undo, "undo"},
+  {{.code = ::UNDO, .control = true, .shift = true}, COMMANDS::redo, "redo"},
+  {{.code = ::REDO, .control = true}, COMMANDS::redo, "redo"}};
+
+[[maybe_unused]] const Flag listed =
+  VIEWS::HOTKEYS::offer(VIEWS::HOTKEYS::FAMILY::SESSION, ::JOURNALS);
 
 }  // namespace
 

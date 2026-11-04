@@ -44,6 +44,9 @@ struct Glyph {
 };
 
 auto named(Whole at) -> String;
+auto clef(Whole at) -> String;
+auto clefed(GUI::Handle page, Float west, const Float (&lines)[2], Float down)
+  -> Float;
 
 void inked(
   GUI::Handle page, const String &id, STRING::Hot kind, Float depth,

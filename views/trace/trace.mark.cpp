@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include "../arranger/arranger.face.hpp"
-#include "../lane/lane.face.hpp"
+#include "../lane/lane.mark.hpp"
 #include "trace.internal.hpp"
 
 namespace LANE = SOUND::VIEWS::LANE;

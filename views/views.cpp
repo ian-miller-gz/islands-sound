@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <island/graphics/windows.hpp>
 
+#include "views.attention.hpp"
 #include "views.draw.hpp"
 #include "views.internal.hpp"
 #include "views.menu.acts.hpp"
@@ -14,7 +15,8 @@ constexpr STRING::Hot LAYOUT = "sound.gui";
 auto running(Whole row) -> Flag {
   const Flag up = VIEWS::standings()[row] || row == VIEWS::chosen();
   const Flag on = up || row == VIEWS::SPLIT::lower();
-  return on && VIEWS::registry()[row].run != nullptr;
+  return on && VIEWS::registry()[row].run != nullptr &&
+         !VIEWS::SPLIT::RELAY::still(row);
 }
 
 }  // namespace
@@ -61,15 +63,18 @@ void SOUND::VIEWS::frame() {
   deck();
   column();
   SPLIT::frame();
+  ATTENTION::frame();
   wheeled();
   MENU::frame();
   MENU::keys();
   file();
   exporting();
   settings();
+  scan();
+  recovery();
   doors();
   for (Whole row = 0; row < registry().size(); ++row)
-    if (::running(row)) registry()[row].run();
+    if (::running(row)) ATTENTION::run(row);
   show();
   draw(viewport);
 }

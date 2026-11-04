@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include "../../timeline.hpp"
-#include "wave.internal.hpp"
+#include "wave.placed.hpp"
 #include "wave.rows.hpp"
 
 namespace {

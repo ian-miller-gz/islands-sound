@@ -46,6 +46,9 @@ struct Worn {
   Integer place = 0;
   Float side = 0.0f;
   Flag flipped = false;
+  Whole sign = NONE;
+  Flag hollow = false;
+  Flag pitched = false;
   auto operator==(const Worn &) const -> Bool = default;
 };
 
@@ -55,7 +58,7 @@ struct Child {
   GUI::Extent size;
   Float letter = 0.0f;
 };
-extern const Child HEAD, MARK, LEDGER, ACCENT, GHOST;
+extern const Child HEAD, MARK, LEDGER, ACCENT, GHOST, SIGN;
 
 auto named(Whole row, const Child &child) -> String;
 

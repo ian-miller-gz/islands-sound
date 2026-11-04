@@ -17,20 +17,20 @@ constexpr Float INSET = 6.0f;
 constexpr Float WIDE = 60.0f;
 constexpr Float TALL = 16.0f;
 
-VIEWS::Pool pool;
+VIEWS::Sided<VIEWS::Pool> pool;
 
 auto reading(Whole at) -> String { return std::format("{}.{}", ::PATTERN, at); }
 
 void build(GUI::Handle page, Whole count) {
-  for (Whole at = count; at < ::pool.stood; ++at)
+  for (Whole at = count; at < ::pool().stood; ++at)
     BOARDS::drop(page, ::reading(at));
-  for (Whole at = ::pool.stood; at < count; ++at) {
+  for (Whole at = ::pool().stood; at < count; ++at) {
     const String id = ::reading(at);
     BOARDS::place(page, WAVE::board().c_str(), WAVE::LABEL, id, {}, {});
     GUI::set(page, id.c_str(), GUI::Style{::INK});
     GUI::set(page, id.c_str(), GUI::Depth{::RAISED});
   }
-  VIEWS::built(::pool, count);
+  VIEWS::built(::pool(), count);
 }
 
 auto worded(const WAVE::Clip &clip) -> String {
@@ -55,7 +55,7 @@ void written(GUI::Handle page, Whole at, const WAVE::Clip &clip, Float scale) {
 }  // namespace
 
 void SOUND::VIEWS::WAVE::SHED::shifts() {
-  VIEWS::reborn(::pool);
+  VIEWS::reborn(::pool());
   ::build(document(), 0);
 }
 
@@ -64,9 +64,9 @@ void SOUND::VIEWS::WAVE::shifts() {
   const Float scale = scaled();
   if (scale <= ORIGIN) return;
   const Vector<Clip> seated = placed();
-  VIEWS::reborn(::pool);
-  const Whole seats = VIEWS::sized(::pool, seated.size(), window());
-  if (seats != ::pool.stood) ::build(page, seats);
-  for (Whole at = 0; at < ::pool.stood; ++at)
+  VIEWS::reborn(::pool());
+  const Whole seats = VIEWS::sized(::pool(), seated.size(), window());
+  if (seats != ::pool().stood) ::build(page, seats);
+  for (Whole at = 0; at < ::pool().stood; ++at)
     ::written(page, at, at < seated.size() ? seated[at] : Clip{}, scale);
 }

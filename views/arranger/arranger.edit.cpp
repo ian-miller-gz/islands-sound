@@ -17,6 +17,7 @@ constexpr STRING::Hot ANSWER = "edit track {} lane {} {}";
 constexpr STRING::Hot ABSENT = "edit refused: no such lane";
 constexpr STRING::Hot BARE = "edit refused: lane lacks editor";
 constexpr STRING::Hot ATTENDED = "tracks";
+constexpr Whole SHOWN = 1;
 constexpr Whole SAID = 2;
 
 auto laned(Whole track, Whole lane) -> const ARRANGEMENT::TRACK::Lane * {
@@ -54,8 +55,24 @@ auto SOUND::VIEWS::ARRANGER::edit(Whole track, Whole lane) -> Flag {
   if (one == nullptr) return false;
   if (!LANE::editable(one->kind)) return false;
   LANE::mark(track, lane);
-  turned(one->kind);
-  return SPLIT::open() ? SPLIT::choose(NAME) : VIEWS::choose(NAME);
+  const Whole focused = SPLIT::open() ? SPLIT::focused() : SPLIT::UPPER;
+  const Whole region = !SPLIT::shared()               ? focused
+                       : paged(SPLIT::BELOW) != NONE ? SPLIT::BELOW
+                       : paged(SPLIT::UPPER) != NONE ? SPLIT::UPPER
+                                                     : focused;
+  turned(region, one->kind);
+  LANE::paged(one->kind);
+  if (SPLIT::shared()) {
+    SPLIT::focus(region);
+    return true;
+  }
+  return region == SPLIT::BELOW ? SPLIT::choose(NAME) : VIEWS::choose(NAME);
+}
+
+auto SOUND::VIEWS::ARRANGER::velocity(Whole track, Whole lane) -> Flag {
+  if (!edit(track, lane)) return false;
+  LANE::faced(LANE::edited(KIND::NOTES)).loudness = ::SHOWN;
+  return true;
 }
 
 auto SOUND::VIEWS::ARRANGER::words() -> Vector<SHELL::Command> {

@@ -9,6 +9,7 @@
 #include "../../boards.hpp"
 #include "../../inventory.hpp"
 #include "../../score.hpp"
+#include "piano.acts.hpp"
 #include "piano.hands.hpp"
 
 namespace {
@@ -18,8 +19,7 @@ namespace HANDS = SOUND::VIEWS::ROLL::HANDS;
 constexpr STRING::Hot MOVED = "move";
 constexpr STRING::Hot PULLED = "stretch";
 
-Vector<VIEWS::ROLL::Pip> following;
-
+VIEWS::Sided<Vector<VIEWS::ROLL::Pip>> following;
 Flag pulling = false;
 
 struct Hold {
@@ -27,7 +27,7 @@ struct Hold {
   VIEWS::ROLL::Pip pip;
   Integer crossing = 0;
 };
-Hold holding;
+VIEWS::Sided<Hold> holding;
 
 auto plate(Whole row) -> String {
   return GUI::SAC::SEAT::named(VIEWS::ROLL::board().c_str(), row);
@@ -47,10 +47,10 @@ auto inside(Whole at, Integer by) -> Whole {
 void grabbed(GUI::Handle page) {
   const STRING::Cold box = GUI::SAC::CARRY::GET::carried(page);
   if (box.empty()) {
-    ::holding = {};
+    ::holding() = {};
     return;
   }
-  if (::holding.row != NONE) return;
+  if (::holding().row != NONE) return;
   const String board = VIEWS::ROLL::board();
   const Whole row = GUI::SAC::SEAT::row(String(box), board.c_str());
   const Vector<VIEWS::ROLL::Pip> &drawn = VIEWS::ROLL::plates();
@@ -58,13 +58,13 @@ void grabbed(GUI::Handle page) {
   const VIEWS::ROLL::Pip &pip = drawn[row];
   if (pip.index == NONE) return;
   if (pip.stock == NONE) {
-    if (pip.index < VIEWS::ROLL::loose().size()) ::holding = {row, pip, 0};
+    if (pip.index < VIEWS::ROLL::loose().size()) ::holding() = {row, pip, 0};
     return;
   }
   if (pip.stock >= INVENTORY::held().stocks.size()) return;
   if (pip.index >= INVENTORY::held().stocks[pip.stock].score.notes.size())
     return;
-  ::holding = {row, pip, ::crossing(pip)};
+  ::holding() = {row, pip, ::crossing(pip)};
 }
 
 struct Fall {
@@ -117,8 +117,8 @@ void dropped(GUI::Handle page) {
   const Vector<GUI::SAC::CARRY::Drop> landings =
     GUI::SAC::CARRY::GET::dropped(page);
   if (landings.empty()) return;
-  const Hold hold = ::holding;
-  ::holding = {};
+  const Hold hold = ::holding();
+  ::holding() = {};
   const GUI::SAC::CARRY::Drop *hand = ::handed(landings, hold);
   if (hand == nullptr) return;
   const HANDS::Shift shift = HANDS::shifted(hold.pip, *hand);
@@ -135,7 +135,8 @@ void dropped(GUI::Handle page) {
     INVENTORY::score(fall.stock, score);
     HISTORY::wrote(::MOVED, fall.stock, INVENTORY::held().stocks[fall.stock]);
     for (Whole one = 0; one < landed.size(); ++one)
-      if (landed[one] != NONE) ::following.push_back({fall.stock, landed[one]});
+      if (landed[one] != NONE)
+        ::following().push_back({fall.stock, landed[one]});
   }
   VIEWS::ROLL::follow(VIEWS::ROLL::land(page, fallen));
   HISTORY::end();
@@ -202,38 +203,32 @@ void pulled(GUI::Handle page, Whole row, const VIEWS::ROLL::Pip &pip, Float x) {
   }
 }
 
-void erased(GUI::Handle page) {
-  const String board = VIEWS::ROLL::board();
-  if (!GUI::GET::activated(page, board.c_str())) return;
-  VIEWS::ROLL::pluck(page, GUI::SAC::SEAT::selected(page, board.c_str()));
-}
-
 void lifted(Vector<VIEWS::ROLL::Pip> &wanted) {
-  if (::holding.row == NONE) return;
+  if (::holding().row == NONE) return;
   for (auto slot = wanted.begin(); slot != wanted.end(); ++slot)
     if (
-      slot->stock == ::holding.pip.stock &&
-      slot->index == ::holding.pip.index && slot->at == ::holding.pip.at) {
+      slot->stock == ::holding().pip.stock &&
+      slot->index == ::holding().pip.index && slot->at == ::holding().pip.at) {
       wanted.erase(slot);
       break;
     }
-  VIEWS::ROLL::Pip ghost = ::holding.pip;
+  VIEWS::ROLL::Pip ghost = ::holding().pip;
   ghost.index = NONE;
-  const Whole row = std::min<Whole>(::holding.row, wanted.size());
+  const Whole row = std::min<Whole>(::holding().row, wanted.size());
   wanted.insert(std::next(wanted.begin(), Integer(row)), ghost);
 }
 
 void followed(GUI::Handle page, const Vector<VIEWS::ROLL::Pip> &wanted) {
-  if (::following.empty()) return;
+  if (::following().empty()) return;
   Vector<String> marks;
   for (Whole row = 0; row < wanted.size(); ++row)
-    for (const VIEWS::ROLL::Pip &pip : ::following)
+    for (const VIEWS::ROLL::Pip &pip : ::following())
       if (wanted[row].stock == pip.stock && wanted[row].index == pip.index) {
         marks.push_back(::plate(row));
         break;
       }
   GUI::SAC::CARRY::follow(page, marks);
-  ::following.clear();
+  ::following().clear();
 }
 
 }  // namespace
@@ -241,8 +236,9 @@ void followed(GUI::Handle page, const Vector<VIEWS::ROLL::Pip> &wanted) {
 void SOUND::VIEWS::ROLL::hands() {
   const GUI::Handle page = document();
   const Vector<Pip> &drawn = plates();
+  const Flag rested = ROLL::drawn();
   Flag moving = false;
-  for (Whole row = 0; row < drawn.size(); ++row) {
+  for (Whole row = 0; row < drawn.size() && !rested; ++row) {
     if (drawn[row].index == NONE) continue;
     if (!GUI::GET::moved(page, HANDS::handle(row).c_str())) continue;
     if (!::pulling) {
@@ -260,15 +256,16 @@ void SOUND::VIEWS::ROLL::hands() {
     HISTORY::end();
     ::pulling = false;
   }
+  if (rested) return HANDS::grip(page, drawn);
   grasped(page);
   ::dropped(page);
   ::grabbed(page);
-  ::erased(page);
+  HANDS::erased(page);
   HANDS::grip(page, drawn);
 }
 
 void SOUND::VIEWS::ROLL::follow(const Vector<Pip> &landed) {
-  ::following.insert(::following.end(), landed.begin(), landed.end());
+  ::following().insert(::following().end(), landed.begin(), landed.end());
 }
 
 void SOUND::VIEWS::ROLL::steadied(GUI::Handle page, Vector<Pip> &wanted) {

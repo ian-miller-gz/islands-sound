@@ -1,17 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-#include <island/input.hpp>
-
 #include "graph.browse.internal.hpp"
 #include "graph.keys.hpp"
+#include "../views.hotkeys.hpp"
 
 namespace {
 using namespace SOUND;
 namespace BROWSE = SOUND::VIEWS::WIRED::BROWSE;
 namespace KEYS = INPUT::KEYS;
+namespace HOTKEYS = SOUND::VIEWS::HOTKEYS;
 
-constexpr Whole BROWSER = 'B';
-constexpr Whole FIRST = '!';
-constexpr Whole LAST = '~';
+constexpr Whole BROWSER = 'B', ANY = 0;
+constexpr STRING::Hot UP = "up";
 
 void spread(GUI::Handle, const KEYS::Event &) {
   BROWSE::quick(!BROWSE::quicked());
@@ -35,47 +34,40 @@ void opened(GUI::Handle page, const KEYS::Event &) {
   if (row < rows.size() && rows[row].directory) BROWSE::enter(rows[row].among);
 }
 
-void typed(GUI::Handle page, const KEYS::Event &key) {
-  const String run =
-    GUI::GET::text(page, BROWSE::FIND) + static_cast<char>(key.codepoint);
-  GUI::edit(page, BROWSE::FIND);
-  GUI::set(page, BROWSE::FIND, GUI::Text{run});
-  GUI::set(page, BROWSE::FIND, GUI::Caret{run.size(), run.size()});
-  GUI::set(page, BROWSE::ROWS, GUI::Cursor{0});
-}
-
-void deleted(GUI::Handle page, const KEYS::Event &) {
-  VIEWS::WIRED::deleted(page);
-}
-
 struct Stroke {
   KEYS::Action action = KEYS::TEXT;
-  Whole letter = 0;
-  Flag control = false, shift = false;
-  Flag browsing = false, printable = false;
+  Whole letter = ::ANY;
+  Flag control = false, shift = false, browsing = false;
   void (*act)(GUI::Handle page, const KEYS::Event &key) = nullptr;
+  STRING::Hot name = "";
 };
 
 constexpr Stroke STROKES[] = {
-  {.letter = ::BROWSER, .control = true, .act = ::spread},
-  {.letter = ::BROWSER, .control = true, .shift = true, .act = ::raised},
+  {.letter = ::BROWSER, .control = true, .act = ::spread, .name = "add"},
+  {.letter = ::BROWSER,
+   .control = true,
+   .shift = true,
+   .act = ::raised,
+   .name = "browse"},
   {.letter = ::BROWSER,
    .control = true,
    .shift = true,
    .browsing = true,
-   .act = ::dropped},
-  {.action = KEYS::LEFT, .browsing = true, .act = ::climbed},
-  {.action = KEYS::ERASE, .browsing = true, .act = ::climbed},
-  {.action = KEYS::RIGHT, .browsing = true, .act = ::opened},
-  {.browsing = true, .printable = true, .act = ::typed},
-  {.action = KEYS::DELETE, .act = ::deleted}};
+   .act = ::dropped,
+   .name = "close"},
+  {.action = KEYS::LEFT, .browsing = true, .act = ::climbed, .name = ::UP},
+  {.action = KEYS::ERASE, .browsing = true, .act = ::climbed, .name = ::UP},
+  {.action = KEYS::RIGHT, .browsing = true, .act = ::opened, .name = "open"},
+  {.browsing = true, .act = BROWSE::typed},
+  {.action = KEYS::DELETE, .act = VIEWS::WIRED::deleted, .name = "delete"}};
+
+[[maybe_unused]] const Flag listed =
+  HOTKEYS::offer(HOTKEYS::FAMILY::GRAPH, ::STROKES);
 
 auto matched(const ::Stroke &stroke, const KEYS::Event &key) -> Flag {
   if (stroke.action != key.action) return false;
   if (stroke.browsing != VIEWS::WIRED::browsing()) return false;
-  if (key.action != KEYS::TEXT) return true;
-  if (stroke.printable)
-    return !key.control && key.codepoint >= ::FIRST && key.codepoint <= ::LAST;
+  if (key.action != KEYS::TEXT || stroke.letter == ::ANY) return true;
   return VIEWS::folded(key.codepoint) == stroke.letter &&
          key.control == stroke.control && key.shift == stroke.shift;
 }

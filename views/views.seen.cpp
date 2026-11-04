@@ -4,7 +4,7 @@
 #include "views.controls.hpp"
 #include "views.internal.hpp"
 #include "views.seen.hpp"
-#include "views.split.hpp"
+#include "views.split.regions.hpp"
 
 auto SOUND::VIEWS::GET::seen(const View &unit) -> Seen {
   const String id = board(unit);

@@ -21,8 +21,8 @@ constexpr STRING::Hot PLAIN = "icon";
 constexpr Float HELD = 2.0f;
 
 Flag selecting = false;
-Flag stood = false;
-Whole born = 0;
+VIEWS::Sided<Flag> stood;
+VIEWS::Sided<Whole> born;
 
 struct Reach {
   Float west = 0.0f, east = 0.0f, north = 0.0f, south = 0.0f;
@@ -135,12 +135,12 @@ auto SOUND::VIEWS::ARRANGEMENT::mates(Whole row) -> Vector<Whole> {
 
 void SOUND::VIEWS::ARRANGEMENT::marquee() {
   const GUI::Handle page = VIEWS::document();
-  if (VIEWS::reborn(::born)) ::stood = false;
-  if (!::stood) {
+  if (VIEWS::reborn(::born())) ::stood() = false;
+  if (!::stood()) {
     BOARDS::place(page, board().c_str(), "panel", String(::BAND), {}, {});
     GUI::set(page, ::BAND, GUI::Style{::RINGED});
     GUI::set(page, ::BAND, GUI::Depth{::HELD});
-    ::stood = true;
+    ::stood() = true;
   }
   const GUI::SAC::STROKE::Gesture gesture = VIEWS::GET::gesture();
   const Flag picking = !drawing(gesture) && ::grounded(gesture);

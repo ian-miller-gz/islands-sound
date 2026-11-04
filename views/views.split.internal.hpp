@@ -68,3 +68,13 @@ auto keyed() -> Flag;
 void shown(Flag on);
 
 }  // namespace SOUND::VIEWS::SPLIT::HOLD
+
+namespace SOUND::VIEWS::SPLIT::RELAY {
+
+void watch(GUI::Handle page);
+
+auto gripped() -> Flag;
+
+auto deferred() -> Flag;
+
+}  // namespace SOUND::VIEWS::SPLIT::RELAY

@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <fstream>
 
-#include "master.hpp"
+#include "inventory.internal.hpp"
 
 namespace {
 using namespace SOUND;
@@ -34,7 +34,7 @@ auto longest(const Vector<Vector<Float>> &lanes) -> Whole {
 
 }  // namespace
 
-auto SOUND::MASTER::WAVE::write(
+auto SOUND::INVENTORY::RIFF::write(
   const String &path, Whole rate, const Vector<Vector<Float>> &lanes) -> Flag {
   std::ofstream out(path, std::ios::binary);
   if (!out || lanes.empty()) return false;

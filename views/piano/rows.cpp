@@ -5,7 +5,7 @@
 
 #include "../../score.hpp"
 #include "piano.internal.hpp"
-#include "piano.notation.hpp"
+#include "piano.rows.get.hpp"
 #include "piano.staff.hpp"
 
 namespace {
@@ -59,16 +59,8 @@ void build() {
 
 }  // namespace
 
-auto SOUND::VIEWS::ROLL::ROWS::lane(Whole pitch, Whole at) -> Float {
-  return ::LADDERS[GET::notation()].lane(pitch, at);
-}
-
-auto SOUND::VIEWS::ROLL::ROWS::pitch(Float y, Whole at) -> Whole {
-  return ::LADDERS[GET::notation()].pitch(y, at);
-}
-
-auto SOUND::VIEWS::ROLL::ROWS::deep() -> Float {
-  return ::LADDERS[GET::notation()].deep();
+auto SOUND::VIEWS::ROLL::ROWS::GET::ladder() -> const Ladder & {
+  return ::LADDERS[ROLL::GET::staffed()];
 }
 
 auto SOUND::VIEWS::ROLL::ROWS::folded() -> Flag { return ::kept.folded; }
@@ -86,14 +78,14 @@ void SOUND::VIEWS::ROLL::ROWS::rows() {
   const Flag reborn = VIEWS::reborn(::kept.born);
   const Flag keyed = rekeyed(::kept.worn);
   const Flag lined = STAFF::relined();
-  const Flag folding = GET::notation() == TONAL && standing(::kept.worn);
+  const Flag folding = ROLL::GET::notation() == TONAL && standing(::kept.worn);
   Vector<Whole> rows = ROWS::held(::kept.worn, folding);
   if (
-    !reborn && !keyed && !lined && GET::notation() == ::kept.notation &&
+    !reborn && !keyed && !lined && ROLL::GET::notation() == ::kept.notation &&
     rows == ::kept.held)
     return;
   ::kept.held = std::move(rows);
-  ::kept.notation = GET::notation();
+  ::kept.notation = ROLL::GET::notation();
   ::kept.folded = folding;
   ::build();
   if (!reborn) anchor(held);

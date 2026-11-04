@@ -5,8 +5,10 @@
 
 #include "../../arrangement.hpp"
 #include "../../peaks.hpp"
+#include "../views.changes.hpp"
 #include "../lane/lane.face.hpp"
 #include "wave.face.hpp"
+#include "wave.placed.hpp"
 
 namespace SOUND::VIEWS::WAVE {
 
@@ -29,15 +31,11 @@ constexpr Float HALF = 0.5f;
 constexpr Float HAIR = 1.0f;
 constexpr Float COLUMN = 2.0f;
 
-using Clip = ARRANGEMENT::TRACK::LANE::Clip;
-
 auto board() -> String;
 auto strip() -> String;
 
-auto laned() -> LANE::Mark;
-auto placed() -> Vector<Clip>;
-
 auto scaled() -> Float;
+auto tape() -> VIEWS::CHANGES::Tape;
 auto window() -> Float;
 auto deep() -> Float;
 auto least() -> Float;
@@ -50,7 +48,6 @@ void ruler();
 auto rung() -> Whole;
 auto marks() -> Vector<GUI::SAC::LADDER::Mark>;
 void hands();
-void retouch(Whole row, const Clip &was, const Clip &now, STRING::Hot act);
 
 auto grip(Whole row, Whole end) -> String;
 auto gripped() -> GUI::Extent;
@@ -59,6 +56,14 @@ auto shown(const Clip &clip) -> Flag;
 void grips();
 auto fade(const GUI::SAC::STROKE::Gesture &gesture) -> Flag;
 void menu();
+
+struct Asked {
+  Whole row = NONE, end = NONE;
+};
+
+auto worded() -> Vector<String>;
+auto shapes(const Asked &asked) -> Whole;
+void shaped(const Asked &asked, Whole taken);
 void lines();
 auto onsets(const Clip &clip, Float sense) -> Vector<Whole>;
 void onsets();
@@ -72,12 +77,8 @@ auto stretch(const GUI::SAC::STROKE::Gesture &gesture) -> Flag;
 void handles();
 void say();
 void shifts();
-auto chosen() -> Whole;
 void choose(const GUI::SAC::STROKE::Gesture &gesture);
 void keyed();
-void rows();
-void rows(SHELL::Session &session);
-auto worded(const Clip &clip) -> String;
 
 auto overview() -> Overview;
 

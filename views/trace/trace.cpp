@@ -82,10 +82,6 @@ void state(SHELL::Session &session) {
 
 }  // namespace
 
-auto SOUND::VIEWS::TRACE::attended() -> Whole {
-  const Whole track = VIEWS::cursor(LIST);
-  return track < TIMELINE::held().tracks.size() ? track : NONE;
-}
 void SOUND::VIEWS::TRACE::nodes() {
   const GUI::Handle page = document();
   ::nodes(page);
