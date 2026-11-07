@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #pragma once
+#include "../kind.hpp"
 #include "views.hpp"
 
 namespace SOUND::VIEWS::SPLIT {
 
 constexpr Whole UPPER = 0, BELOW = 1;
 constexpr STRING::Hot REGIONS[] = {"upper", "lower"};
+static_assert(SOUND::KIND::named(REGIONS));
 
 auto height() -> Float;
 

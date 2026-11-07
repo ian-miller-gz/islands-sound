@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #pragma once
 
+#include "../../kind.hpp"
 #include "graph.internal.hpp"
 
 namespace SOUND::VIEWS::WIRED::BROWSE {
@@ -18,6 +19,7 @@ constexpr STRING::Hot WITHIN = "/";
 constexpr STRING::Hot FILES = "files";
 
 constexpr STRING::Hot STANDARDS[] = {PLUGIN::NATIVE, PLUGIN::VST3};
+static_assert(SOUND::KIND::named(STANDARDS));
 
 struct Filing {
   STRING::Hot type, path;
@@ -32,6 +34,7 @@ constexpr STRING::Hot VOICED = "instrument";
 enum Shelf : Whole { INSTRUMENTS, EFFECTS, SHAPERS, CONTROLLERS, PLUGINS };
 constexpr STRING::Hot SHELVES[] = {
   "instruments", "effects", "note effects", "controllers", "plugins"};
+static_assert(SOUND::KIND::named(SHELVES));
 static_assert(std::size(SHELVES) == PLUGINS + 1);
 
 struct Offer {

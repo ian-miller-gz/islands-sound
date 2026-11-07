@@ -2,6 +2,7 @@
 #include <format>
 #include <utility>
 
+#include "../kind.hpp"
 #include "views.hotkeys.hpp"
 
 namespace {
@@ -13,6 +14,7 @@ constexpr STRING::Hot THEME = "settings.theme.tab";
 constexpr STRING::Hot LISTING = "settings.keys.tab";
 constexpr STRING::Hot THEMED[] = {
   "settings.themed", "settings.own", "settings.shade"};
+static_assert(SOUND::KIND::named(THEMED));
 constexpr STRING::Hot PLATE = "{}.plate";
 constexpr STRING::Hot ROW = "{}.{}";
 constexpr STRING::Hot CELL = "{}.{}.{}";
@@ -21,8 +23,8 @@ struct Dress {
   STRING::Hot plate = "", label = "";
 };
 
-constexpr Dress RESTING = {"tab", ""};
-constexpr Dress STANDING = {"standing", ""};
+constexpr Dress RESTING = {"tab", "tabword"};
+constexpr Dress STANDING = {"standing", "standingword"};
 
 Flag keyed = false;
 

@@ -1,25 +1,20 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <cartridge/plugin.hpp>
-#include <iterator>
+#include <ranges>
 
 #include "kind.doors.hpp"
+#include "kind.named.hpp"
 
 namespace {
+using namespace SOUND::KIND;
 
-constexpr STRING::Hot NAMES[] = {"audio",   "", "control",
-                                 "program", "logic", "data"};
+constexpr auto exact(Whole kind) -> Flag { return meant(spoken(kind)) == kind; }
+
+static_assert(named(NAMES));
+static_assert(
+  std::ranges::all_of(std::views::iota(Whole{}, std::size(NAMES)), exact));
 
 }  // namespace
-
-auto SOUND::KIND::spoken(Whole kind) -> STRING::Hot {
-  return kind < std::size(::NAMES) ? ::NAMES[kind] : "unknown";
-}
-
-auto SOUND::KIND::meant(const String &token) -> Whole {
-  for (Whole kind = 0; kind < std::size(::NAMES); ++kind)
-    if (token == ::NAMES[kind]) return kind;
-  return NONE;
-}
 
 auto SOUND::KIND::carries(Whole kind, Whole family) -> Flag {
   if (kind == NOTES)

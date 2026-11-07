@@ -3,6 +3,7 @@
 #include <string_view>
 
 #include "../fade.hpp"
+#include "../kind.hpp"
 #include "views.curves.hpp"
 
 namespace {
@@ -35,7 +36,8 @@ constexpr auto covered() -> Flag {
 }
 static_assert(covered());
 
-constexpr STRING::Hot NAMES[] = {"line", "", "fall", "ease", "hold"};
+constexpr STRING::Hot NAMES[] = {"line", "rise", "fall", "ease", "hold"};
+static_assert(SOUND::KIND::named(NAMES));
 static_assert(std::size(NAMES) == GUI::Shape::HOLD + 1);
 
 }  // namespace

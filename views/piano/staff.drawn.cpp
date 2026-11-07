@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <utility>
 
+#include "../../kind.hpp"
 #include "piano.internal.hpp"
 #include "piano.staff.hpp"
 
@@ -8,7 +9,8 @@ namespace {
 using namespace SOUND;
 namespace ROLL = SOUND::VIEWS::ROLL;
 
-constexpr STRING::Hot GROUNDS[] = {"board", ""};
+constexpr STRING::Hot GROUNDS[] = {"board", "staffpaper"};
+static_assert(SOUND::KIND::named(GROUNDS));
 
 Whole worn = NONE, born = 0;
 

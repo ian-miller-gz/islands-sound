@@ -23,11 +23,11 @@ auto keyed(Whole at) -> Flag { return COMMANDS::keyed(at); }
 auto laid(const String &strip) -> CHANGES::Laid {
   return {
     strip,
-    {"tempo", "", CHANGES::DIALLED, CHANGES::UPPER, 0.0f, ::paced,
+    {"tempo", "dial", CHANGES::DIALLED, CHANGES::UPPER, 0.0f, ::paced,
      CHANGES::paced},
-    {"metre", "", CHANGES::TYPED, CHANGES::LOWER, 0.0f, ::metred,
+    {"metre", "field", CHANGES::TYPED, CHANGES::LOWER, 0.0f, ::metred,
      CHANGES::metred},
-    {"key", "", CHANGES::KEYED, CHANGES::LOWER,
+    {"key", "field", CHANGES::KEYED, CHANGES::LOWER,
      CHANGES::TYPED + CHANGES::INSET, ::keyed, CHANGES::keyed}};
 }
 

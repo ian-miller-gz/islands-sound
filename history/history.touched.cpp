@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <algorithm>
 
+#include "../kind.hpp"
 #include "history.internal.hpp"
 
 namespace {
@@ -11,6 +12,7 @@ Whole counted = 0;
 
 constexpr STRING::Hot BLIND[] = {
   HISTORY::WORD::HOME, HISTORY::WORD::NAME, HISTORY::WORD::TAG};
+static_assert(SOUND::KIND::named(BLIND));
 
 auto blind(const Change &change) -> Flag {
   for (STRING::Hot word : ::BLIND)

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include "../kind.hpp"
 #include "views.internal.hpp"
 
 namespace SOUND::VIEWS {
@@ -8,7 +9,8 @@ constexpr STRING::Hot CHROMED = "shell";
 constexpr Float MARGIN = 40.0f;
 constexpr Float AIR = 4.0f;
 
-constexpr STRING::Hot SEATS[] = {"views", "", "column", "main"};
+constexpr STRING::Hot SEATS[] = {"header", "column", "main"};
+static_assert(SOUND::KIND::named(SEATS));
 
 Vector<Float> authored;
 Float applied = 0.0f;

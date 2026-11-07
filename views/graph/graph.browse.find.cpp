@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <algorithm>
 
+#include "../../kind.hpp"
 #include "graph.browse.internal.hpp"
 #include "graph.keys.hpp"
 
@@ -13,6 +14,7 @@ constexpr Whole FIRST = '!';
 constexpr Whole LAST = '~';
 constexpr STRING::Hot ROSTERS[] = {WIRED::TRACKS,  WIRED::BUSES, WIRED::INPUTS,
                                    WIRED::SOURCES, WIRED::SINKS, WIRED::NOTED};
+static_assert(SOUND::KIND::named(ROSTERS));
 
 auto folded(const String &text) -> String {
   String said;

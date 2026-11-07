@@ -4,42 +4,43 @@ style night color=#2a1f18ff border=0
 style day color=#fefbf3ff border=0
 
 panel root style=clear anchor=stretch
-  panel views style=sheet z=9 anchor=left|right x=240 y=82 w=8 h=34
-    button views.attention style=place size=14 x=4 y=5 w=26 h=24 text="1"
-    button views.arranger style=icon size=18 x=34 y=3 w=28 h=28 text="▬"
-    button views.arranger.door style=icon size=18 x=64 y=3 w=28 h=28 text="▦"
-    button views.graph style=icon size=18 x=94 y=3 w=28 h=28 text="⇒"
-    button views.params style=icon size=18 x=124 y=3 w=28 h=28 text="≣"
-    button views.split style=icon size=18 x=154 y=3 w=28 h=28 text="▄"
-    button views.crumbs style=crumbs size=13 visible=false anchor=left|right x=190 y=9 w=8 h=16
-    label views.attention.hint visible=false text="Attention"
-    label views.arranger.hint visible=false text="Arranger"
-    label views.graph.hint visible=false text="Graph"
-    label views.params.hint visible=false text="Parameter"
-    label views.split.hint visible=false text="Split"
-    label views.arranger.door.hint visible=false text="Editor"
-  panel deck style=sheet z=9 anchor=left|right x=240 y=40 w=8 h=34
-    button deck.behind style=icon size=18 x=6 y=3 w=28 h=28 text="⇤"
-    button deck.play style=icon size=18 x=36 y=3 w=28 h=28 text="▶"
-    button deck.stop style=icon size=18 x=66 y=3 w=28 h=28 text="■"
-    button deck.ahead style=icon size=18 x=96 y=3 w=28 h=28 text="⇥"
-    button deck.record style=icon size=18 x=126 y=3 w=28 h=28 text="●"
-    button deck.loop style=icon size=18 x=156 y=3 w=28 h=28 text="↻"
-    button deck.chase style=icon size=18 x=186 y=3 w=28 h=28 text="◎"
-    label deck.position style=ink size=15 x=220 y=8 w=84 h=20 text="0.000 s"
-    dial deck.tempo style=place size=15 x=310 y=4 w=100 h=26 pad=10
-    button deck.restore style=icon size=18 visible=false x=416 y=3 w=28 h=28 text="↺"
-    button deck.scan style=icon size=18 anchor=northeast x=-10 y=3 w=28 h=28 text="⊕"
-    label deck.behind.hint visible=false text="Behind"
-    label deck.play.hint visible=false text="Play"
-    label deck.stop.hint visible=false text="Stop"
-    label deck.ahead.hint visible=false text="Ahead"
-    label deck.record.hint visible=false text="Record"
-    label deck.loop.hint visible=false text="Loop"
-    label deck.chase.hint visible=false text="Follow"
-    label deck.tempo.hint visible=false text="Tempo"
-    label deck.restore.hint visible=false text="Restore"
-    label deck.scan.hint visible=false text="Plugins"
+  panel header style=clear z=9 anchor=left|right x=240 y=40 w=8 h=76
+    panel views style=sheet anchor=left|right x=0 y=42 w=0 h=34
+      button views.attention style=place size=14 x=4 y=5 w=26 h=24 text="1"
+      button views.arranger style=icon size=18 x=34 y=3 w=28 h=28 text="▬"
+      button views.arranger.door style=icon size=18 x=64 y=3 w=28 h=28 text="▦"
+      button views.graph style=icon size=18 x=94 y=3 w=28 h=28 text="⇒"
+      button views.params style=icon size=18 x=124 y=3 w=28 h=28 text="≣"
+      button views.split style=icon size=18 x=154 y=3 w=28 h=28 text="▄"
+      button views.crumbs style=crumbs size=13 visible=false anchor=left|right x=190 y=9 w=8 h=16
+      label views.attention.hint visible=false text="Attention"
+      label views.arranger.hint visible=false text="Arranger"
+      label views.graph.hint visible=false text="Graph"
+      label views.params.hint visible=false text="Parameter"
+      label views.split.hint visible=false text="Split"
+      label views.arranger.door.hint visible=false text="Editor"
+    panel deck style=sheet anchor=left|right x=0 y=0 w=0 h=34
+      button deck.behind style=icon size=18 x=6 y=3 w=28 h=28 text="⇤"
+      button deck.play style=icon size=18 x=36 y=3 w=28 h=28 text="▶"
+      button deck.stop style=icon size=18 x=66 y=3 w=28 h=28 text="■"
+      button deck.ahead style=icon size=18 x=96 y=3 w=28 h=28 text="⇥"
+      button deck.record style=icon size=18 x=126 y=3 w=28 h=28 text="●"
+      button deck.loop style=icon size=18 x=156 y=3 w=28 h=28 text="↻"
+      button deck.chase style=icon size=18 x=186 y=3 w=28 h=28 text="◎"
+      label deck.position style=ink size=15 x=220 y=8 w=84 h=20 text="0.000 s"
+      dial deck.tempo style=place size=15 x=310 y=4 w=100 h=26 pad=10
+      button deck.restore style=icon size=18 visible=false x=416 y=3 w=28 h=28 text="↺"
+      button deck.scan style=icon size=18 anchor=northeast x=-10 y=3 w=28 h=28 text="⊕"
+      label deck.behind.hint visible=false text="Behind"
+      label deck.play.hint visible=false text="Play"
+      label deck.stop.hint visible=false text="Stop"
+      label deck.ahead.hint visible=false text="Ahead"
+      label deck.record.hint visible=false text="Record"
+      label deck.loop.hint visible=false text="Loop"
+      label deck.chase.hint visible=false text="Follow"
+      label deck.tempo.hint visible=false text="Tempo"
+      label deck.restore.hint visible=false text="Restore"
+      label deck.scan.hint visible=false text="Plugins"
   panel column style=clear anchor=top|bottom x=8 y=40 w=224 h=8
     panel tracks style=clear anchor=left|right x=0 y=0 w=0 h=0
       button file style=accent size=20 x=4 y=4 w=32 h=32 text="≡"
@@ -89,9 +90,9 @@ panel root style=clear anchor=stretch
         button trace.grow style=place size=14 visible=false anchor=southeast x=-10 y=-32 w=90 h=28 text="Add lane"
         panel cliprow style=clear visible=false
           panel cliprow.tint style=platenotes anchor=northwest x=0 y=4 w=4 h=16
-          label cliprow.name style=ink size=15 anchor=northwest x=10 y=3 w=68 h=18
-          label cliprow.kind style=muted size=12 anchor=northwest x=80 y=5 w=52 h=16
-          label cliprow.at style=muted size=12 anchor=northeast x=-6 y=5 w=72 h=16
+          label cliprow.name style=ink size=15 anchor=left|right x=10 y=3 w=114 h=18
+          label cliprow.kind style=muted size=12 anchor=northeast x=-62 y=5 w=52 h=16
+          label cliprow.at style=muted size=12 anchor=northeast x=-2 y=5 w=56 h=16
         list trace.clips style=clear visible=false anchor=stretch x=8 y=8 w=8 h=8 pitch=24 pad=3 mark=selected plain=row pattern=cliprow
         panel trace.edit style=sheet visible=false z=9 anchor=stretch x=0 y=0 w=0 h=0
           label trace.edit.head style=muted size=14 x=10 y=8 w=200 h=18 text="Lane"

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <algorithm>
 
+#include "../../kind.hpp"
 #include "piano.heads.hpp"
 #include "piano.modes.hpp"
 #include "piano.pips.hpp"
@@ -13,7 +14,8 @@ namespace HEADS = SOUND::VIEWS::ROLL::HEADS;
 
 constexpr Integer PAIRED = 2;
 
-constexpr STRING::Hot INKS[] = {"staffhead", "", "staffloose"};
+constexpr STRING::Hot INKS[] = {"staffhead", "staffchosen", "staffloose"};
+static_assert(SOUND::KIND::named(INKS));
 
 auto inked(const HEADS::Worn &now) -> String {
   if (now.ink != HEADS::RESTING) return ::INKS[now.ink];

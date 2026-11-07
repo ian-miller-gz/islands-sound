@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
+#include "../../kind.hpp"
 #include "graph.browse.internal.hpp"
 #include "graph.internal.hpp"
 #include "graph.seat.dress.hpp"
@@ -9,6 +10,7 @@ using namespace SOUND;
 constexpr STRING::Hot TYPED = "node";
 constexpr STRING::Hot WORDS[] = {
   "instrument", "effect", "shaper", "controller", "plugin"};
+static_assert(SOUND::KIND::named(WORDS));
 static_assert(std::size(WORDS) == VIEWS::WIRED::BROWSE::PLUGINS + 1);
 constexpr STRING::Hot LOST = "missing";
 

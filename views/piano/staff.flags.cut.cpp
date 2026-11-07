@@ -9,7 +9,8 @@ using namespace SOUND;
 namespace ROLL = SOUND::VIEWS::ROLL;
 namespace WEIGHTS = SOUND::VIEWS::ROLL::WEIGHTS;
 
-constexpr STRING::Hot UP[] = {"", "\U0001D16E", "\U0001D16F"};
+constexpr STRING::Hot BARE = "";
+constexpr STRING::Hot UP[] = {BARE, "\U0001D16E", "\U0001D16F"};
 constexpr Float BOW = 0.0f, THICKNESS = 0.2f, RISE = 2.0f, STILL = 0.0f;
 constexpr Float RANK = WEIGHTS::BEAM + WEIGHTS::GAP;
 constexpr Float FULL = ROLL::SPACE * ROLL::STAFF::SCALE;

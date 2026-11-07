@@ -3,6 +3,7 @@
 #include <iterator>
 
 #include "../../fade.hpp"
+#include "../../kind.hpp"
 #include "wave.internal.hpp"
 #include "wave.rows.hpp"
 
@@ -16,6 +17,7 @@ constexpr Whole ENDS = std::size(FADE::ENDS);
 constexpr Whole IN = 0, OUT = 1;
 constexpr Float GAP = 4.0f;
 constexpr STRING::Hot NAMES[] = {"In", "Out"};
+static_assert(SOUND::KIND::named(NAMES));
 static_assert(std::size(NAMES) == ::ENDS);
 
 WAVE::Asked about;

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <algorithm>
 
+#include "../../kind.hpp"
 #include "wave.internal.hpp"
 #include "wave.rows.hpp"
 
@@ -10,6 +11,7 @@ namespace WAVE = SOUND::VIEWS::WAVE;
 
 constexpr STRING::Hot TOOLS = "wave.tools";
 constexpr STRING::Hot DEPTHS[] = {TOOLS, "arranger.palette"};
+static_assert(SOUND::KIND::named(DEPTHS));
 
 struct Grown {
   Whole born = 0;

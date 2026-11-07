@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <format>
+#include <island/gui/tip.hpp>
 
 #include "../../kind.hpp"
 #include "../arranger/arranger.face.hpp"
 #include "../lane/lane.mark.hpp"
+#include "../views.letters.hpp"
 #include "../views.split.regions.hpp"
 #include "trace.internal.hpp"
 
@@ -33,6 +35,14 @@ void pressed(const TRACE::Clipped &row) {
   ::pending = row.clip;
 }
 
+void named(GUI::Handle page, const String &id, const String &whole) {
+  const String shown = VIEWS::LETTERS::cropped(
+    whole, GUI::GET::measured(page, id.c_str()).w,
+    GUI::GET::size(page, id.c_str()));
+  GUI::set(page, id.c_str(), GUI::Text{shown});
+  GUI::TIP::note(page, id.c_str(), shown == whole ? String() : whole);
+}
+
 void rowed(GUI::Handle page, const Vector<TRACE::Clipped> &rows) {
   const Whole first = GUI::GET::first(page, TRACE::CLIPS);
   for (Whole row = 0; first + row < rows.size(); ++row) {
@@ -40,7 +50,7 @@ void rowed(GUI::Handle page, const Vector<TRACE::Clipped> &rows) {
     if (!GUI::GET::visibility(page, cell.c_str())) break;
     const TRACE::Clipped &one = rows[first + row];
     if (GUI::GET::clicked(page, cell.c_str())) ::pressed(one);
-    GUI::set(page, (cell + "." + ::NAMED).c_str(), GUI::Text{one.name});
+    ::named(page, cell + "." + ::NAMED, one.name);
     GUI::set(
       page, (cell + "." + ::KINDED).c_str(),
       GUI::Text{String(KIND::spoken(one.kind))});

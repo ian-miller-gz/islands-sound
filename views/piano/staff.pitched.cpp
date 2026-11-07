@@ -5,6 +5,7 @@
 #include <tuple>
 
 #include "../../score.hpp"
+#include "../../kind.hpp"
 #include "piano.internal.hpp"
 #include "piano.staff.hpp"
 
@@ -15,7 +16,9 @@ namespace STAFF = SOUND::VIEWS::ROLL::STAFF;
 constexpr Whole LETTERS = 7;
 constexpr Whole NATURAL[LETTERS] = {0, 2, 4, 5, 7, 9, 11};
 constexpr STRING::Hot NAMES[LETTERS] = {"C", "D", "E", "F", "G", "A", "B"};
-constexpr STRING::Hot SPELT[] = {"", "#", "b", "", "##", "bb"};
+static_assert(SOUND::KIND::named(NAMES));
+constexpr STRING::Hot BARE = "";
+constexpr STRING::Hot SPELT[] = {BARE, "#", "b", BARE, "##", "bb"};
 constexpr Integer FAR = 100, OCTAVE = 1;
 
 struct Spelling {
@@ -110,7 +113,7 @@ auto SOUND::VIEWS::ROLL::STAFF::spelled(const Key &key, Whole pitch) -> Spelt {
                      : spelling.accidental == -1 ? 2
                      : spelling.accidental == 2  ? 4
                                                  : 5;
-  const Whole signs[] = {SIGN::NATURAL, SIGN::SHARP, SIGN::FLAT,
+  const Whole signs[] = {SIGN::NATURAL, SIGN::SHARP,        SIGN::FLAT,
                          SIGN::NATURAL, SIGN::DOUBLE_SHARP, SIGN::DOUBLE_FLAT};
   const Flag worn = spelling.accidental == signature.worn[spelling.letter];
   return {

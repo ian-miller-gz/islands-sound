@@ -3,6 +3,7 @@
 #include <common.hpp>
 #include <island/gui/gui.hpp>
 
+#include "../kind.hpp"
 #include "views.keys.hpp"
 
 namespace SOUND::VIEWS::HOTKEYS::FAMILY {
@@ -13,6 +14,7 @@ constexpr STRING::Hot GRAPH = "graph";
 constexpr STRING::Hot SPLIT = "split";
 constexpr STRING::Hot SESSION = "session";
 constexpr STRING::Hot ORDER[] = {ROLL, ARRANGEMENT, GRAPH, SPLIT, SESSION};
+static_assert(SOUND::KIND::named(ORDER));
 
 }  // namespace SOUND::VIEWS::HOTKEYS::FAMILY
 

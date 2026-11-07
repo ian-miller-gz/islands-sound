@@ -2,6 +2,7 @@
 #include <format>
 
 #include "../lane/lane.face.hpp"
+#include "../../kind.hpp"
 #include "wave.placed.hpp"
 #include "wave.rows.hpp"
 
@@ -15,6 +16,7 @@ constexpr STRING::Hot SHIFTED = "shift {} pitch={} cents={}";
 constexpr Whole ROW = 0, PITCH = 1, CENTS = 2;
 constexpr STRING::Hot HIDDEN[] = {"head", RIG::STEPPED,  RIG::BOUND,
                                   "mark", RIG::RESTORED, RIG::HINTED};
+static_assert(SOUND::KIND::named(HIDDEN));
 
 auto sources() -> Vector<RIG::Source> {
   Vector<RIG::Source> all = {WAVE::STRETCH::source(), WAVE::SHIFT::pitch(),

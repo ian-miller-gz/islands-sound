@@ -3,6 +3,7 @@
 #include <iterator>
 
 #include "../views.menu.marked.hpp"
+#include "../../kind.hpp"
 #include "piano.internal.hpp"
 #include "piano.notation.hpp"
 
@@ -15,6 +16,7 @@ constexpr STRING::Hot WHOSE = "piano.presentation";
 constexpr STRING::Hot LINE = "bench presentation {}";
 constexpr Whole COUNT = std::size(ROLL::PRESENTATIONS);
 constexpr STRING::Hot GLYPHS[] = {"\u25A6", "\U0001D11E"};
+static_assert(SOUND::KIND::named(GLYPHS));
 
 void raise() {
   Vector<String> rows;

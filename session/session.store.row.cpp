@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #include <algorithm>
 
+#include "../kind.hpp"
 #include "session.store.internal.hpp"
 
 using namespace SOUND::SESSION;
@@ -11,6 +12,7 @@ constexpr STRING::Hot SPOKEN[] = {
   FIELD::SCHEMED, FIELD::SETTING, FIELD::FROM,   FIELD::TO,    FIELD::LOOPING,
   FIELD::TEMPO,   FIELD::TRACKS,  FIELD::STOCKS, FIELD::CLIPS, FIELD::RECENTS,
   FIELD::VALUES,  FIELD::HISTORY, FIELD::UNDONE, FIELD::WIRING};
+static_assert(SOUND::KIND::named(SPOKEN));
 
 }  // namespace
 

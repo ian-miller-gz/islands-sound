@@ -3,6 +3,7 @@
 #include <iterator>
 
 #include "../../transport.hpp"
+#include "../../kind.hpp"
 
 #include "piano.modes.hpp"
 #include "piano.beams.hpp"
@@ -11,7 +12,8 @@ namespace {
 using namespace SOUND;
 namespace STAFF = SOUND::VIEWS::ROLL::STAFF;
 
-constexpr STRING::Hot WAYS[] = {"up", ""};
+constexpr STRING::Hot WAYS[] = {"up", "down"};
+static_assert(SOUND::KIND::named(WAYS));
 
 void stems(SHELL::Session &session) {
   session.print(std::format(

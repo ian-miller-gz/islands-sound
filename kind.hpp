@@ -2,3 +2,4 @@
 #pragma once
 #include "kind/kind.hpp"
 #include "kind/kind.doors.hpp"
+#include "kind/kind.named.hpp"

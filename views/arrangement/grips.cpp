@@ -42,6 +42,11 @@ auto SOUND::VIEWS::ARRANGEMENT::boxed(Float across, Float down) -> Whole {
   return NONE;
 }
 
+auto SOUND::VIEWS::ARRANGEMENT::gripped(
+  const GUI::SAC::STROKE::Gesture &gesture) -> Flag {
+  return claimed(gesture).row != NONE;
+}
+
 auto SOUND::VIEWS::ARRANGEMENT::drawn(Whole row) -> Box {
   const Vector<Box> &laid = boxes();
   if (row >= laid.size()) return {};

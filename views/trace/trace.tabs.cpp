@@ -2,6 +2,7 @@
 #include <iterator>
 #include <span>
 
+#include "../../kind.hpp"
 #include "trace.internal.hpp"
 
 namespace {
@@ -19,6 +20,7 @@ constexpr STRING::Hot UNCLIPPED = "no clips";
 constexpr Float FOOTED = 1.0f;
 
 constexpr STRING::Hot LANING[] = {TRACE::KINDED, TRACE::GROW};
+static_assert(SOUND::KIND::named(LANING));
 
 struct Tab {
   STRING::Hot id = "";

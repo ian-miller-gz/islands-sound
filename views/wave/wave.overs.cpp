@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <format>
 
+#include "../../kind.hpp"
 #include "wave.overs.hpp"
 
 namespace {
@@ -10,6 +11,7 @@ namespace WAVE = SOUND::VIEWS::WAVE;
 
 constexpr STRING::Hot LINE = "wave overs {} {}";
 constexpr STRING::Hot WORN[] = {WAVE::PEAK, WAVE::OVER};
+static_assert(SOUND::KIND::named(WORN));
 constexpr Whole LEAST = 1;
 
 VIEWS::Sided<Vector<Flag>> worn;

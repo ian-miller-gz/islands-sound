@@ -4,6 +4,7 @@
 #include "../history.hpp"
 #include "../score.hpp"
 #include "../transport.hpp"
+#include "../kind.hpp"
 #include "views.changes.hpp"
 
 namespace {
@@ -11,6 +12,7 @@ using namespace SOUND;
 
 constexpr STRING::Hot RESTING = "off";
 constexpr STRING::Hot STEMS[] = {".metre.", ".key."};
+static_assert(SOUND::KIND::named(STEMS));
 constexpr Float NOWHERE = 0.0f;
 constexpr char SPACE = ' ';
 
@@ -52,8 +54,7 @@ auto SOUND::VIEWS::CHANGES::worded(const Key &row) -> String {
   return std::format("{} {}", SCORE::classed(row.tonic), row.scale);
 }
 
-void SOUND::VIEWS::CHANGES::dressed(
-  GUI::Handle, const String &, const Key &) {}
+void SOUND::VIEWS::CHANGES::dressed(GUI::Handle, const String &, const Key &) {}
 
 auto SOUND::VIEWS::CHANGES::taken(
   GUI::Handle page, const String &id, const Key &row) -> Flag {

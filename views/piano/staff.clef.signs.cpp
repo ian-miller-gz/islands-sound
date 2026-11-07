@@ -6,6 +6,7 @@
 
 #include "../../boards.hpp"
 #include "../../transport.hpp"
+#include "../../kind.hpp"
 #include "piano.beams.hpp"
 #include "piano.modes.hpp"
 #include "piano.paper.hpp"
@@ -16,7 +17,8 @@ using namespace SOUND;
 namespace ROLL = SOUND::VIEWS::ROLL;
 
 constexpr STRING::Hot METRE = "metre";
-constexpr STRING::Hot CLEFS[] = {"clef", ""};
+constexpr STRING::Hot CLEFS[] = {"clef", "bass"};
+static_assert(SOUND::KIND::named(CLEFS));
 constexpr STRING::Hot DRUM = "\U0001D125";
 constexpr STRING::Hot TREBLE = "\U0001D11E", BASS = "\U0001D122";
 constexpr Float WIDE = 0.295f, CLEF = 0.6f, TREBLED = 1.3f, BASSED = 0.8f;

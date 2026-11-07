@@ -1,13 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 #pragma once
 #include "../lane/lane.face.hpp"
+#include "../../kind.hpp"
 #include "piano.modes.hpp"
 
 namespace SOUND::VIEWS::ROLL {
 
 constexpr STRING::Hot NOTATIONS[] = {"tonal", "percussion"};
+static_assert(SOUND::KIND::named(NOTATIONS));
 
 constexpr STRING::Hot PRESENTATIONS[] = {"grid", "staff"};
+static_assert(SOUND::KIND::named(PRESENTATIONS));
 constexpr STRING::Hot ABSENT = "none";
 
 constexpr STRING::Hot TONIC = "piano.bench.tonic";

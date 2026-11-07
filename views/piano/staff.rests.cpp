@@ -2,6 +2,7 @@
 #include <format>
 
 #include "../../boards.hpp"
+#include "../../kind.hpp"
 #include "piano.beams.hpp"
 #include "piano.modes.hpp"
 
@@ -12,6 +13,7 @@ namespace STAFF = SOUND::VIEWS::ROLL::STAFF;
 
 constexpr STRING::Hot NAME = "rest", INK = "staffstem", LABEL = "label";
 constexpr STRING::Hot RESTS[] = {"\U0001D13D", "\U0001D13E", "\U0001D13F"};
+static_assert(SOUND::KIND::named(RESTS));
 constexpr Integer MIDDLE = 4;
 
 struct Ink {

@@ -3,6 +3,7 @@
 
 #include "../../timeline.hpp"
 #include "draft.internal.hpp"
+#include "grips.internal.hpp"
 
 namespace {
 using namespace SOUND;
@@ -30,7 +31,7 @@ auto SOUND::VIEWS::ARRANGEMENT::DRAFT::pulled(
 auto SOUND::VIEWS::ARRANGEMENT::DRAFT::pencilled(
   const GUI::SAC::STROKE::Gesture &gesture) -> Flag {
   return !gutter(gesture.from.at.x) && !shelved(gesture.from.at.y) &&
-         boxed(gesture.from.at.x, gesture.from.at.y) == NONE;
+         !gripped(gesture);
 }
 
 auto SOUND::VIEWS::ARRANGEMENT::DRAFT::seated(

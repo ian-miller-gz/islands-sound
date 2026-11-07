@@ -29,6 +29,8 @@ void relaid(Vector<Carry> moved);
 
 auto claimed(const GUI::SAC::STROKE::Gesture &gesture) -> Claim;
 
+auto gripped(const GUI::SAC::STROKE::Gesture &gesture) -> Flag;
+
 auto landing(
   const Claim &claim, const GUI::SAC::STROKE::Gesture &gesture,
   Flag settle) -> Box;

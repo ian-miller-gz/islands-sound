@@ -2,6 +2,7 @@
 #pragma once
 #include "../../graph.hpp"
 #include "../views.hpp"
+#include "../../kind.hpp"
 #include "piano.places.hpp"
 
 namespace SOUND::VIEWS::ROLL::STAFF {
@@ -11,6 +12,7 @@ constexpr Whole SHARP = 0, FLAT = 1, NATURAL = 2, DOUBLE_SHARP = 3,
                 DOUBLE_FLAT = 4;
 constexpr STRING::Hot GLYPHS[] = {
   "\u266F", "\u266D", "\u266E", "\U0001D12A", "\U0001D12B"};
+static_assert(SOUND::KIND::named(GLYPHS));
 }  // namespace SIGN
 
 struct Spelt {
