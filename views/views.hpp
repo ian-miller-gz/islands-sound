@@ -42,6 +42,8 @@ struct View {
 
   GUI::Extent (*most)() = nullptr;
 
+  Flag plate = false;
+
   Vector<STRING::Hot> controls;
   void (*seat)() = nullptr;
   void (*run)() = nullptr;

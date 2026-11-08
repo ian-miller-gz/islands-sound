@@ -57,6 +57,8 @@ auto own() -> Flag;
 
 namespace SOUND::VIEWS::ARRANGER::TOOLS {
 
+constexpr STRING::Hot HANDLE = "arranger.handle";
+
 void seat(GUI::Handle page);
 
 void restore(std::span<const GUI::Position> kept);

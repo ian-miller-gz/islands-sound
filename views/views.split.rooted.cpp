@@ -20,14 +20,35 @@ auto above(const VIEWS::SPLIT::Seat &seat, Float tall) -> Float {
   return seat.depth - tall + seat.bar + seat.least;
 }
 
+constexpr STRING::Hot HANDLE = ".handle";
+constexpr STRING::Hot PALETTE = ".palette";
+
 }  // namespace
 
 auto SOUND::VIEWS::SPLIT::measured(GUI::Handle page) -> Seat {
   const GUI::Extent main = GUI::GET::measured(page, MAIN);
   const Float least = GUI::GET::extent(page, BAND).h;
+  const Float floor = least + hung(page, roster()[chosen()]);
   return {
     GUI::GET::position(page, MAIN).y + main.h, main.h,
-    GUI::GET::extent(page, BAR).h, least, std::max(main.h - least, SHUT)};
+    GUI::GET::extent(page, BAR).h, least, std::max(main.h - floor, SHUT)};
+}
+
+auto SOUND::VIEWS::SPLIT::hung(GUI::Handle page, const View &unit) -> Float {
+  if (!unit.plate) return SHUT;
+  const String grip = String(unit.name) + ::HANDLE;
+  const String body = String(unit.name) + ::PALETTE;
+  const Float bar = GUI::GET::extent(page, grip.c_str()).h;
+  const Float foot = GUI::GET::position(page, body.c_str()).y +
+                     GUI::GET::extent(page, body.c_str()).h;
+  return std::max(bar, foot);
+}
+
+auto SOUND::VIEWS::SPLIT::depth(Whole region) -> Float {
+  const Seat seat = measured(sheet());
+  const Float tall = std::min(height(), seat.room);
+  if (region == BELOW) return std::max(tall - seat.bar - seat.least, SHUT);
+  return seat.depth - tall;
 }
 
 void SOUND::VIEWS::SPLIT::rooted(

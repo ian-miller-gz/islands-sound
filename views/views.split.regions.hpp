@@ -32,6 +32,10 @@ auto shared() -> Flag;
 
 auto top() -> Float;
 
+auto depth(Whole region) -> Float;
+
+auto hung(GUI::Handle page, const View &unit) -> Float;
+
 auto focused() -> Whole;
 
 auto aimed() -> const View *;

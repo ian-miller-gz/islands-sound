@@ -52,6 +52,7 @@ void state(SHELL::Session &session) {
 [[maybe_unused]] const Flag offered = VIEWS::offer(
   {.name = ::NAME,
    .least = VIEWS::WIRED::least,
+   .plate = true,
    .controls = {VIEWS::ZOOM, VIEWS::PAN},
    .run = VIEWS::WIRED::draw,
    .state = ::state,
